@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "oA+6oX7qw20sXiWKpCKdt0ICqTzN1iY8KSRs+rlsIfZZOK4zR1LOy4iEUIxS7opQiQlDHyIuUbLnz1DsSEbC1A==",
+  "dgSpecHash": "KHAjthaNXDQxgU8T4d5I8LDdh6rPMwYHvGS/rXB+cVdMyhxMRvkIPBXSD3VjukaMAjyS4c04/upjNrNIkHLlmg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\AlexSteele\\source\\repos\\ToDoList\\ToDoList\\ToDoList.csproj",
+  "projectFilePath": "C:\\Users\\AlexSteele\\source\\repos\\ToDoList\\ToDoList\\ToDoList.Core.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

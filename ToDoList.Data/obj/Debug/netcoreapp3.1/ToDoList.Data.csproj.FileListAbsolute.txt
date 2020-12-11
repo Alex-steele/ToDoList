@@ -1,0 +1,9 @@
+C:\Users\AlexSteele\source\repos\ToDoList\ToDoList.Data\bin\Debug\netcoreapp3.1\ToDoList.Data.deps.json
+C:\Users\AlexSteele\source\repos\ToDoList\ToDoList.Data\bin\Debug\netcoreapp3.1\ToDoList.Data.dll
+C:\Users\AlexSteele\source\repos\ToDoList\ToDoList.Data\bin\Debug\netcoreapp3.1\ToDoList.Data.pdb
+C:\Users\AlexSteele\source\repos\ToDoList\ToDoList.Data\obj\Debug\netcoreapp3.1\ToDoList.Data.csprojAssemblyReference.cache
+C:\Users\AlexSteele\source\repos\ToDoList\ToDoList.Data\obj\Debug\netcoreapp3.1\ToDoList.Data.AssemblyInfoInputs.cache
+C:\Users\AlexSteele\source\repos\ToDoList\ToDoList.Data\obj\Debug\netcoreapp3.1\ToDoList.Data.AssemblyInfo.cs
+C:\Users\AlexSteele\source\repos\ToDoList\ToDoList.Data\obj\Debug\netcoreapp3.1\ToDoList.Data.csproj.CoreCompileInputs.cache
+C:\Users\AlexSteele\source\repos\ToDoList\ToDoList.Data\obj\Debug\netcoreapp3.1\ToDoList.Data.dll
+C:\Users\AlexSteele\source\repos\ToDoList\ToDoList.Data\obj\Debug\netcoreapp3.1\ToDoList.Data.pdb
