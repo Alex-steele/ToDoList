@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using ToDoList.Data.Models;
+﻿using ToDoList.Data.Models;
 
 namespace ToDoList.Data.Repositories.Interfaces
 {
@@ -9,6 +8,6 @@ namespace ToDoList.Data.Repositories.Interfaces
 
         void Complete(ToDoListItem item);
 
-        ToDoListItem GetById(int id)
+        ToDoListItem GetById(int id);
     }
 }
