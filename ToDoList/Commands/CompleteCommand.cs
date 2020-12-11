@@ -1,23 +1,23 @@
-﻿using ToDoList.Data.Models;
-using ToDoList.Data.Repositories.Interfaces;
+﻿using ToDoList.Data.Repositories.Interfaces;
 
 namespace ToDoList.Core.Commands
 {
     public class CompleteCommand
     {
-        private readonly IToDoListRepository _repository;
+        private readonly IToDoListRepository repository;
 
         public CompleteCommand(IToDoListRepository repository)
         {
-            _repository = repository;
+            this.repository = repository;
         }
 
         public void Execute(int id)
         {
             // Validate input
 
-            var item = _repository.GetById(id);
-            _repository.Complete(item);
+            var item = repository.GetById(id);
+
+            repository.Complete(item);
         }
     }
 }

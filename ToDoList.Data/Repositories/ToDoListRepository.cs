@@ -7,12 +7,12 @@ namespace ToDoList.Data.Repositories
 {
     public class ToDoListRepository : IToDoListRepository
     {
-        private readonly List<ToDoListItem> _toDoListItems = new List<ToDoListItem>();
+        private readonly List<ToDoListItem> toDoListItems = new List<ToDoListItem>();
 
         public void Add(ToDoListItem item)
         {
-            _toDoListItems.Add(item);
-            item.Id = _toDoListItems.Max(x => x?.Id) + 1 ?? 1;
+            toDoListItems.Add(item);
+            item.Id = toDoListItems.Max(x => x?.Id) + 1 ?? 1;
         }
 
         public void Complete(ToDoListItem item)
@@ -22,7 +22,7 @@ namespace ToDoList.Data.Repositories
 
         public ToDoListItem GetById(int id)
         {
-            return _toDoListItems.Single(x => x.Id == id);
+            return toDoListItems.Single(x => x.Id == id);
         }
     }
 }

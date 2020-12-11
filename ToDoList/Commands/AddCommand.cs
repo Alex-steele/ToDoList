@@ -6,18 +6,18 @@ namespace ToDoList.Core.Commands
 {
     public class AddCommand : IAddCommand
     {
-        private readonly IToDoListRepository _repository;
+        private readonly IToDoListRepository repository;
 
         public AddCommand(IToDoListRepository repository)
         {
-            _repository = repository;
+            this.repository = repository;
         }
 
         public void Execute(string itemValue)
         {
             // Validate input
 
-            _repository.Add(new ToDoListItem
+            repository.Add(new ToDoListItem
             {
                 Value = itemValue,
                 Completed = false
