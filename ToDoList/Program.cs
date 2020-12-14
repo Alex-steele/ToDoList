@@ -28,51 +28,67 @@ namespace ToDoList.Core
                     break;
                 }
 
-                if (int.TryParse(input, out var index) && listItems.Any(x => x.Id == index))
+                if (InputIsItemIndex(listItems, input))
                 {
-                    var completedItem = listItems.Single(x => x.Id == index);
-                    completedItem.Completed = true;
-                    completedItem.Value += " --Completed";
+                    CompleteItem(listItems, input);
 
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("\nItem successfully completed");
-                    Console.ResetColor();
+                    DisplayList(listItems);
 
                     continue;
                 }
 
                 if (input == "d")
                 {
-                    if (!listItems.Any())
-                    {
-                        Console.WriteLine("\nYour To-Do list is empty");
-                        continue;
-                    }
-
-                    Console.WriteLine("\nTo-Do List");
-                    Console.WriteLine("----------");
-
-                    foreach (var item in listItems)
-                    {
-                        if (item.Completed)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                        }
-                        Console.WriteLine($"{item.Id}: {item.Value}");
-                        Console.ResetColor();
-                    }
+                    DisplayList(listItems);
 
                     continue;
                 }
 
-                listItems.Add(new ListItem
-                {
-                    Id = listItems.Max(x => x?.Id) + 1 ?? 1,
-                    Value = input,
-                    Completed = false
-                });
+                AddItem(listItems, input);
             }
+        }
+
+        private static void DisplayList(List<ListItem> listItems)
+        {
+            if (!listItems.Any())
+            {
+                Console.WriteLine("\nYour To-Do list is empty");
+                return;
+            }
+
+            Console.WriteLine("\nTo-Do List");
+            Console.WriteLine("----------");
+
+            foreach (var item in listItems)
+            {
+                if (item.Completed)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                Console.WriteLine($"{item.Id}: {item.Value}");
+                Console.ResetColor();
+            }
+        }
+
+        private static void CompleteItem(List<ListItem> listItems, string input)
+        {
+            var completedItem = listItems.Single(x => x.Id == int.Parse(input));
+            completedItem.Complete();
+        }
+
+        private static void AddItem(List<ListItem> listItems, string input)
+        {
+            listItems.Add(new ListItem
+            {
+                Id = listItems.Max(x => x?.Id) + 1 ?? 1,
+                Value = input,
+                Completed = false
+            });
+        }
+
+        private static bool InputIsItemIndex(List<ListItem> listItems, string input)
+        {
+            return int.TryParse(input, out var index) && listItems.Any(x => x.Id == index);
         }
     }
 }
