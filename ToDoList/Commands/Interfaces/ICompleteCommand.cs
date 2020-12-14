@@ -1,6 +1,9 @@
-﻿namespace ToDoList.Core.Commands.Interfaces
+﻿using System.Reactive;
+using ToDoList.Core.Services.Commands;
+
+namespace ToDoList.Core.Commands.Interfaces
 {
-    interface ICompleteCommand
+    interface ICompleteCommand : ICommand<int, Unit>
     {
     }
 }

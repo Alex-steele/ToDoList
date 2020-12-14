@@ -1,6 +1,9 @@
-﻿namespace ToDoList.Core.Commands.Interfaces
+﻿using System.Reactive;
+using ToDoList.Core.Services.Commands;
+
+namespace ToDoList.Core.Commands.Interfaces
 {
-    public interface IAddCommand
+    public interface IAddCommand : ICommand<string, Unit>
     {
     }
 }

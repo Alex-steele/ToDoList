@@ -1,4 +1,6 @@
-﻿using ToDoList.Core.Commands.Interfaces;
+﻿using System.Reactive;
+using ToDoList.Core.Commands.Interfaces;
+using ToDoList.Core.Services.Commands;
 using ToDoList.Data.Models;
 using ToDoList.Data.Repositories.Interfaces;
 
@@ -13,7 +15,7 @@ namespace ToDoList.Core.Commands
             this.repository = repository;
         }
 
-        public void Execute(string itemValue)
+        public CommandResultWrapper<Unit> Execute(string itemValue)
         {
             // Validate input
 
@@ -22,6 +24,8 @@ namespace ToDoList.Core.Commands
                 Value = itemValue,
                 Completed = false
             });
+
+            return new CommandResultWrapper<Unit>();
         }
     }
 }
