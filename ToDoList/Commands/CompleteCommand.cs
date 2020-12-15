@@ -5,9 +5,9 @@ namespace ToDoList.Core.Commands
 {
     public static class CompleteCommand
     {
-        public static void CompleteItem(IEnumerable<ListItem> listItems, string input)
+        public static void CompleteItem(IEnumerable<ListItem> listItems, int id)
         {
-            var item = listItems.Single(x => x.Id == int.Parse(input));
+            var item = listItems.Single(x => x.Id == id);
             item.Complete();
         }
     }

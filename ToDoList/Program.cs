@@ -29,17 +29,17 @@ namespace ToDoList.Core
                     break;
                 }
 
-                if (InputIsItemIndex(listItems, input))
+                if (input == "d")
                 {
-                    CompleteCommand.CompleteItem(listItems, input);
-
                     DisplayList(listItems);
 
                     continue;
                 }
 
-                if (input == "d")
+                if (InputIsItemId(listItems, input))
                 {
+                    CompleteCommand.CompleteItem(listItems, int.Parse(input));
+
                     DisplayList(listItems);
 
                     continue;
@@ -71,9 +71,9 @@ namespace ToDoList.Core
             }
         }
 
-        private static bool InputIsItemIndex(List<ListItem> listItems, string input)
+        private static bool InputIsItemId(List<ListItem> listItems, string input)
         {
-            return int.TryParse(input, out var index) && listItems.Any(x => x.Id == index);
+            return int.TryParse(input, out var id) && listItems.Any(x => x.Id == id);
         }
     }
 }
