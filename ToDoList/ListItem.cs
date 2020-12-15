@@ -10,6 +10,10 @@
 
         public void Complete()
         {
+            if (Completed)
+            {
+                return;
+            }
             Completed = true;
             Value += " --Completed";
         }
