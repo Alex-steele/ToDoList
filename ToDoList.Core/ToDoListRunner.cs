@@ -2,6 +2,8 @@
 using System.Linq;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Queries.Interfaces;
+using ToDoList.Core.Validators.Enums;
+using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Core.Wrappers;
 using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
@@ -13,19 +15,24 @@ namespace ToDoList.Core
         private readonly IAddCommand addCommand;
         private readonly ICompleteCommand completeCommand;
         private readonly IGetListQuery getListQuery;
+        private readonly IUserInputValidator validator;
 
         public ToDoListRunner(IAddCommand addCommand,
             ICompleteCommand completeCommand,
-            IGetListQuery getListQuery)
+            IGetListQuery getListQuery,
+            IUserInputValidator validator)
         {
             this.addCommand = addCommand;
             this.completeCommand = completeCommand;
             this.getListQuery = getListQuery;
+            this.validator = validator;
         }
 
         public RunnerResultWrapper<List<ListItem>> Execute(string input)
         {
-            if (string.IsNullOrWhiteSpace(input)) //-----Validation
+            var validationResult = validator.Validate(input);
+
+            if (validationResult == ValidationResult.Invalid)
             {
                 return new RunnerResultWrapper<List<ListItem>>
                 {

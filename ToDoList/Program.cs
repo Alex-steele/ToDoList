@@ -4,6 +4,7 @@ using System.Linq;
 using ToDoList.Core;
 using ToDoList.Core.Commands;
 using ToDoList.Core.Queries;
+using ToDoList.Core.Validators;
 using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories;
@@ -20,7 +21,9 @@ namespace ToDoList.Console
             var completeCommand = new CompleteCommand(repository);
             var getListQuery = new GetListQuery(repository);
 
-            var toDoListRunner = new ToDoListRunner(addCommand, completeCommand, getListQuery);
+            var userInputValidator = new UserInputValidator();
+
+            var toDoListRunner = new ToDoListRunner(addCommand, completeCommand, getListQuery, userInputValidator);
 
             System.Console.WriteLine("Welcome to your To-Do list");
 

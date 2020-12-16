@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using ToDoList.Core;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Queries.Interfaces;
+using ToDoList.Core.Validators.Enums;
+using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 
@@ -14,6 +16,7 @@ namespace ToDoList.Tests
         private IAddCommand addCommand;
         private ICompleteCommand completeCommand;
         private IGetListQuery getListQuery;
+        private IUserInputValidator validator;
         private ToDoListRunner sut;
 
         [SetUp]
@@ -22,16 +25,20 @@ namespace ToDoList.Tests
             addCommand = A.Fake<IAddCommand>();
             completeCommand = A.Fake<ICompleteCommand>();
             getListQuery = A.Fake<IGetListQuery>();
+            validator = A.Fake<IUserInputValidator>();
 
-            sut = new ToDoListRunner(addCommand, completeCommand, getListQuery);
+            sut = new ToDoListRunner(addCommand, completeCommand, getListQuery, validator);
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
-        public void Execute_InputIsNullOrWhiteSpace_ReturnsValidationError(string input)
+        public void Execute_InputIsInvalid_ReturnsValidationError()
         {
+            // Arrange
+            const string input = "invalid input";
+
+            A.CallTo(() => validator.Validate(input))
+                .Returns(ValidationResult.Invalid);
+
             // Act
             var result = sut.Execute(input);
 
