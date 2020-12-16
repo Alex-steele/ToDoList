@@ -1,60 +1,76 @@
-﻿using NUnit.Framework;
+﻿using FakeItEasy;
+using NUnit.Framework;
 using System.Collections.Generic;
-using System.Linq;
-using ToDoList.Core;
 using ToDoList.Core.Commands;
+using ToDoList.Data.Entities;
+using ToDoList.Data.Repositories.Interfaces;
 
 namespace ToDoList.Tests
 {
     [TestFixture]
     public class AddCommandTests
     {
+        private IToDoListRepository repository;
+        private AddCommand sut;
+
+        [SetUp]
+        public void SetUp()
+        {
+            repository = A.Fake<IToDoListRepository>();
+            sut = new AddCommand(repository);
+        }
+
         [Test]
-        public void AddItem_ListItemsIsNull_ThrowsException()
+        public void AddItem_GetAllReturnsNull_ThrowsException()
         {
             // Arrange
-            var listItems = (List<ListItem>) null;
             const string itemValue = "Test Value";
+
+            A.CallTo(() => repository.GetAll())
+                .Returns(null);
 
             // Act & Assert
-            Assert.That(() => AddCommand.AddItem(listItems, itemValue), Throws.Exception);
+            Assert.That(() => sut.AddItem(itemValue), Throws.Exception);
         }
 
         [Test]
-        public void AddItem_ListItemsIsEmpty_AddsItemWithId1()
+        public void AddItem_GetAllReturnsEmpty_AddsItemWithId1()
         {
             // Arrange
-            var listItems = new List<ListItem>();
             const string itemValue = "Test Value";
 
+            A.CallTo(() => repository.GetAll())
+                .Returns(new List<ListItem>());
+
             // Act
-            AddCommand.AddItem(listItems, itemValue);
+            sut.AddItem(itemValue);
 
             // Assert
-            Assert.That(listItems.Single().Id, Is.EqualTo(1));
-            Assert.That(listItems.Single().Value, Is.EqualTo("Test Value"));
+            A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Id == 1 && x.Value == "Test Value")))
+                .MustHaveHappenedOnceExactly();
         }
 
         [Test]
-        public void AddItem_ListItemsIsNotEmpty_AddsItemWithNextId()
+        public void AddItem_GetAllReturnsList_AddsItemWithNextId()
         {
             // Arrange
-            var listItems = new List<ListItem>
-            {
-                new ListItem
+            A.CallTo(() => repository.GetAll())
+                .Returns(new List<ListItem>
                 {
-                    Id = 1
-                }
-            };
+                    new ListItem
+                    {
+                        Id = 1
+                    }
+                });
 
             const string itemValue = "Test Value";
 
             // Act
-            AddCommand.AddItem(listItems, itemValue);
+            sut.AddItem(itemValue);
 
             // Assert
-            Assert.That(listItems.Last().Id, Is.EqualTo(2));
-            Assert.That(listItems.Last().Value, Is.EqualTo("Test Value"));
+            A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Id == 2 && x.Value == "Test Value")))
+                .MustHaveHappenedOnceExactly();
         }
     }
 }

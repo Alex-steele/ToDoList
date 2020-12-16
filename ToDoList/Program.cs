@@ -1,79 +1,86 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ToDoList.Core;
 using ToDoList.Core.Commands;
+using ToDoList.Core.Queries;
+using ToDoList.Core.Wrappers.Enums;
+using ToDoList.Data.Entities;
+using ToDoList.Data.Repositories;
 
-namespace ToDoList.Core
+namespace ToDoList.Console
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to your To-Do list");
+            var repository = new ToDoListRepository();
 
-            var listItems = new List<ListItem>();
+            var addCommand = new AddCommand(repository);
+            var completeCommand = new CompleteCommand(repository);
+            var getListQuery = new GetListQuery(repository);
+
+            var toDoListRunner = new ToDoListRunner(addCommand, completeCommand, getListQuery);
+
+            System.Console.WriteLine("Welcome to your To-Do list");
 
             while (true)
             {
-                Console.WriteLine("\nType to add an item, type an item's index to mark as completed, type d to display the list or type q to quit");
+                System.Console.WriteLine("\nType to add an item, type an item's index to mark as completed, type d to display the list or type q to quit");
 
-                var input = Console.ReadLine();
-
-                if (string.IsNullOrWhiteSpace(input))
-                {
-                    continue;
-                }
+                var input = System.Console.ReadLine();
 
                 if (input == "q")
                 {
                     break;
                 }
 
-                if (input == "d")
+                var result = toDoListRunner.Execute(input);
+
+                switch (result.Result)
                 {
-                    DisplayList(listItems);
+                    case RunnerResult.Success:
+                        DisplayList(result.Payload);
+                        break;
 
-                    continue;
+                    case RunnerResult.ValidationError:
+                        System.Console.ForegroundColor = ConsoleColor.Red;
+                        System.Console.WriteLine("Please type at least one character");
+                        System.Console.ResetColor();
+                        break;
+
+                    case RunnerResult.InvalidOperation:
+                        System.Console.ForegroundColor = ConsoleColor.Red;
+                        System.Console.WriteLine("Something went wrong");
+                        System.Console.ResetColor();
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
-
-                if (InputIsItemId(listItems, input))
-                {
-                    CompleteCommand.CompleteItem(listItems, int.Parse(input));
-
-                    DisplayList(listItems);
-
-                    continue;
-                }
-
-                AddCommand.AddItem(listItems, input);
             }
         }
 
-        private static void DisplayList(List<ListItem> listItems)
+        private static void DisplayList(IReadOnlyCollection<ListItem> listItems)
         {
             if (!listItems.Any())
             {
-                Console.WriteLine("\nYour To-Do list is empty");
+                System.Console.WriteLine("\nYour To-Do list is empty");
                 return;
             }
 
-            Console.WriteLine("\nTo-Do List");
-            Console.WriteLine("----------");
+            System.Console.WriteLine("\nTo-Do List");
+            System.Console.WriteLine("----------");
 
             foreach (var item in listItems)
             {
                 if (item.Completed)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    System.Console.ForegroundColor = ConsoleColor.Green;
                 }
-                Console.WriteLine($"{item.Id}: {item.Value}");
-                Console.ResetColor();
+                System.Console.WriteLine($"{item.Id}: {item.Value}");
+                System.Console.ResetColor();
             }
-        }
-
-        private static bool InputIsItemId(List<ListItem> listItems, string input)
-        {
-            return int.TryParse(input, out var id) && listItems.Any(x => x.Id == id);
         }
     }
 }

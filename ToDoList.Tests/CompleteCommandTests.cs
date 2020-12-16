@@ -1,75 +1,41 @@
-﻿using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
-using ToDoList.Core;
+﻿using FakeItEasy;
+using NUnit.Framework;
 using ToDoList.Core.Commands;
+using ToDoList.Data.Entities;
+using ToDoList.Data.Repositories.Interfaces;
 
 namespace ToDoList.Tests
 {
     [TestFixture]
     public class CompleteCommandTests
     {
+        private IToDoListRepository repository;
+        private CompleteCommand sut;
+
+        [SetUp]
+        public void SetUp()
+        {
+            repository = A.Fake<IToDoListRepository>();
+            sut = new CompleteCommand(repository);
+        }
         [Test]
         public void CompleteItem_InputIdMatchesItemId_ItemIsCompleted()
         {
             // Arrange
-            var listItems = new List<ListItem>
-            {
-                new ListItem
-                {
-                    Id = 1,
-                    Completed = false
-                }
-            };
-
             const int id = 1;
+
+            A.CallTo(() => repository.GetById(id)).Returns(new ListItem
+            {
+                Id = 1,
+                Completed = false
+            });
 
             // Act
-            CompleteCommand.CompleteItem(listItems, id);
+            sut.CompleteItem(id);
 
             // Assert
-            Assert.IsTrue(listItems.Single().Completed);
-        }
-
-        [Test]
-        public void CompleteItem_InputIdDoesNotMatchItemId_ThrowsException()
-        {
-            // Arrange
-            var listItems = new List<ListItem>
-            {
-                new ListItem
-                {
-                    Id = 1,
-                    Completed = false
-                }
-            };
-
-            const int id = 2;
-
-            // Act & Assert
-            Assert.That(() => CompleteCommand.CompleteItem(listItems, id), Throws.Exception);
-        }
-
-        [Test]
-        public void CompleteItem_ListItemsIsNull_ThrowsException()
-        {
-            // Arrange
-            var listItems = (List<ListItem>) null;
-            const int id = 1;
-
-            // Act & Assert
-            Assert.That(() => CompleteCommand.CompleteItem(listItems, id), Throws.Exception);
-        }
-
-        [Test]
-        public void CompleteItem_ListItemsIsEmpty_ThrowsException()
-        {
-            // Arrange
-            var listItems = new List<ListItem>();
-            const int id = 1;
-
-            // Act & Assert
-            Assert.That(() => CompleteCommand.CompleteItem(listItems, id), Throws.Exception);
+            A.CallTo(() => repository.Complete(A<ListItem>.That.Matches(x => x.Id == 1)))
+                .MustHaveHappenedOnceExactly();
         }
     }
 }
