@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using ToDoList.Data.Entities;
+using ToDoList.Core.Models;
 
 namespace ToDoList.Core.Queries.Interfaces
 {
     public interface IGetListQuery
     {
-        List<ListItem> GetList();
+        List<ListItemModel> GetList();
     }
 }

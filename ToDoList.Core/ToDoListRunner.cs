@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ToDoList.Core.Commands.Interfaces;
+using ToDoList.Core.Models;
 using ToDoList.Core.Queries.Interfaces;
 using ToDoList.Core.Validators.Enums;
 using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Core.Wrappers;
 using ToDoList.Core.Wrappers.Enums;
-using ToDoList.Data.Entities;
 
 namespace ToDoList.Core
 {
-    public class ToDoListRunner
+    public class ToDoListRunner : IToDoListRunner
     {
         private readonly IAddCommand addCommand;
         private readonly ICompleteCommand completeCommand;
@@ -28,13 +28,13 @@ namespace ToDoList.Core
             this.validator = validator;
         }
 
-        public RunnerResultWrapper<List<ListItem>> Execute(string input)
+        public RunnerResultWrapper<List<ListItemModel>> Execute(string input)
         {
             var validationResult = validator.Validate(input);
 
             if (validationResult == ValidationResult.Invalid)
             {
-                return new RunnerResultWrapper<List<ListItem>>
+                return new RunnerResultWrapper<List<ListItemModel>>
                 {
                     Result = RunnerResult.ValidationError
                 };
@@ -44,7 +44,7 @@ namespace ToDoList.Core
 
             if (listItems == null)
             {
-                return new RunnerResultWrapper<List<ListItem>>
+                return new RunnerResultWrapper<List<ListItemModel>>
                 {
                     Result = RunnerResult.InvalidOperation
                 };
@@ -54,23 +54,23 @@ namespace ToDoList.Core
             {
                 completeCommand.CompleteItem(int.Parse(input));
 
-                return new RunnerResultWrapper<List<ListItem>>
+                return new RunnerResultWrapper<List<ListItemModel>>
                 {
-                    Payload = listItems,
+                    Payload = getListQuery.GetList(),
                     Result = RunnerResult.Success
                 };
             }
 
             addCommand.AddItem(input);
 
-            return new RunnerResultWrapper<List<ListItem>>
+            return new RunnerResultWrapper<List<ListItemModel>>
             {
-                Payload = listItems,
+                Payload = getListQuery.GetList(),
                 Result = RunnerResult.Success
             };
         }
 
-        private static bool InputIsItemId(IEnumerable<ListItem> listItems, string input)
+        private static bool InputIsItemId(IEnumerable<ListItemModel> listItems, string input)
         {
             return int.TryParse(input, out var id) && listItems.Any(x => x.Id == id);
         }

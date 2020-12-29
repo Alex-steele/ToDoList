@@ -1,40 +1,46 @@
-﻿using System;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ToDoList.Core;
 using ToDoList.Core.Commands;
+using ToDoList.Core.Commands.Interfaces;
+using ToDoList.Core.Mappers;
+using ToDoList.Core.Mappers.Interfaces;
+using ToDoList.Core.Models;
 using ToDoList.Core.Queries;
+using ToDoList.Core.Queries.Interfaces;
 using ToDoList.Core.Validators;
+using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Core.Wrappers.Enums;
-using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories;
+using ToDoList.Data.Repositories.Interfaces;
 
 namespace ToDoList.Console
 {
     class Program
     {
+        private static IServiceProvider serviceProvider;
+
         static void Main(string[] args)
         {
-            var repository = new ToDoListRepository();
+            RegisterServices();
 
-            var addCommand = new AddCommand(repository);
-            var completeCommand = new CompleteCommand(repository);
-            var getListQuery = new GetListQuery(repository);
-
-            var userInputValidator = new UserInputValidator();
-
-            var toDoListRunner = new ToDoListRunner(addCommand, completeCommand, getListQuery, userInputValidator);
+            var toDoListRunner = serviceProvider.GetService<IToDoListRunner>();
 
             System.Console.WriteLine("Welcome to your To-Do list");
 
             while (true)
             {
-                System.Console.WriteLine("\nType to add an item, type an item's index to mark as completed, type d to display the list or type q to quit");
+                System.Console.WriteLine("\nType to add an item, type an item's index to mark as completed or type q to quit");
 
                 var input = System.Console.ReadLine();
 
                 if (input == "q")
                 {
+                    DisposeServices();
                     break;
                 }
 
@@ -62,9 +68,11 @@ namespace ToDoList.Console
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
+            DisposeServices();
         }
 
-        private static void DisplayList(IReadOnlyCollection<ListItem> listItems)
+        private static void DisplayList(IReadOnlyCollection<ListItemModel> listItems)
         {
             if (!listItems.Any())
             {
@@ -83,6 +91,40 @@ namespace ToDoList.Console
                 }
                 System.Console.WriteLine($"{item.Id}: {item.Value}");
                 System.Console.ResetColor();
+            }
+
+        }
+
+        private static void RegisterServices()
+        {
+            var collection = new ServiceCollection();
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<ToDoListRunner>().As<IToDoListRunner>();
+            builder.RegisterType<AddCommand>().As<IAddCommand>();
+            builder.RegisterType<CompleteCommand>().As<ICompleteCommand>();
+            builder.RegisterType<GetListQuery>().As<IGetListQuery>();
+            builder.RegisterType<UserInputValidator>().As<IUserInputValidator>();
+            builder.RegisterType<ListItemMapper>().As<IListItemMapper>();
+            builder.RegisterType<ToDoListRepository>().As<IToDoListRepository>().InstancePerLifetimeScope();
+
+            builder.Populate(collection);
+
+            var appContainer = builder.Build();
+
+            serviceProvider = new AutofacServiceProvider(appContainer);
+        }
+
+        private static void DisposeServices()
+        {
+            if (serviceProvider == null)
+            {
+                return;
+            }
+
+            if (serviceProvider is IDisposable disposable)
+            {
+                disposable.Dispose();
             }
         }
     }
