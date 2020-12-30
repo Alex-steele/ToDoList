@@ -1,7 +1,8 @@
-﻿namespace ToDoList.Core.Commands.Interfaces
+﻿using ToDoList.Core.Models;
+
+namespace ToDoList.Core.Commands.Interfaces
 {
-    public interface ICompleteCommand
+    public interface ICompleteCommand : ICommand<CompleteCommandModel>
     {
-        void CompleteItem(int id);
     }
 }

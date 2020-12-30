@@ -1,7 +1,8 @@
-﻿namespace ToDoList.Core.Commands.Interfaces
+﻿using ToDoList.Core.Models;
+
+namespace ToDoList.Core.Commands.Interfaces
 {
-    public interface IAddCommand
+    public interface IAddCommand : ICommand<AddCommandModel>
     {
-        void AddItem(string itemValue);
     }
 }

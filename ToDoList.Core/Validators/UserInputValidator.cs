@@ -7,7 +7,9 @@ namespace ToDoList.Core.Validators
     {
         public ValidationResult Validate(string input)
         {
-            return string.IsNullOrWhiteSpace(input) ? ValidationResult.Invalid : ValidationResult.Valid;
+            return string.IsNullOrWhiteSpace(input) || input.Length > 200
+                ? ValidationResult.Invalid
+                : ValidationResult.Valid;
         }
     }
 }

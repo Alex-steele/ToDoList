@@ -1,4 +1,5 @@
 ﻿using ToDoList.Core.Commands.Interfaces;
+using ToDoList.Core.Models;
 using ToDoList.Data.Repositories.Interfaces;
 
 namespace ToDoList.Core.Commands
@@ -12,9 +13,9 @@ namespace ToDoList.Core.Commands
             this.repository = repository;
         }
 
-        public void CompleteItem(int id)
+        public void Execute(CompleteCommandModel model)
         {
-            var item = repository.GetById(id);
+            var item = repository.GetById(model.ItemId);
             repository.Complete(item);
         }
     }
