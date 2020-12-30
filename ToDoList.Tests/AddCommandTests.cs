@@ -1,76 +1,124 @@
-﻿//using FakeItEasy;
-//using NUnit.Framework;
-//using System.Collections.Generic;
-//using ToDoList.Core.Commands;
-//using ToDoList.Data.Entities;
-//using ToDoList.Data.Repositories.Interfaces;
+﻿using FakeItEasy;
+using NUnit.Framework;
+using System.Collections.Generic;
+using ToDoList.Core.Commands;
+using ToDoList.Core.Models;
+using ToDoList.Core.Validators.Enums;
+using ToDoList.Core.Validators.Interfaces;
+using ToDoList.Data.Entities;
+using ToDoList.Data.Repositories.Interfaces;
 
-//namespace ToDoList.Tests
-//{
-//    [TestFixture]
-//    public class AddCommandTests
-//    {
-//        private IToDoListRepository repository;
-//        private AddCommand sut;
+namespace ToDoList.Tests
+{
+    [TestFixture]
+    public class AddCommandTests
+    {
+        private IToDoListRepository repository;
+        private IUserInputValidator validator;
+        private AddCommand sut;
 
-//        [SetUp]
-//        public void SetUp()
-//        {
-//            repository = A.Fake<IToDoListRepository>();
-//            sut = new AddCommand(repository);
-//        }
+        [SetUp]
+        public void SetUp()
+        {
+            repository = A.Fake<IToDoListRepository>();
+            validator = A.Fake<IUserInputValidator>();
 
-//        [Test]
-//        public void AddItem_GetAllReturnsNull_ThrowsException()
-//        {
-//            // Arrange
-//            const string itemValue = "Test Value";
+            sut = new AddCommand(repository, validator);
+        }
 
-//            A.CallTo(() => repository.GetAll())
-//                .Returns(null);
+        [Test]
+        public void Execute_ModelIsInvalid_ItemIsNotAdded()
+        {
+            // Arrange
+            var testModel = new AddCommandModel
+            {
+                ItemValue = "Invalid Value"
+            };
 
-//            // Act & Assert
-//            Assert.That(() => sut.Execute(itemValue), Throws.Exception);
-//        }
+            A.CallTo(() => validator.Validate(testModel.ItemValue))
+                .Returns(ValidationResult.Invalid);
 
-//        [Test]
-//        public void AddItem_GetAllReturnsEmpty_AddsItemWithId1()
-//        {
-//            // Arrange
-//            const string itemValue = "Test Value";
+            // Act
+            sut.Execute(testModel);
 
-//            A.CallTo(() => repository.GetAll())
-//                .Returns(new List<ListItem>());
+            // Assert
+            A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Value == testModel.ItemValue)))
+                .MustNotHaveHappened();
+        }
 
-//            // Act
-//            sut.Execute(itemValue);
+        [Test]
+        public void Execute_GetAllReturnsNull_ItemIsNotAdded()
+        {
+            // Arrange
+            var testModel = new AddCommandModel
+            {
+                ItemValue = "Valid Value"
+            };
 
-//            // Assert
-//            A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Id == 1 && x.Value == "Test Value")))
-//                .MustHaveHappenedOnceExactly();
-//        }
+            A.CallTo(() => validator.Validate(testModel.ItemValue))
+                .Returns(ValidationResult.Valid);
 
-//        [Test]
-//        public void AddItem_GetAllReturnsList_AddsItemWithNextId()
-//        {
-//            // Arrange
-//            A.CallTo(() => repository.GetAll())
-//                .Returns(new List<ListItem>
-//                {
-//                    new ListItem
-//                    {
-//                        Id = 1
-//                    }
-//                });
+            A.CallTo(() => repository.GetAll())
+                .Returns(null);
 
-//            const string itemValue = "Test Value";
+            // Act
+            sut.Execute(testModel);
 
-//            // Act
-//            sut.Execute(itemValue);
+            // Assert
+            A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Value == testModel.ItemValue)))
+                .MustNotHaveHappened();
+        }
 
-//            // Assert
-//            A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Id == 2 && x.Value == "Test Value")))
-//                .MustHaveHappenedOnceExactly();
-//        }
-//    }
-//}
+        [Test]
+        public void Execute_GetAllReturnsEmpty_AddsItemWithId1()
+        {
+            // Arrange
+            var testModel = new AddCommandModel
+            {
+                ItemValue = "Valid Value"
+            };
+
+            A.CallTo(() => validator.Validate(testModel.ItemValue))
+                .Returns(ValidationResult.Valid);
+
+            A.CallTo(() => repository.GetAll())
+                .Returns(new List<ListItem>());
+
+            // Act
+            sut.Execute(testModel);
+
+            // Assert
+            A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Id == 1 && x.Value == testModel.ItemValue)))
+                .MustHaveHappenedOnceExactly();
+        }
+
+        [Test]
+        public void Execute_GetAllReturnsList_AddsItemWithNextId()
+        {
+            // Arrange
+            var testModel = new AddCommandModel
+            {
+                ItemValue = "Valid Value"
+            };
+
+            A.CallTo(() => validator.Validate(testModel.ItemValue))
+                .Returns(ValidationResult.Valid);
+
+            A.CallTo(() => repository.GetAll())
+                .Returns(new List<ListItem>
+                {
+                    new ListItem
+                    {
+                        Id = 1
+                    }
+                });
+
+            // Act
+            sut.Execute(testModel);
+
+            // Assert
+            A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Id == 2 && x.Value == testModel.ItemValue)))
+                .MustHaveHappenedOnceExactly();
+        }
+    }
+}

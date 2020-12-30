@@ -16,6 +16,12 @@ namespace ToDoList.Core.Commands
         public void Execute(CompleteCommandModel model)
         {
             var item = repository.GetById(model.ItemId);
+
+            if (item == null)
+            {
+                return;
+            }
+
             repository.Complete(item);
         }
     }

@@ -2,7 +2,7 @@
   "profiles": {
     "ToDoList.Console": {
       "commandName": "Project",
-      "commandLineArgs": "add -i item"
+      "commandLineArgs": "complete -d \"1\" "
     }
   }
 }

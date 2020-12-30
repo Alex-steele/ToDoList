@@ -27,5 +27,44 @@ namespace ToDoList.Tests
             // Assert
             Assert.That(result, Is.EqualTo(ValidationResult.Invalid));
         }
+
+        [Test]
+        public void Validate_InputIsUnder200_ReturnsValid()
+        {
+            // Arrange
+            var testInput = new string('a', 199);
+
+            // Act
+            var result = sut.Validate(testInput);
+
+            // Assert
+            Assert.That(result, Is.EqualTo(ValidationResult.Valid));
+        }
+
+        [Test]
+        public void Validate_InputIs200_ReturnsValid()
+        {
+            // Arrange
+            var testInput = new string('a', 200);
+
+            // Act
+            var result = sut.Validate(testInput);
+
+            // Assert
+            Assert.That(result, Is.EqualTo(ValidationResult.Valid));
+        }
+
+        [Test]
+        public void Validate_InputIsOver200_ReturnsInvalid()
+        {
+            // Arrange
+            var testInput = new string('a', 201);
+
+            // Act
+            var result = sut.Validate(testInput);
+
+            // Assert
+            Assert.That(result, Is.EqualTo(ValidationResult.Invalid));
+        }
     }
 }

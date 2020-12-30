@@ -21,7 +21,7 @@ namespace ToDoList.Data.Repositories
 
         public ListItem GetById(int id)
         {
-            return listItems.Single(x => x.Id == id);
+            return listItems.SingleOrDefault(x => x.Id == id);
         }
 
         public List<ListItem> GetAll()
