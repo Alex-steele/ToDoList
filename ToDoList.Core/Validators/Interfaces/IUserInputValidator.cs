@@ -1,9 +1,9 @@
-﻿using ToDoList.Core.Validators.Enums;
+﻿using ToDoList.Core.Models;
 
 namespace ToDoList.Core.Validators.Interfaces
 {
     public interface IUserInputValidator
     {
-        ValidationResult Validate(string input);
+        ValidationResult Validate(AddCommandModel model);
     }
 }

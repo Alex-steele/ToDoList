@@ -8,8 +8,4 @@
     <ProjectReference Include="..\ToDoList.Data\ToDoList.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Wrappers\Enums\" />
-  </ItemGroup>
-
 </Project>

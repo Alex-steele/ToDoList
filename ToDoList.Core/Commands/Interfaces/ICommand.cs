@@ -1,7 +1,9 @@
-﻿namespace ToDoList.Core.Commands.Interfaces
+﻿using ToDoList.Core.Wrappers.Enums;
+
+namespace ToDoList.Core.Commands.Interfaces
 {
     public interface ICommand<in T>
     {
-        void Execute(T input);
+        CommandResult Execute(T input);
     }
 }

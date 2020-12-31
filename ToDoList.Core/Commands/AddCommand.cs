@@ -3,6 +3,7 @@ using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Validators.Enums;
 using ToDoList.Core.Validators.Interfaces;
+using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
 
@@ -19,28 +20,30 @@ namespace ToDoList.Core.Commands
             this.validator = validator;
         }
 
-        public void Execute(AddCommandModel model)
+        public CommandResult Execute(AddCommandModel model)
         {
             var validationResult = validator.Validate(model.ItemValue);
 
             if (validationResult == ValidationResult.Invalid)
             {
-                return;
+                return CommandResult.ValidationError;
             }
 
             var listItems = repository.GetAll();
 
             if (listItems == null)
             {
-                return;
+                return CommandResult.Error;
             }
 
             repository.Add(new ListItem
             {
-                Id = listItems.Max(x => x?.Id) + 1 ?? 1,
+                Id = listItems.Count() + 1,
                 Value = model.ItemValue,
                 Completed = false
             });
+
+            return CommandResult.Success;
         }
     }
 }
