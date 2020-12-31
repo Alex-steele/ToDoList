@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
-using ToDoList.Core.Validators.Enums;
 using ToDoList.Core.Validators.Interfaces;
+using ToDoList.Core.Wrappers;
 using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
@@ -12,28 +12,35 @@ namespace ToDoList.Core.Commands
     public class AddCommand : IAddCommand
     {
         private readonly IToDoListRepository repository;
-        private readonly IUserInputValidator validator;
+        private readonly IAddCommandValidator validator;
 
-        public AddCommand(IToDoListRepository repository, IUserInputValidator validator)
+        public AddCommand(IToDoListRepository repository, IAddCommandValidator validator)
         {
             this.repository = repository;
             this.validator = validator;
         }
 
-        public CommandResult Execute(AddCommandModel model)
+        public CommandResultWrapper Execute(AddCommandModel model)
         {
-            var validationResult = validator.Validate(model.ItemValue);
+            var validationResult = validator.Validate(model);
 
-            if (validationResult == ValidationResult.Invalid)
+            if (!validationResult.IsValid)
             {
-                return CommandResult.ValidationError;
+                return new CommandResultWrapper
+                {
+                    Result = CommandResult.ValidationError,
+                    Validation = validationResult
+                };
             }
 
             var listItems = repository.GetAll();
 
             if (listItems == null)
             {
-                return CommandResult.Error;
+                return new CommandResultWrapper
+                {
+                    Result = CommandResult.Error
+                };
             }
 
             repository.Add(new ListItem
@@ -43,7 +50,10 @@ namespace ToDoList.Core.Commands
                 Completed = false
             });
 
-            return CommandResult.Success;
+            return new CommandResultWrapper
+            {
+                Result = CommandResult.Success
+            };
         }
     }
 }

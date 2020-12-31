@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ToDoList.Core.Validators
+﻿namespace ToDoList.Core.Validators
 {
     public class ValidationError
     {
@@ -17,5 +15,5 @@ namespace ToDoList.Core.Validators
 
         public string PropertyName { get; }
     }
-   
+
 }

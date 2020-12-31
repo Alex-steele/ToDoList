@@ -4,7 +4,7 @@ using ToDoList.Core.Validators.Interfaces;
 
 namespace ToDoList.Core.Validators
 {
-    public class UserInputValidator : IUserInputValidator
+    public class AddCommandValidator : IAddCommandValidator
     {
         public ValidationResult Validate(AddCommandModel model)
         {

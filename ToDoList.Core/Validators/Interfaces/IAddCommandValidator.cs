@@ -2,7 +2,7 @@
 
 namespace ToDoList.Core.Validators.Interfaces
 {
-    public interface IUserInputValidator
+    public interface IAddCommandValidator
     {
         ValidationResult Validate(AddCommandModel model);
     }

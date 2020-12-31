@@ -1,5 +1,6 @@
 ﻿using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
+using ToDoList.Core.Wrappers;
 using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Repositories.Interfaces;
 
@@ -14,18 +15,24 @@ namespace ToDoList.Core.Commands
             this.repository = repository;
         }
 
-        public CommandResult Execute(CompleteCommandModel model)
+        public CommandResultWrapper Execute(CompleteCommandModel model)
         {
             var item = repository.GetById(model.ItemId);
 
             if (item == null)
             {
-                return CommandResult.NotFound;
+                return new CommandResultWrapper
+                {
+                    Result = CommandResult.NotFound
+                };
             }
 
             repository.Complete(item);
 
-            return CommandResult.Success;
+            return new CommandResultWrapper
+            {
+                Result = CommandResult.Success
+            };
         }
     }
 }

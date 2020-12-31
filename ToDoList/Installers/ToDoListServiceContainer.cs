@@ -28,7 +28,7 @@ namespace ToDoList.Console.Installers
             builder.RegisterType<AddCommand>().As<IAddCommand>();
             builder.RegisterType<CompleteCommand>().As<ICompleteCommand>();
             builder.RegisterType<GetListQuery>().As<IGetListQuery>();
-            builder.RegisterType<UserInputValidator>().As<IUserInputValidator>();
+            builder.RegisterType<AddCommandValidator>().As<IAddCommandValidator>();
             builder.RegisterType<ListItemMapper>().As<IListItemMapper>();
             builder.RegisterType<AddCommand>().As<IAddCommand>();
             builder.RegisterType<CompleteCommand>().As<ICompleteCommand>();

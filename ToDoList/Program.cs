@@ -1,5 +1,4 @@
-﻿using System;
-using CommandLine;
+﻿using CommandLine;
 using ToDoList.Console.Arguments;
 using ToDoList.Console.Installers;
 using ToDoList.Console.Installers.Interfaces;
@@ -22,24 +21,19 @@ namespace ToDoList.Console
                         var addCommandMapper = serviceProvider.GetService<IAddCommandArgumentMapper>();
 
                         var result = addCommand.Execute(addCommandMapper.Map(arguments));
-                        switch (result)
+
+                        switch (result.Result)
                         {
                             case CommandResult.Success:
-                                System.Console.ForegroundColor = ConsoleColor.Green;
-                                System.Console.WriteLine("Item successfully added");
-                                System.Console.ResetColor();
+                                WriteMessage.Success("Item successfully added");
                                 break;
 
                             case CommandResult.ValidationError:
-                                System.Console.ForegroundColor = ConsoleColor.Red;
-                                System.Console.WriteLine("Invalid input");
-                                System.Console.ResetColor();
+                                WriteMessage.ValidationError(result.Validation);
                                 break;
 
                             case CommandResult.Error:
-                                System.Console.ForegroundColor = ConsoleColor.Red;
-                                System.Console.WriteLine("An error occurred while executing the add command");
-                                System.Console.ResetColor();
+                                WriteMessage.Error("An error occurred while executing the add command");
                                 break;
                         }
                     })
@@ -47,20 +41,16 @@ namespace ToDoList.Console
                     {
                         var completeCommand = serviceProvider.GetService<ICompleteCommand>();
                         var completeCommandMapper = serviceProvider.GetService<ICompleteCommandArgumentMapper>();
-                        
+
                         var result = completeCommand.Execute(completeCommandMapper.Map(arguments));
-                        switch (result)
+                        switch (result.Result)
                         {
                             case CommandResult.Success:
-                                System.Console.ForegroundColor = ConsoleColor.Green;
-                                System.Console.WriteLine("Item successfully completed");
-                                System.Console.ResetColor();
+                                WriteMessage.Success("Item successfully completed");
                                 break;
 
                             case CommandResult.NotFound:
-                                System.Console.ForegroundColor = ConsoleColor.Red;
-                                System.Console.WriteLine($"Could not find item with specified Id: {arguments.ItemId}");
-                                System.Console.ResetColor();
+                                WriteMessage.Error($"Could not find item with specified Id: {arguments.ItemId}");
                                 break;
                         }
                     });

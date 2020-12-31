@@ -5,7 +5,7 @@ namespace ToDoList.Core
     /// <summary>
     /// Contains a set of argument checking functions
     /// </summary>
-    public class Check
+    public static class Check
     {
         /// <summary>
         /// Check if argument is null
