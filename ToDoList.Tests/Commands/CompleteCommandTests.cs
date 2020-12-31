@@ -5,7 +5,7 @@ using ToDoList.Core.Models;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
 
-namespace ToDoList.Tests
+namespace ToDoList.Tests.Commands
 {
     [TestFixture]
     public class CompleteCommandTests

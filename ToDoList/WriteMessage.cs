@@ -27,7 +27,7 @@ namespace ToDoList.Console
             System.Console.WriteLine("Invalid input.\nErrors:");
             foreach (var error in validation.Errors)
             {
-                System.Console.WriteLine($"Property: {error.PropertyName}. Error message: {error.Error}.");
+                System.Console.WriteLine($"Property: {error.PropertyName}. Error message: {error.ErrorMessage}.");
             }
             System.Console.ResetColor();
         }

@@ -2,16 +2,16 @@
 {
     public class ValidationError
     {
-        public ValidationError(string propertyName, string error)
+        public ValidationError(string propertyName, string errorMessage)
         {
-            Check.NotEmptyOrWhiteSpace(propertyName, nameof(propertyName));
-            Check.NotEmptyOrWhiteSpace(error, nameof(error));
+            Check.NotNullOrWhiteSpace(propertyName, nameof(propertyName));
+            Check.NotNullOrWhiteSpace(errorMessage, nameof(errorMessage));
 
-            Error = error;
+            ErrorMessage = errorMessage;
             PropertyName = propertyName;
         }
 
-        public string Error { get; }
+        public string ErrorMessage { get; }
 
         public string PropertyName { get; }
     }

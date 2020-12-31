@@ -19,8 +19,12 @@ namespace ToDoList.Core
                 throw new ArgumentNullException(propertyName);
             }
         }
-
-        public static void NotEmptyOrWhiteSpace(string prop, string propertyName)
+        /// <summary>
+        /// Check if string argument is null or white space
+        /// </summary>
+        /// <param name="prop">Property to check</param>
+        /// <param name="propertyName">Name of the property being checked</param>
+        public static void NotNullOrWhiteSpace(string prop, string propertyName)
         {
             if (string.IsNullOrWhiteSpace(prop))
             {
