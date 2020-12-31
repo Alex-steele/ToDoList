@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System;
+using CommandLine;
 using ToDoList.Console.Arguments;
 using ToDoList.Console.Installers;
 using ToDoList.Console.Installers.Interfaces;
@@ -12,49 +13,62 @@ namespace ToDoList.Console
     {
         static void Main(string[] args)
         {
-            using (IToDoListServiceContainer serviceProvider = new ToDoListServiceContainer())
+            System.Console.WriteLine("Starting App...");
+
+            try
             {
-                Parser.Default.ParseArguments<AddCommandArguments, CompleteCommandArguments>(args)
-                    .WithParsed<AddCommandArguments>(arguments =>
-                    {
-                        var addCommand = serviceProvider.GetService<IAddCommand>();
-                        var addCommandMapper = serviceProvider.GetService<IAddCommandArgumentMapper>();
-
-                        var result = addCommand.Execute(addCommandMapper.Map(arguments));
-
-                        switch (result.Result)
+                using (IToDoListServiceContainer serviceProvider = new ToDoListServiceContainer())
+                {
+                    Parser.Default.ParseArguments<AddCommandArguments, CompleteCommandArguments>(args)
+                        .WithParsed<AddCommandArguments>(arguments =>
                         {
-                            case CommandResult.Success:
-                                WriteMessage.Success("Item successfully added");
-                                break;
+                            var addCommand = serviceProvider.GetService<IAddCommand>();
+                            var addCommandMapper = serviceProvider.GetService<IAddCommandArgumentMapper>();
 
-                            case CommandResult.ValidationError:
-                                WriteMessage.ValidationError(result.Validation);
-                                break;
+                            var result = addCommand.Execute(addCommandMapper.Map(arguments));
 
-                            case CommandResult.Error:
-                                WriteMessage.Error("An error occurred while executing the add command");
-                                break;
-                        }
-                    })
-                    .WithParsed<CompleteCommandArguments>(arguments =>
-                    {
-                        var completeCommand = serviceProvider.GetService<ICompleteCommand>();
-                        var completeCommandMapper = serviceProvider.GetService<ICompleteCommandArgumentMapper>();
+                            switch (result.Result)
+                            {
+                                case CommandResult.Success:
+                                    WriteMessage.Success("Item successfully added");
+                                    break;
 
-                        var result = completeCommand.Execute(completeCommandMapper.Map(arguments));
-                        switch (result.Result)
+                                case CommandResult.ValidationError:
+                                    WriteMessage.ValidationError(result.Validation);
+                                    break;
+
+                                case CommandResult.Error:
+                                    WriteMessage.Error("An error occurred while executing the add command");
+                                    break;
+                            }
+                        })
+                        .WithParsed<CompleteCommandArguments>(arguments =>
                         {
-                            case CommandResult.Success:
-                                WriteMessage.Success("Item successfully completed");
-                                break;
+                            var completeCommand = serviceProvider.GetService<ICompleteCommand>();
+                            var completeCommandMapper = serviceProvider.GetService<ICompleteCommandArgumentMapper>();
 
-                            case CommandResult.NotFound:
-                                WriteMessage.Error($"Could not find item with specified Id: {arguments.ItemId}");
-                                break;
-                        }
-                    });
+                            var result = completeCommand.Execute(completeCommandMapper.Map(arguments));
+                            switch (result.Result)
+                            {
+                                case CommandResult.Success:
+                                    WriteMessage.Success("Item successfully completed");
+                                    break;
+
+                                case CommandResult.NotFound:
+                                    WriteMessage.Error($"Could not find item with specified Id: {arguments.ItemId}");
+                                    break;
+                            }
+                        });
+                }
             }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine("An unhandled error occurred: {0}", ex);
+            }
+
+            System.Console.WriteLine("Press any key to close");
+
+            System.Console.ReadKey();
         }
     }
 }
