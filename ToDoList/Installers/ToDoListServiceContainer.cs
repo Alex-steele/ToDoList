@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ToDoList.Console.Installers.Interfaces;
 using ToDoList.Console.Mappers;
 using ToDoList.Console.Mappers.Interfaces;
@@ -26,17 +27,18 @@ namespace ToDoList.Console.Installers
             var builder = new ContainerBuilder();
 
             builder.RegisterType<AddCommand>().As<IAddCommand>();
-            builder.RegisterType<CompleteCommand>().As<ICompleteCommand>();
-            builder.RegisterType<GetListQuery>().As<IGetListQuery>();
             builder.RegisterType<AddCommandValidator>().As<IAddCommandValidator>();
-            builder.RegisterType<ListItemMapper>().As<IListItemMapper>();
-            builder.RegisterType<AddCommand>().As<IAddCommand>();
-            builder.RegisterType<CompleteCommand>().As<ICompleteCommand>();
             builder.RegisterType<AddCommandArgumentMapper>().As<IAddCommandArgumentMapper>();
+            builder.RegisterType<CompleteCommand>().As<ICompleteCommand>();
             builder.RegisterType<CompleteCommandArgumentMapper>().As<ICompleteCommandArgumentMapper>();
+            builder.RegisterType<GetListQuery>().As<IGetListQuery>();
+            builder.RegisterType<ListItemMapper>().As<IListItemMapper>();
             builder.RegisterType<ToDoListRepository>().As<IToDoListRepository>().InstancePerLifetimeScope();
 
-            builder.Populate(new ServiceCollection());
+            var services = new ServiceCollection();
+            services.AddLogging(config => config.AddConsole()).AddTransient<Program>();
+
+            builder.Populate(services);
 
             var appContainer = builder.Build();
 

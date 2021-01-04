@@ -1,5 +1,6 @@
 ﻿using System;
 using CommandLine;
+using Microsoft.Extensions.Logging;
 using ToDoList.Console.Arguments;
 using ToDoList.Console.Installers;
 using ToDoList.Console.Installers.Interfaces;
@@ -19,9 +20,14 @@ namespace ToDoList.Console
             {
                 using (IToDoListServiceContainer serviceProvider = new ToDoListServiceContainer())
                 {
+                    var logger = serviceProvider.GetService<ILogger<Program>>();
+
                     Parser.Default.ParseArguments<AddCommandArguments, CompleteCommandArguments>(args)
                         .WithParsed<AddCommandArguments>(arguments =>
                         {
+                            logger.LogInformation(
+                                $"Running add command with arguments: {nameof(arguments.ItemValue)} = {arguments.ItemValue}");
+
                             var addCommand = serviceProvider.GetService<IAddCommand>();
                             var addCommandMapper = serviceProvider.GetService<IAddCommandArgumentMapper>();
 
@@ -44,6 +50,9 @@ namespace ToDoList.Console
                         })
                         .WithParsed<CompleteCommandArguments>(arguments =>
                         {
+                            logger.LogInformation(
+                                $"Running complete command with arguments: {nameof(arguments.ItemId)} = {arguments.ItemId}");
+
                             var completeCommand = serviceProvider.GetService<ICompleteCommand>();
                             var completeCommandMapper = serviceProvider.GetService<ICompleteCommandArgumentMapper>();
 
@@ -58,12 +67,13 @@ namespace ToDoList.Console
                                     WriteMessage.Error($"Could not find item with specified Id: {arguments.ItemId}");
                                     break;
                             }
-                        });
+                        })
+                        .WithNotParsed(error => logger.LogError("An error occurred while mapping to a command", error));
                 }
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine("An unhandled error occurred: {0}", ex);
+                WriteMessage.Error($"An unhandled error occurred: {ex}");
             }
 
             System.Console.WriteLine("Press any key to close");
