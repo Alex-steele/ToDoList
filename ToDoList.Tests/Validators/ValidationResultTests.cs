@@ -23,12 +23,9 @@ namespace ToDoList.Tests.Validators
         }
 
         [Test]
-        public void Error_ErrorsIsEmpty_CreatesValidValidationResult()
+        public void Error_ErrorsIsEmpty_ThrowsArgumentNullException()
         {
-            var result = ValidationResult.Error((new List<ValidationError>()));
-
-            Assert.That(result.IsValid, Is.True);
-            Assert.That(result.Errors, Is.Empty);
+            Assert.That(() => ValidationResult.Error(new List<ValidationError>()), Throws.ArgumentNullException);
         }
 
         [Test]

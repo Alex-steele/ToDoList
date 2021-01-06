@@ -14,7 +14,7 @@ namespace ToDoList.Core.Validators
 
         private ValidationResult(IEnumerable<ValidationError> errors)
         {
-            Check.NotNull(errors, nameof(errors));
+            Check.NotNullOrEmpty(errors, nameof(errors));
 
             IsValid = !errors.Any();
             Errors = errors.ToList().AsReadOnly();

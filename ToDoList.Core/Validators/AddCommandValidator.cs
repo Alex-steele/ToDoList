@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ToDoList.Core.Models;
 using ToDoList.Core.Validators.Interfaces;
 
@@ -20,7 +21,7 @@ namespace ToDoList.Core.Validators
                 errors.Add(new ValidationError(nameof(AddCommandModel.ItemValue), "item value must be 200 characters or less"));
             }
 
-            return ValidationResult.Error(errors);
+            return errors.Any() ? ValidationResult.Error(errors) : ValidationResult.Success;
         }
     }
 }
