@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Validators.Interfaces;
@@ -22,38 +23,18 @@ namespace ToDoList.Core.Commands
 
         public CommandResultWrapper Execute(AddCommandModel model)
         {
+            Check.NotNull(model, nameof(model));
+
             var validationResult = validator.Validate(model);
 
             if (!validationResult.IsValid)
             {
-                return new CommandResultWrapper
-                {
-                    Result = CommandResult.ValidationError,
-                    Validation = validationResult
-                };
+                return CommandResultWrapper.ValidationError(validationResult);
             }
 
-            var listItems = repository.GetAll();
+            repository.Add(new ListItem(model.ItemValue));
 
-            if (listItems == null)
-            {
-                return new CommandResultWrapper
-                {
-                    Result = CommandResult.Error
-                };
-            }
-
-            repository.Add(new ListItem
-            {
-                Id = listItems.Count() + 1,
-                Value = model.ItemValue,
-                Completed = false
-            });
-
-            return new CommandResultWrapper
-            {
-                Result = CommandResult.Success
-            };
+            return CommandResultWrapper.Success;
         }
     }
 }

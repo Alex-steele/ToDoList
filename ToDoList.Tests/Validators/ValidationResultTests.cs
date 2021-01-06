@@ -8,38 +8,39 @@ namespace ToDoList.Tests.Validators
     public class ValidationResultTests
     {
         [Test]
-        public void ParameterlessConstructorUsed_CreatesValidValidationResult()
+        public void Success_SuccessConstructorUsed_CreatesValidValidationResult()
         {
-            var result = new ValidationResult();
+            var result = ValidationResult.Success;
 
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.Errors, Is.Empty);
         }
 
         [Test]
-        public void ErrorsIsNull_ThrowsArgumentNullException()
+        public void Error_ErrorsIsNull_ThrowsArgumentNullException()
         {
-            Assert.That(() => new ValidationResult(null), Throws.ArgumentNullException);
+            Assert.That(() => ValidationResult.Error(null), Throws.ArgumentNullException);
         }
 
         [Test]
-        public void ErrorsIsEmpty_CreatesValidValidationResult()
+        public void Error_ErrorsIsEmpty_CreatesValidValidationResult()
         {
-            var result = new ValidationResult(new List<ValidationError>());
+            var result = ValidationResult.Error((new List<ValidationError>()));
 
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.Errors, Is.Empty);
         }
 
         [Test]
-        public void ErrorsIsPopulated_CreatesInValidValidationResultWithErrors()
+        public void Error_ErrorsIsPopulated_CreatesInValidValidationResultWithErrors()
         {
-            var result = new ValidationResult(new List<ValidationError>
+            var result = ValidationResult.Error(new List<ValidationError>
             {
                 new ValidationError("Test property name", "Test error message")
             });
 
             Assert.That(result.IsValid, Is.False);
+
             Assert.That(result.Errors.Single().PropertyName, Is.EqualTo("Test property name"));
             Assert.That(result.Errors.Single().ErrorMessage, Is.EqualTo("Test error message"));
         }

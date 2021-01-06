@@ -16,7 +16,7 @@ namespace ToDoList.Data.Repositories
 
         public void Complete(ListItem item)
         {
-            item.Completed = true;
+            item.CompleteItem();
         }
 
         public ListItem GetById(int id)

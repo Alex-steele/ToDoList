@@ -20,7 +20,7 @@ namespace ToDoList.Core.Validators
                 errors.Add(new ValidationError(nameof(AddCommandModel.ItemValue), "item value must be 200 characters or less"));
             }
 
-            return new ValidationResult(errors);
+            return ValidationResult.Error(errors);
         }
     }
 }

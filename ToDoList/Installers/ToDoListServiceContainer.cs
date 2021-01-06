@@ -1,7 +1,6 @@
-﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using ToDoList.Console.Installers.Interfaces;
 using ToDoList.Console.Mappers;
 using ToDoList.Console.Mappers.Interfaces;
@@ -20,39 +19,28 @@ namespace ToDoList.Console.Installers
 {
     public class ToDoListServiceContainer : IToDoListServiceContainer
     {
-        private readonly AutofacServiceProvider serviceProvider;
+        private readonly IServiceProvider serviceProvider;
 
         public ToDoListServiceContainer()
         {
-            var builder = new ContainerBuilder();
-
-            builder.RegisterType<AddCommand>().As<IAddCommand>();
-            builder.RegisterType<AddCommandValidator>().As<IAddCommandValidator>();
-            builder.RegisterType<AddCommandArgumentMapper>().As<IAddCommandArgumentMapper>();
-            builder.RegisterType<CompleteCommand>().As<ICompleteCommand>();
-            builder.RegisterType<CompleteCommandArgumentMapper>().As<ICompleteCommandArgumentMapper>();
-            builder.RegisterType<GetListQuery>().As<IGetListQuery>();
-            builder.RegisterType<ListItemMapper>().As<IListItemMapper>();
-            builder.RegisterType<ToDoListRepository>().As<IToDoListRepository>().InstancePerLifetimeScope();
-
             var services = new ServiceCollection();
+
             services.AddLogging(config => config.AddConsole()).AddTransient<Program>();
+            services.AddTransient<IAddCommand, AddCommand>();
+            services.AddTransient<IAddCommandValidator, AddCommandValidator>();
+            services.AddTransient<IAddCommandArgumentMapper, AddCommandArgumentMapper>();
+            services.AddTransient<ICompleteCommand, CompleteCommand>();
+            services.AddTransient<ICompleteCommandArgumentMapper, CompleteCommandArgumentMapper>();
+            services.AddTransient<IGetListQuery, GetListQuery>();
+            services.AddTransient<IListItemMapper, ListItemMapper>();
+            services.AddTransient<IToDoListRepository, ToDoListRepository>();
 
-            builder.Populate(services);
-
-            var appContainer = builder.Build();
-
-            serviceProvider = new AutofacServiceProvider(appContainer);
+            serviceProvider = services.BuildServiceProvider();
         }
 
         public T GetService<T>()
         {
             return serviceProvider.GetService<T>();
-        }
-
-        public void Dispose()
-        {
-            serviceProvider.Dispose();
         }
     }
 }

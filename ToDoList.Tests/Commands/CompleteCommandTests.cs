@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using ToDoList.Core.Commands;
 using ToDoList.Core.Models;
+using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
 
@@ -21,7 +22,13 @@ namespace ToDoList.Tests.Commands
         }
 
         [Test]
-        public void Execute_GetByIdReturnsNull_ItemIsNotCompleted()
+        public void Execute_ModelIsNull_ThrowsException()
+        {
+            Assert.That(() => sut.Execute(null), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void Execute_GetByIdReturnsNull_ReturnsNotFound()
         {
             // Arrange
             var testModel = new CompleteCommandModel
@@ -32,15 +39,17 @@ namespace ToDoList.Tests.Commands
             A.CallTo(() => repository.GetById(testModel.ItemId)).Returns(null);
 
             // Act
-            sut.Execute(testModel);
+            var result = sut.Execute(testModel);
 
             // Assert
             A.CallTo(() => repository.Complete(A<ListItem>.That.Matches(x => x.Id == 1)))
                 .MustNotHaveHappened();
+
+            Assert.That(result.Result, Is.EqualTo(CommandResult.NotFound));
         }
 
         [Test]
-        public void Execute_GetByIdReturnsItem_ItemIsCompleted()
+        public void Execute_GetByIdReturnsItem_ItemIsCompletedAndReturnsSuccess()
         {
             // Arrange
             var testModel = new CompleteCommandModel
@@ -48,18 +57,16 @@ namespace ToDoList.Tests.Commands
                 ItemId = 1
             };
 
-            A.CallTo(() => repository.GetById(testModel.ItemId)).Returns(new ListItem
-            {
-                Id = 1,
-                Completed = false
-            });
+            A.CallTo(() => repository.GetById(testModel.ItemId)).Returns(new ListItem("Test"));
 
             // Act
-            sut.Execute(testModel);
+            var result = sut.Execute(testModel);
 
             // Assert
-            A.CallTo(() => repository.Complete(A<ListItem>.That.Matches(x => x.Id == 1)))
+            A.CallTo(() => repository.Complete(A<ListItem>.That.Matches(x => x.Value == "Test")))
                 .MustHaveHappenedOnceExactly();
+
+            Assert.That(result.Result, Is.EqualTo(CommandResult.Success));
         }
     }
 }

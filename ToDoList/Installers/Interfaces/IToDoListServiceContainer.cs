@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace ToDoList.Console.Installers.Interfaces
+﻿namespace ToDoList.Console.Installers.Interfaces
 {
-    public interface IToDoListServiceContainer : IDisposable
+    public interface IToDoListServiceContainer
     {
         T GetService<T>();
     }

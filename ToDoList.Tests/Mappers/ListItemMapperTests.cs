@@ -10,19 +10,13 @@ namespace ToDoList.Tests.Mappers
         public void Map_InputIsListItem_ReturnsModelWithCorrectProperties()
         {
             // Arrange
-            var testListItem = new ListItem
-            {
-                Id = 1,
-                Value = "Test Value",
-                Completed = false
-            };
+            var testListItem = new ListItem("Test Value");
 
             // Act
             var mapper = new ListItemMapper();
             var result = mapper.Map(testListItem);
 
             // Assert
-            Assert.That(result.Id, Is.EqualTo(testListItem.Id));
             Assert.That(result.Value, Is.EqualTo(testListItem.Value));
             Assert.That(result.Completed, Is.EqualTo(testListItem.Completed));
         }

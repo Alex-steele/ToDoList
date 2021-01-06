@@ -6,26 +6,31 @@ namespace ToDoList.Core.Validators
 {
     public class ValidationResult : IValidationResult
     {
-        /// <summary>
-        /// Instantiates new successful validation result
-        /// </summary>
-        public ValidationResult()
+        private ValidationResult()
         {
             IsValid = true;
             Errors = new List<ValidationError>();
         }
 
-        /// <summary>
-        /// Instantiates new failed validation result
-        /// </summary>
-        /// <param name="errors"></param>
-        public ValidationResult(IEnumerable<ValidationError> errors)
+        private ValidationResult(IEnumerable<ValidationError> errors)
         {
             Check.NotNull(errors, nameof(errors));
 
             IsValid = !errors.Any();
             Errors = errors.ToList().AsReadOnly();
         }
+
+        /// <summary>
+        /// Instantiates new successful validation result
+        /// </summary>
+        public static ValidationResult Success => new ValidationResult();
+
+        /// <summary>
+        /// Instantiates new failed validation result
+        /// </summary>
+        /// <param name="errors">Validation errors</param>
+        /// <returns></returns>
+        public static ValidationResult Error(IEnumerable<ValidationError> errors) => new ValidationResult(errors);
 
         public bool IsValid { get; }
 
