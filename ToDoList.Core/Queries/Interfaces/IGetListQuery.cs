@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using ToDoList.Core.Models;
+﻿using ToDoList.Core.Wrappers;
 
 namespace ToDoList.Core.Queries.Interfaces
 {
     public interface IGetListQuery
     {
-        List<ListItemModel> GetList();
+        QueryResultWrapper Execute();
     }
 }

@@ -6,6 +6,7 @@ using ToDoList.Console.Installers;
 using ToDoList.Console.Installers.Interfaces;
 using ToDoList.Console.Mappers.Interfaces;
 using ToDoList.Core.Commands.Interfaces;
+using ToDoList.Core.Queries.Interfaces;
 using ToDoList.Core.Wrappers.Enums;
 
 namespace ToDoList.Console
@@ -22,7 +23,7 @@ namespace ToDoList.Console
 
                 var logger = serviceProvider.GetService<ILogger<Program>>();
 
-                Parser.Default.ParseArguments<AddCommandArguments, CompleteCommandArguments>(args)
+                Parser.Default.ParseArguments<AddCommandArguments, CompleteCommandArguments, GetListQueryArguments>(args)
                     .WithParsed<AddCommandArguments>(arguments =>
                     {
                         logger.LogInformation(
@@ -57,6 +58,7 @@ namespace ToDoList.Console
                         var completeCommandMapper = serviceProvider.GetService<ICompleteCommandArgumentMapper>();
 
                         var result = completeCommand.Execute(completeCommandMapper.Map(arguments));
+
                         switch (result.Result)
                         {
                             case CommandResult.Success:
@@ -65,6 +67,25 @@ namespace ToDoList.Console
 
                             case CommandResult.NotFound:
                                 WriteMessage.Error($"Could not find item with specified Id: {arguments.ItemId}");
+                                break;
+                        }
+                    })
+                    .WithParsed<GetListQueryArguments>( arguments =>
+                    {
+                        logger.LogInformation("Running display list query");
+
+                        var getListQuery = serviceProvider.GetService<IGetListQuery>();
+
+                        var result = getListQuery.Execute();
+
+                        switch (result.Result)
+                        {
+                            case QueryResult.Success:
+                                DisplayList.Display(result.Payload);
+                                break;
+
+                            case QueryResult.Error:
+                                WriteMessage.Error($"Could not retrieve list");
                                 break;
                         }
                     })

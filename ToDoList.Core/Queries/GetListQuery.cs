@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using ToDoList.Core.Mappers.Interfaces;
-using ToDoList.Core.Models;
 using ToDoList.Core.Queries.Interfaces;
+using ToDoList.Core.Wrappers;
 using ToDoList.Data.Repositories.Interfaces;
 
 namespace ToDoList.Core.Queries
@@ -18,11 +17,18 @@ namespace ToDoList.Core.Queries
             this.mapper = mapper;
         }
 
-        public List<ListItemModel> GetList()
+        public QueryResultWrapper Execute()
         {
             var listItems = repository.GetAll();
+
+            if (listItems == null)
+            {
+                return QueryResultWrapper.Error;
+            }
+
             var listItemModels = listItems.Select(x => mapper.Map(x)).ToList();
-            return listItemModels;
+
+            return QueryResultWrapper.Success(listItemModels);
         }
     }
 }
