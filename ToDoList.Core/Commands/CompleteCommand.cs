@@ -26,6 +26,7 @@ namespace ToDoList.Core.Commands
             }
 
             repository.Complete(item);
+            repository.SaveChanges();
 
             return CommandResultWrapper.Success;
         }

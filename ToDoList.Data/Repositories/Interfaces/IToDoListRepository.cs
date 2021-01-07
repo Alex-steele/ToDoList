@@ -12,5 +12,7 @@ namespace ToDoList.Data.Repositories.Interfaces
         ListItem GetById(int id);
 
         List<ListItem> GetAll();
+
+        void SaveChanges();
     }
 }

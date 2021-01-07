@@ -15,7 +15,6 @@ namespace ToDoList.Data.Entities
                 throw new ArgumentNullException(nameof(value));
             }
 
-            Id = new Random().Next(1, 1000000);
             Value = value;
             Completed = false;
         }

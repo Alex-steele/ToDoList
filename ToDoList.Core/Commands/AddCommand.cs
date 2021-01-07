@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using ToDoList.Core.Commands.Interfaces;
+﻿using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Core.Wrappers;
-using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
 
@@ -33,6 +30,7 @@ namespace ToDoList.Core.Commands
             }
 
             repository.Add(new ListItem(model.ItemValue));
+            repository.SaveChanges();
 
             return CommandResultWrapper.Success;
         }
