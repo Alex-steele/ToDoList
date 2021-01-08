@@ -3,11 +3,10 @@ using Microsoft.Extensions.Logging;
 using ToDoList.Console.Arguments;
 using ToDoList.Console.Installers.Interfaces;
 using ToDoList.Console.Mappers.Interfaces;
-using ToDoList.Console.Messages;
+using ToDoList.Console.ResultHandlers;
 using ToDoList.Console.Runner.Interface;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Queries.Interfaces;
-using ToDoList.Core.Wrappers.Enums;
 
 namespace ToDoList.Console.Runner
 {
@@ -28,20 +27,7 @@ namespace ToDoList.Console.Runner
 
                     var result = addCommand.Execute(addCommandMapper.Map(arguments));
 
-                    switch (result.Result)
-                    {
-                        case CommandResult.Success:
-                            SuccessMessage.Write("Item successfully added");
-                            break;
-
-                        case CommandResult.ValidationError:
-                            ValidationErrorMessage.Write(result.Validation);
-                            break;
-
-                        case CommandResult.Error:
-                            ErrorMessage.Write("An error occurred while executing the add command");
-                            break;
-                    }
+                    AddResultHandler.Handle(result);
                 })
                 .WithParsed<CompleteCommandArguments>(arguments =>
                 {
@@ -53,16 +39,7 @@ namespace ToDoList.Console.Runner
 
                     var result = completeCommand.Execute(completeCommandMapper.Map(arguments));
 
-                    switch (result.Result)
-                    {
-                        case CommandResult.Success:
-                            SuccessMessage.Write("Item successfully completed");
-                            break;
-
-                        case CommandResult.NotFound:
-                            ErrorMessage.Write($"Could not find item with specified Id: {arguments.ItemId}");
-                            break;
-                    }
+                    CompleteResultHandler.Handle(result, arguments);
                 })
                 .WithParsed<GetListQueryArguments>(arguments =>
                 {
@@ -72,16 +49,7 @@ namespace ToDoList.Console.Runner
 
                     var result = getListQuery.Execute();
 
-                    switch (result.Result)
-                    {
-                        case QueryResult.Success:
-                            DisplayList.Display(result.Payload);
-                            break;
-
-                        case QueryResult.Error:
-                            ErrorMessage.Write($"Could not retrieve list");
-                            break;
-                    }
+                    GetListResultHandler.Handle(result);
                 })
                 .WithNotParsed(error => logger.LogError("An error occurred while mapping to a command", error));
         }
