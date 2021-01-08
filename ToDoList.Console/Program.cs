@@ -5,6 +5,7 @@ using ToDoList.Console.Arguments;
 using ToDoList.Console.Installers;
 using ToDoList.Console.Installers.Interfaces;
 using ToDoList.Console.Mappers.Interfaces;
+using ToDoList.Console.Messages;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Queries.Interfaces;
 using ToDoList.Core.Wrappers.Enums;
@@ -37,15 +38,15 @@ namespace ToDoList.Console
                         switch (result.Result)
                         {
                             case CommandResult.Success:
-                                WriteMessage.Success("Item successfully added");
+                                SuccessMessage.Write("Item successfully added");
                                 break;
 
                             case CommandResult.ValidationError:
-                                WriteMessage.ValidationError(result.Validation);
+                                ValidationErrorMessage.Write(result.Validation);
                                 break;
 
                             case CommandResult.Error:
-                                WriteMessage.Error("An error occurred while executing the add command");
+                                ErrorMessage.Write("An error occurred while executing the add command");
                                 break;
                         }
                     })
@@ -62,11 +63,11 @@ namespace ToDoList.Console
                         switch (result.Result)
                         {
                             case CommandResult.Success:
-                                WriteMessage.Success("Item successfully completed");
+                                SuccessMessage.Write("Item successfully completed");
                                 break;
 
                             case CommandResult.NotFound:
-                                WriteMessage.Error($"Could not find item with specified Id: {arguments.ItemId}");
+                                ErrorMessage.Write($"Could not find item with specified Id: {arguments.ItemId}");
                                 break;
                         }
                     })
@@ -85,7 +86,7 @@ namespace ToDoList.Console
                                break;
 
                            case QueryResult.Error:
-                               WriteMessage.Error($"Could not retrieve list");
+                               ErrorMessage.Write($"Could not retrieve list");
                                break;
                        }
                    })
@@ -94,7 +95,7 @@ namespace ToDoList.Console
             }
             catch (Exception ex)
             {
-                WriteMessage.Error($"An unhandled error occurred: {ex}");
+                ErrorMessage.Write($"An unhandled error occurred: {ex}");
             }
 
             System.Console.WriteLine("Press any key to close");
