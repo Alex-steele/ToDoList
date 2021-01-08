@@ -6,7 +6,7 @@ using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
 
-namespace ToDoList.Tests.Commands
+namespace ToDoList.Core.Tests.Commands
 {
     [TestFixture]
     public class CompleteCommandTests

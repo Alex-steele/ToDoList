@@ -3,7 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using ToDoList.Core.Validators;
 
-namespace ToDoList.Tests.Validators
+namespace ToDoList.Core.Tests.Validators
 {
     public class ValidationResultTests
     {

@@ -2,7 +2,7 @@
 using ToDoList.Core.Mappers;
 using ToDoList.Data.Entities;
 
-namespace ToDoList.Tests.Mappers
+namespace ToDoList.Core.Tests.Mappers
 {
     public class ListItemMapperTests
     {

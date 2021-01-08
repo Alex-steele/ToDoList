@@ -1,7 +1,7 @@
-﻿using FakeItEasy;
-using NUnit.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
+using NUnit.Framework;
 using ToDoList.Core.Mappers.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Queries;
@@ -9,7 +9,7 @@ using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
 
-namespace ToDoList.Tests.Queries
+namespace ToDoList.Core.Tests.Queries
 {
     public class GetListQueryTests
     {

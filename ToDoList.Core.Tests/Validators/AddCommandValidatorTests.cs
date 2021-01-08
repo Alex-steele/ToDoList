@@ -4,7 +4,7 @@ using ToDoList.Core.Models;
 using ToDoList.Core.Validators;
 using ToDoList.Core.Validators.Interfaces;
 
-namespace ToDoList.Tests.Validators
+namespace ToDoList.Core.Tests.Validators
 {
     public class AddCommandValidatorTests
     {

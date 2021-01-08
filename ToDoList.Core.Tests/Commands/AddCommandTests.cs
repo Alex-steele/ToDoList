@@ -1,7 +1,7 @@
-﻿using FakeItEasy;
-using NUnit.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
+using NUnit.Framework;
 using ToDoList.Core.Commands;
 using ToDoList.Core.Models;
 using ToDoList.Core.Validators;
@@ -10,7 +10,7 @@ using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
 
-namespace ToDoList.Tests.Commands
+namespace ToDoList.Core.Tests.Commands
 {
     [TestFixture]
     public class AddCommandTests
