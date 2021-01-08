@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using ToDoList.Console.Installers.Interfaces;
 using ToDoList.Console.Mappers;
 using ToDoList.Console.Mappers.Interfaces;
+using ToDoList.Console.Runner;
+using ToDoList.Console.Runner.Interface;
 using ToDoList.Core.Commands;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Mappers;
@@ -33,6 +35,7 @@ namespace ToDoList.Console.Installers
             var services = new ServiceCollection();
 
             services.AddLogging(config => config.AddConsole()).AddTransient<Program>();
+            services.AddTransient<IToDoListRunner, ToDoListRunner>();
             services.AddTransient<IAddCommand, AddCommand>();
             services.AddTransient<IAddCommandValidator, AddCommandValidator>();
             services.AddTransient<IAddCommandArgumentMapper, AddCommandArgumentMapper>();

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ToDoList.Core.Models;
 
-namespace ToDoList.Console
+namespace ToDoList.Console.Messages
 {
     public class DisplayList
     {
