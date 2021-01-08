@@ -26,13 +26,9 @@ namespace ToDoList.Console.Installers
 
         public ToDoListServiceContainer()
         {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            var builder = new ConfigurationBuilder()
+            var config = new ConfigurationBuilder()
                 .AddJsonFile($"appsettings.json", true, true)
-                .AddJsonFile($"appsettings.{env}.json", true, true)
-                .AddEnvironmentVariables();
-
-            var config = builder.Build();
+                .Build();
 
             var services = new ServiceCollection();
 
@@ -45,7 +41,7 @@ namespace ToDoList.Console.Installers
             services.AddTransient<IGetListQuery, GetListQuery>();
             services.AddTransient<IListItemMapper, ListItemMapper>();
             services.AddTransient<IToDoListRepository, ToDoListRepository>();
-            services.AddDbContextPool<ToDoListContext>(options => options.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=ToDoListDB;Trusted_Connection=True;"));
+            services.AddDbContextPool<ToDoListContext>(options => options.UseSqlServer(config.GetConnectionString("ToDoListDB")));
 
             serviceProvider = services.BuildServiceProvider();
         }
