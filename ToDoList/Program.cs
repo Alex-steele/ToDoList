@@ -1,6 +1,6 @@
-﻿using System;
-using CommandLine;
+﻿using CommandLine;
 using Microsoft.Extensions.Logging;
+using System;
 using ToDoList.Console.Arguments;
 using ToDoList.Console.Installers;
 using ToDoList.Console.Installers.Interfaces;
@@ -70,25 +70,25 @@ namespace ToDoList.Console
                                 break;
                         }
                     })
-                    .WithParsed<GetListQueryArguments>( arguments =>
-                    {
-                        logger.LogInformation("Running display list query");
+                    .WithParsed<GetListQueryArguments>(arguments =>
+                   {
+                       logger.LogInformation("Running display list query");
 
-                        var getListQuery = serviceProvider.GetService<IGetListQuery>();
+                       var getListQuery = serviceProvider.GetService<IGetListQuery>();
 
-                        var result = getListQuery.Execute();
+                       var result = getListQuery.Execute();
 
-                        switch (result.Result)
-                        {
-                            case QueryResult.Success:
-                                DisplayList.Display(result.Payload);
-                                break;
+                       switch (result.Result)
+                       {
+                           case QueryResult.Success:
+                               DisplayList.Display(result.Payload);
+                               break;
 
-                            case QueryResult.Error:
-                                WriteMessage.Error($"Could not retrieve list");
-                                break;
-                        }
-                    })
+                           case QueryResult.Error:
+                               WriteMessage.Error($"Could not retrieve list");
+                               break;
+                       }
+                   })
                     .WithNotParsed(error => logger.LogError("An error occurred while mapping to a command", error));
 
             }

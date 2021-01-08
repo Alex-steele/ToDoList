@@ -8,7 +8,12 @@ namespace ToDoList.Data.Repositories
 {
     public class ToDoListRepository : IToDoListRepository
     {
-        private readonly ToDoListContext context = new ToDoListContext();
+        private readonly ToDoListContext context; // = new ToDoListContext();
+
+        public ToDoListRepository(ToDoListContext context)
+        {
+            this.context = context;
+        }
 
         public void Add(ListItem item)
         {

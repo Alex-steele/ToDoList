@@ -7,9 +7,8 @@ namespace ToDoList.Data
     {
         public DbSet<ListItem> ListItems { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public ToDoListContext(DbContextOptions<ToDoListContext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=ToDoListDB;Trusted_Connection=True;");
         }
     }
 }
