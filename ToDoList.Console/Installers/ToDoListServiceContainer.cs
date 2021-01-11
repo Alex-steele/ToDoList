@@ -29,7 +29,7 @@ namespace ToDoList.Console.Installers
         public ToDoListServiceContainer()
         {
             var config = new ConfigurationBuilder()
-                .AddJsonFile($"appsettings.json", true, true)
+                .AddJsonFile("appsettings.json", true, true)
                 .Build();
 
             var services = new ServiceCollection();

@@ -15,7 +15,7 @@ namespace ToDoList.Console.ResultHandlers
                     break;
 
                 case QueryResult.Error:
-                    ErrorMessage.Write($"Could not retrieve list");
+                    ErrorMessage.Write("Could not retrieve list");
                     break;
             }
         }
