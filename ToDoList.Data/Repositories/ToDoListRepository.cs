@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
 
@@ -8,7 +7,7 @@ namespace ToDoList.Data.Repositories
 {
     public class ToDoListRepository : IToDoListRepository
     {
-        private readonly ToDoListContext context; // = new ToDoListContext();
+        private readonly ToDoListContext context;
 
         public ToDoListRepository(ToDoListContext context)
         {

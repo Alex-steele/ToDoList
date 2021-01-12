@@ -9,10 +9,10 @@ namespace ToDoList.Console.Messages
         {
             FormatConsole.Format(ConsoleColor.Black, ConsoleColor.Red, () =>
             {
-                System.Console.WriteLine("Invalid input.\nErrors:");
+                Message.Write("Invalid input.\nErrors:");
                 foreach (var error in validation.Errors)
                 {
-                    System.Console.WriteLine($"Property: {error.PropertyName}. Error message: {error.ErrorMessage}.");
+                    Message.Write($"Property: {error.PropertyName}. Error message: {error.ErrorMessage}.");
                 }
             });
         }

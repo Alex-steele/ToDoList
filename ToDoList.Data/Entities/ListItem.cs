@@ -4,7 +4,8 @@ namespace ToDoList.Data.Entities
 {
     public class ListItem
     {
-        protected ListItem()
+        // Change back to protected
+        public ListItem()
         {
         }
 
@@ -18,12 +19,12 @@ namespace ToDoList.Data.Entities
             Value = value;
             Completed = false;
         }
+        // Change setter back to protected
+        public int Id { get; set; }
 
-        public int Id { get; protected set; }
+        public string Value { get; set; }
 
-        public string Value { get; protected set; }
-
-        public bool Completed { get; protected set; }
+        public bool Completed { get; set; }
 
         public void CompleteItem()
         {

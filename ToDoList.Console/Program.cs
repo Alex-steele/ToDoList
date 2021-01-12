@@ -10,7 +10,7 @@ namespace ToDoList.Console
     {
         static void Main(string[] args)
         {
-            System.Console.WriteLine("Starting App...");
+            Message.Write("Starting App...");
 
             try
             {
@@ -25,7 +25,7 @@ namespace ToDoList.Console
                 ErrorMessage.Write($"An unhandled error occurred: {ex}");
             }
 
-            System.Console.WriteLine("Press any key to close");
+            Message.Write("\nPress any key to close");
 
             System.Console.ReadKey();
         }
