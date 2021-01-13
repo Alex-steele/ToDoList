@@ -1,13 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-using Microsoft.Extensions.Configuration;
 using ToDoList.Console.Installers.Interfaces;
 using ToDoList.Console.Mappers;
 using ToDoList.Console.Mappers.Interfaces;
-using ToDoList.Console.Runner;
-using ToDoList.Console.Runner.Interface;
+using ToDoList.Console.ResultHandlers;
+using ToDoList.Console.ResultHandlers.Interfaces;
+using ToDoList.Console.Runners;
+using ToDoList.Console.Runners.Interfaces;
 using ToDoList.Core.Commands;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Mappers;
@@ -34,8 +36,14 @@ namespace ToDoList.Console.Installers
 
             var services = new ServiceCollection();
 
-            services.AddLogging(config => config.AddConsole()).AddTransient<Program>();
+            services.AddLogging(config => config.AddConsole()).AddTransient<ToDoListRunner>();
             services.AddTransient<IToDoListRunner, ToDoListRunner>();
+            services.AddTransient<IAddCommandRunner, AddCommandRunner>();
+            services.AddTransient<ICompleteCommandRunner, CompleteCommandRunner>();
+            services.AddTransient<IGetListQueryRunner, GetListQueryRunner>();
+            services.AddTransient<IAddResultHandler, AddResultHandler>();
+            services.AddTransient<ICompleteResultHandler, CompleteResultHandler>();
+            services.AddTransient<IGetListResultHandler, GetListResultHandler>();
             services.AddTransient<IAddCommand, AddCommand>();
             services.AddTransient<IAddCommandValidator, AddCommandValidator>();
             services.AddTransient<IAddCommandArgumentMapper, AddCommandArgumentMapper>();
@@ -43,7 +51,7 @@ namespace ToDoList.Console.Installers
             services.AddTransient<ICompleteCommandArgumentMapper, CompleteCommandArgumentMapper>();
             services.AddTransient<IGetListQuery, GetListQuery>();
             services.AddTransient<IListItemMapper, ListItemMapper>();
-            services.AddTransient<IToDoListRepository, SqlRepository>();
+            services.AddTransient<IToDoListRepository, ToDoListRepository>();
             services.AddDbContextPool<ToDoListContext>(options => options.UseSqlServer(config.GetConnectionString("ToDoListDB")));
 
             serviceProvider = services.BuildServiceProvider();

@@ -1,12 +1,14 @@
-﻿using ToDoList.Console.Messages;
+﻿using System;
+using ToDoList.Console.Messages;
+using ToDoList.Console.ResultHandlers.Interfaces;
 using ToDoList.Core.Wrappers;
 using ToDoList.Core.Wrappers.Enums;
 
 namespace ToDoList.Console.ResultHandlers
 {
-    public static class GetListResultHandler
+    public class GetListResultHandler : IGetListResultHandler
     {
-        public static void Handle(QueryResultWrapper result)
+        public void Handle(QueryResultWrapper result)
         {
             switch (result.Result)
             {
@@ -17,6 +19,9 @@ namespace ToDoList.Console.ResultHandlers
                 case QueryResult.Error:
                     ErrorMessage.Write("Could not retrieve list");
                     break;
+               
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

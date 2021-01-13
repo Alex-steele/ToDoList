@@ -1,13 +1,15 @@
-﻿using ToDoList.Console.Arguments;
+﻿using System;
+using ToDoList.Console.Arguments;
 using ToDoList.Console.Messages;
+using ToDoList.Console.ResultHandlers.Interfaces;
 using ToDoList.Core.Wrappers;
 using ToDoList.Core.Wrappers.Enums;
 
 namespace ToDoList.Console.ResultHandlers
 {
-    public static class CompleteResultHandler
+    public class CompleteResultHandler : ICompleteResultHandler
     {
-        public static void Handle(CommandResultWrapper result, CompleteCommandArguments arguments)
+        public void Handle(CommandResultWrapper result, CompleteCommandArguments arguments)
         {
             switch (result.Result)
             {
@@ -18,6 +20,9 @@ namespace ToDoList.Console.ResultHandlers
                 case CommandResult.NotFound:
                     ErrorMessage.Write($"Could not find item with specified Id: {arguments.ItemId}");
                     break;
+               
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

@@ -1,12 +1,14 @@
-﻿using ToDoList.Console.Messages;
+﻿using System;
+using ToDoList.Console.Messages;
+using ToDoList.Console.ResultHandlers.Interfaces;
 using ToDoList.Core.Wrappers;
 using ToDoList.Core.Wrappers.Enums;
 
 namespace ToDoList.Console.ResultHandlers
 {
-    public static class AddResultHandler
+    public class AddResultHandler : IAddResultHandler
     {
-        public static void Handle(CommandResultWrapper result)
+        public void Handle(CommandResultWrapper result)
         {
             switch (result.Result)
             {
@@ -22,6 +24,8 @@ namespace ToDoList.Console.ResultHandlers
                     ErrorMessage.Write("An error occurred while executing the add command");
                     break;
 
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

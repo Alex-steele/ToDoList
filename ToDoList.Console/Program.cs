@@ -2,7 +2,7 @@
 using ToDoList.Console.Installers;
 using ToDoList.Console.Installers.Interfaces;
 using ToDoList.Console.Messages;
-using ToDoList.Console.Runner.Interface;
+using ToDoList.Console.Runners.Interfaces;
 
 namespace ToDoList.Console
 {
@@ -10,7 +10,7 @@ namespace ToDoList.Console
     {
         static void Main(string[] args)
         {
-            Message.Write("Starting App...");
+            System.Console.WriteLine("Starting App...");
 
             try
             {
@@ -18,14 +18,14 @@ namespace ToDoList.Console
 
                 var runner = serviceProvider.GetService<IToDoListRunner>();
 
-                runner.Run(serviceProvider, args);
+                runner.Run(args);
             }
             catch (Exception ex)
             {
                 ErrorMessage.Write($"An unhandled error occurred: {ex}");
             }
 
-            Message.Write("\nPress any key to close");
+            System.Console.WriteLine("\nPress any key to close");
 
             System.Console.ReadKey();
         }
