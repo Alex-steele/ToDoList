@@ -6,7 +6,7 @@ namespace ToDoList.Console.Messages
     {
         public static void Write(string message)
         {
-            FormatConsole.Format(ConsoleColor.Green, () => Message.Write(message));
+            FormatConsole.Format(ConsoleColor.Green, () => System.Console.WriteLine(message));
         }
     }
 }

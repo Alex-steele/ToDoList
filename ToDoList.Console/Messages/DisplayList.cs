@@ -11,12 +11,12 @@ namespace ToDoList.Console.Messages
         {
             if (!listItems.Any())
             {
-                Message.Write("\nYour To-Do list is empty");
+                System.Console.WriteLine("\nYour To-Do list is empty");
                 return;
             }
 
-            Message.Write("\nTo-Do List");
-            Message.Write("----------");
+            System.Console.WriteLine("\nTo-Do List");
+            System.Console.WriteLine("----------");
 
             foreach (var item in listItems)
             {
@@ -25,7 +25,7 @@ namespace ToDoList.Console.Messages
                     System.Console.ForegroundColor = ConsoleColor.Green;
                     item.Value += " -- Completed";
                 }
-                Message.Write($"{item.Id}: {item.Value}");
+                System.Console.WriteLine($"{item.Id}: {item.Value}");
                 System.Console.ResetColor();
             }
 
