@@ -1,4 +1,5 @@
-﻿using ToDoList.Console.Arguments;
+﻿using System.Threading.Tasks;
+using ToDoList.Console.Arguments;
 using ToDoList.Console.Mappers.Interfaces;
 using ToDoList.Console.ResultHandlers.Interfaces;
 using ToDoList.Console.Runners.Interfaces;
@@ -20,9 +21,9 @@ namespace ToDoList.Console.Runners
             this.argumentMapper = argumentMapper;
             this.resultHandler = resultHandler;
         }
-        public void Run(AddCommandArguments arguments)
+        public async Task RunAsync(AddCommandArguments arguments)
         { 
-            var result = addCommand.Execute(argumentMapper.Map(arguments));
+            var result = await addCommand.ExecuteAsync(argumentMapper.Map(arguments));
 
             resultHandler.Handle(result);
         }

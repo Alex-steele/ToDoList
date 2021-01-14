@@ -23,6 +23,13 @@ namespace ToDoList.Integration.Tests
             context = serviceProvider.GetService<ToDoListContext>();
         }
 
+        // Temporary test
+        [Test]
+        public void Test()
+        {
+            runner.Run(new[] { "add", "-i", "Test" });
+        }
+
         [Test]
         public void AddValidItem_AddsItem()
         {
@@ -30,7 +37,7 @@ namespace ToDoList.Integration.Tests
             var listItems = context.ListItems.ToList();
 
             // Act
-            runner.Run(serviceProvider, new[] { "add", "-i", "Test" });
+            runner.Run(new[] { "add", "-i", "Test" });
 
             var updatedListItems = context.ListItems.ToList();
 
@@ -48,7 +55,7 @@ namespace ToDoList.Integration.Tests
             var resultHandler = A.Fake<IAddResultHandler>();
 
             // Act
-            runner.Run(serviceProvider, new[] { "add", "-i", "" });
+            runner.Run(new[] { "add", "-i", "" });
 
             var updatedListItems = context.ListItems.ToList();
 
@@ -63,11 +70,11 @@ namespace ToDoList.Integration.Tests
             var listItems = context.ListItems.ToList();
 
             // Act
-            runner.Run(serviceProvider, new[] { "add", "-i", "Test2" });
+            runner.Run(new[] { "add", "-i", "Test2" });
 
             var testItemId = context.ListItems.ToList().Last().Id;
 
-            runner.Run(serviceProvider, new[] { "complete", "-d", $"{testItemId}" });
+            runner.Run(new[] { "complete", "-d", $"{testItemId}" });
 
             var updatedListItems = context.ListItems.ToList();
 
@@ -83,7 +90,7 @@ namespace ToDoList.Integration.Tests
             var listItems = context.ListItems.ToList();
 
             // Act
-            runner.Run(serviceProvider, new[] { "complete", "-d", "9999999999" });
+            runner.Run(new[] { "complete", "-d", "9999999999" });
 
             var updatedListItems = context.ListItems.ToList();
 

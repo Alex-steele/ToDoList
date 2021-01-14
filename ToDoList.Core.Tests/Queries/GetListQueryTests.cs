@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using NUnit.Framework;
 using ToDoList.Core.Mappers.Interfaces;
@@ -8,6 +9,7 @@ using ToDoList.Core.Queries;
 using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.Data.Wrappers;
 
 namespace ToDoList.Core.Tests.Queries
 {
@@ -27,20 +29,20 @@ namespace ToDoList.Core.Tests.Queries
         }
 
         [Test]
-        public void Execute_GetAllReturnsNull_ReturnsError()
+        public async Task Execute_GetAllReturnsError_ReturnsError()
         {
             // Arrange
-            A.CallTo(() => repository.GetAll()).Returns(null);
+            A.CallTo(() => repository.GetAllAsync()).Returns(RepoResultWrapper<List<ListItem>>.Error());
 
             // Act
-            var result = sut.Execute();
+            var result = await sut.ExecuteAsync();
 
             // Assert
             Assert.That(result.Result, Is.EqualTo(QueryResult.Error));
         }
 
         [Test]
-        public void Execute_GetAllReturnsList_ReturnsSuccessAndPayload()
+        public async Task Execute_GetAllReturnsList_ReturnsSuccessAndPayload()
         {
             // Arrange
             var testList = new List<ListItem>
@@ -53,12 +55,12 @@ namespace ToDoList.Core.Tests.Queries
                 Value = "TestListItem"
             };
 
-            A.CallTo(() => repository.GetAll()).Returns(testList);
+            A.CallTo(() => repository.GetAllAsync()).Returns(RepoResultWrapper<List<ListItem>>.Success(testList));
 
             A.CallTo(() => mapper.Map(testList.Single())).Returns(mappedItem);
 
             // Act
-            var result = sut.Execute();
+            var result = await sut.ExecuteAsync();
 
             // Assert
             Assert.That(result.Result, Is.EqualTo(QueryResult.Success));

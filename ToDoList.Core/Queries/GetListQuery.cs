@@ -1,8 +1,10 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using ToDoList.Core.Mappers.Interfaces;
 using ToDoList.Core.Queries.Interfaces;
 using ToDoList.Core.Wrappers;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.Data.Wrappers.Enums;
 
 namespace ToDoList.Core.Queries
 {
@@ -17,16 +19,16 @@ namespace ToDoList.Core.Queries
             this.mapper = mapper;
         }
 
-        public QueryResultWrapper Execute()
+        public async Task<QueryResultWrapper> ExecuteAsync()
         {
-            var listItems = repository.GetAll();
+            var result = await repository.GetAllAsync();
 
-            if (listItems == null)
+            if (result.Result == RepoResult.Error)
             {
                 return QueryResultWrapper.Error;
             }
 
-            var listItemModels = listItems.Select(x => mapper.Map(x)).ToList();
+            var listItemModels = result.Payload.Select(x => mapper.Map(x)).ToList();
 
             return QueryResultWrapper.Success(listItemModels);
         }

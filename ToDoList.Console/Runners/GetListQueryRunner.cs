@@ -1,4 +1,5 @@
-﻿using ToDoList.Console.ResultHandlers.Interfaces;
+﻿using System.Threading.Tasks;
+using ToDoList.Console.ResultHandlers.Interfaces;
 using ToDoList.Console.Runners.Interfaces;
 using ToDoList.Core.Queries.Interfaces;
 
@@ -16,9 +17,9 @@ namespace ToDoList.Console.Runners
             this.resultHandler = resultHandler;
         }
         
-        public void Run()
+        public async Task RunAsync()
         {
-            var result = getListQuery.Execute();
+            var result = await getListQuery.ExecuteAsync();
 
             resultHandler.Handle(result);
         }

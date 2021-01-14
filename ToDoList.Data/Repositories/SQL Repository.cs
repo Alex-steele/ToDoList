@@ -1,8 +1,10 @@
 ﻿using System;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.Data.Wrappers;
 
 namespace ToDoList.Data.Repositories
 {
@@ -22,12 +24,12 @@ namespace ToDoList.Data.Repositories
             }
         }
 
-        public void Complete(ListItem item)
+        public void Update(ListItem item)
         {
             using (var connection =
                 new SqlConnection("Server=(localdb)\\MSSQLLocalDB;Database=ToDoListDB;Trusted_Connection=True;"))
             {
-                var sql = $"UPDATE ListItems SET Completed = 'true' WHERE Id = {item.Id}";
+                var sql = $"UPDATE ListItems SET Value = {item.Value}, Completed = '{item.Completed}' WHERE Id = {item.Id}";
 
                 var command = new SqlCommand(sql, connection);
 
@@ -36,14 +38,12 @@ namespace ToDoList.Data.Repositories
             }
         }
 
-        public ListItem GetById(int id)
+        public async Task<RepoResultWrapper<ListItem>> GetByIdAsync(int id)
         {
-            ListItem listItem;
-
-            using (var connection =
+            await using (var connection =
                 new SqlConnection("Server=(localdb)\\MSSQLLocalDB;Database=ToDoListDB;Trusted_Connection=True;"))
             {
-                var sql = $"SELECT * FROM ListItems WHERE Id = {id}";
+                var sql = $"SELECT Id, Value, Completed FROM ListItems WHERE Id = {id}";
 
                 var command = new SqlCommand(sql, connection);
 
@@ -51,30 +51,30 @@ namespace ToDoList.Data.Repositories
 
                 try
                 {
-                    var reader = command.ExecuteReader();
+                    var reader = await command.ExecuteReaderAsync();
                     reader.Read();
 
-                    listItem = new ListItem
+                    var listItem = new ListItem
                     {
-                        Id = (int) reader[0],
-                        Value = (string) reader[1],
-                        Completed = (bool) reader[2]
+                        Id = (int)reader[0],
+                        Value = (string)reader[1],
+                        Completed = (bool)reader[2]
                     };
 
-                    return listItem;
+                    return RepoResultWrapper<ListItem>.Success(listItem);
                 }
                 catch (InvalidOperationException)
                 {
-                    return null;
+                    return RepoResultWrapper<ListItem>.NotFound();
                 }
             }
         }
 
-        public List<ListItem> GetAll()
+        public async Task<RepoResultWrapper<List<ListItem>>> GetAllAsync()
         {
             var listItems = new List<ListItem>();
 
-            using (var connection =
+            await using (var connection =
                 new SqlConnection("Server=(localdb)\\MSSQLLocalDB;Database=ToDoListDB;Trusted_Connection=True;"))
             {
                 var sql = "SELECT * FROM ListItems";
@@ -83,7 +83,7 @@ namespace ToDoList.Data.Repositories
 
                 connection.Open();
 
-                using (var reader = command.ExecuteReader())
+                await using (var reader = await command.ExecuteReaderAsync())
                 {
                     while (reader.Read())
                     {
@@ -96,10 +96,10 @@ namespace ToDoList.Data.Repositories
                     }
                 }
             }
-            return listItems;
+            return RepoResultWrapper<List<ListItem>>.Success(listItems);
         }
 
-        public void SaveChanges()
+        public async Task SaveChangesAsync()
         {
         }
     }

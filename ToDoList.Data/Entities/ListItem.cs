@@ -4,7 +4,8 @@ namespace ToDoList.Data.Entities
 {
     public class ListItem
     {
-        protected ListItem()
+        // Can be protected if using EF
+        public ListItem()
         {
         }
 
@@ -19,11 +20,12 @@ namespace ToDoList.Data.Entities
             Completed = false;
         }
 
-        public int Id { get; protected set; }
+        // Setters can be protected if using EF
+        public int Id { get; set; }
 
-        public string Value { get; protected set; }
+        public string Value { get; set; }
 
-        public bool Completed { get; protected set; }
+        public bool Completed { get; set; }
 
         public void Complete()
         {

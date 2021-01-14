@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using NUnit.Framework;
 using ToDoList.Core.Commands;
@@ -31,11 +32,11 @@ namespace ToDoList.Core.Tests.Commands
         [Test]
         public void Execute_ModelIsNull_ThrowsException()
         {
-            Assert.That(() => sut.Execute(null), Throws.ArgumentNullException);
+            Assert.That(() => sut.ExecuteAsync(null), Throws.ArgumentNullException);
         }
 
         [Test]
-        public void Execute_ModelIsInvalid_ReturnsCorrectValidationError()
+        public async Task Execute_ModelIsInvalid_ReturnsCorrectValidationError()
         {
             // Arrange
             var testModel = new AddCommandModel
@@ -50,11 +51,13 @@ namespace ToDoList.Core.Tests.Commands
                 }));
 
             // Act
-            var result = sut.Execute(testModel);
+            var result = await sut.ExecuteAsync(testModel);
 
             // Assert
             A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Value == testModel.ItemValue)))
                 .MustNotHaveHappened();
+
+            A.CallTo(() => repository.SaveChangesAsync()).MustNotHaveHappened();
 
             Assert.That(result.Result, Is.EqualTo(CommandResult.ValidationError));
 
@@ -64,7 +67,7 @@ namespace ToDoList.Core.Tests.Commands
         }
 
         [Test]
-        public void Execute_ModelIsValid_CorrectItemIsAddedAndReturnsSuccess()
+        public async Task Execute_ModelIsValid_CorrectItemIsAddedAndReturnsSuccess()
         {
             // Arrange
             var testModel = new AddCommandModel
@@ -76,11 +79,13 @@ namespace ToDoList.Core.Tests.Commands
                 .Returns(ValidationResult.Success);
 
             // Act
-            var result = sut.Execute(testModel);
+            var result = await sut.ExecuteAsync(testModel);
 
             // Assert
             A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Value == testModel.ItemValue)))
                 .MustHaveHappenedOnceExactly();
+
+            A.CallTo(() => repository.SaveChangesAsync()).MustHaveHappenedOnceExactly();
 
             Assert.That(result.Result, Is.EqualTo(CommandResult.Success));
         }

@@ -7,12 +7,12 @@ namespace ToDoList.Console.Runners
 {
     public class ToDoListRunner : IToDoListRunner
     {
-        private readonly ILogger logger;
+        private readonly ILogger<ToDoListRunner> logger;
         private readonly IAddCommandRunner addCommandRunner;
         private readonly ICompleteCommandRunner completeCommandRunner;
         private readonly IGetListQueryRunner getListQueryRunner;
 
-        public ToDoListRunner(ILogger logger,
+        public ToDoListRunner(ILogger<ToDoListRunner> logger,
             IAddCommandRunner addCommandRunner,
             ICompleteCommandRunner completeCommandRunner,
             IGetListQueryRunner getListQueryRunner)
@@ -26,25 +26,25 @@ namespace ToDoList.Console.Runners
         public void Run(string[] args)
         {
             Parser.Default.ParseArguments<AddCommandArguments, CompleteCommandArguments, GetListQueryArguments>(args)
-                .WithParsed<AddCommandArguments>(arguments =>
+                .WithParsed<AddCommandArguments>(async arguments =>
                 {
                     logger.LogInformation(
                         $"Running add command with arguments: {nameof(arguments.ItemValue)} = {arguments.ItemValue}");
 
-                    addCommandRunner.Run(arguments);
+                    await addCommandRunner.RunAsync(arguments);
                 })
-                .WithParsed<CompleteCommandArguments>(arguments =>
+                .WithParsed<CompleteCommandArguments>(async arguments =>
                 {
                     logger.LogInformation(
                         $"Running complete command with arguments: {nameof(arguments.ItemId)} = {arguments.ItemId}");
 
-                    completeCommandRunner.Run(arguments);
+                    await completeCommandRunner.RunAsync(arguments);
                 })
-                .WithParsed<GetListQueryArguments>(arguments =>
+                .WithParsed<GetListQueryArguments>(async arguments =>
                 {
                     logger.LogInformation("Running display list query");
 
-                    getListQueryRunner.Run();
+                    await getListQueryRunner.RunAsync();
                 })
                 .WithNotParsed(error => logger.LogError("An error occurred while mapping to a command", error));
         }

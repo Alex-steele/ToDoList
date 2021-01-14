@@ -1,7 +1,9 @@
-﻿namespace ToDoList.Console.Runners.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace ToDoList.Console.Runners.Interfaces
 {
     public interface IGetListQueryRunner
     {
-        public void Run();
+        Task RunAsync();
     }
 }

@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Reactive;
+using System.Threading.Tasks;
 using ToDoList.Data.Entities;
+using ToDoList.Data.Wrappers;
 
 namespace ToDoList.Data.Repositories.Interfaces
 {
@@ -7,12 +10,12 @@ namespace ToDoList.Data.Repositories.Interfaces
     {
         void Add(ListItem item);
 
-        void Complete(ListItem item);
+        void Update(ListItem item);
 
-        ListItem GetById(int id);
+        Task<RepoResultWrapper<ListItem>> GetByIdAsync(int id);
 
-        List<ListItem> GetAll();
+        Task<RepoResultWrapper<List<ListItem>>> GetAllAsync();
 
-        void SaveChanges();
+        Task SaveChangesAsync();
     }
 }

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.Data.Wrappers;
 
 namespace ToDoList.Data.Repositories
 {
@@ -19,24 +21,32 @@ namespace ToDoList.Data.Repositories
             context.ListItems.Add(item);
         }
 
-        public void Complete(ListItem item)
+        public void Update(ListItem item)
         {
-            item.CompleteItem();
+            context.ListItems.Update(item);
         }
 
-        public ListItem GetById(int id)
+        public async Task<RepoResultWrapper<ListItem>> GetByIdAsync(int id)
         {
-            return context.ListItems.SingleOrDefault(x => x.Id == id);
+            var result = await context.ListItems.SingleOrDefaultAsync(x => x.Id == id);
+
+            return result == null
+                ? RepoResultWrapper<ListItem>.NotFound()
+                : RepoResultWrapper<ListItem>.Success(result);
         }
 
-        public List<ListItem> GetAll()
+        public async Task<RepoResultWrapper<List<ListItem>>> GetAllAsync()
         {
-            return context.ListItems.ToList();
+            var result = await context.ListItems.ToListAsync();
+
+            return result == null
+                ? RepoResultWrapper<List<ListItem>>.Error()
+                : RepoResultWrapper<List<ListItem>>.Success(result);
         }
 
-        public void SaveChanges()
+        public async Task SaveChangesAsync()
         {
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

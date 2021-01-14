@@ -1,7 +1,9 @@
-﻿using ToDoList.Core.Commands.Interfaces;
+﻿using System.Threading.Tasks;
+using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Wrappers;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.Data.Wrappers.Enums;
 
 namespace ToDoList.Core.Commands
 {
@@ -14,19 +16,21 @@ namespace ToDoList.Core.Commands
             this.repository = repository;
         }
 
-        public CommandResultWrapper Execute(CompleteCommandModel model)
+        public async Task<CommandResultWrapper> ExecuteAsync(CompleteCommandModel model)
         {
             Check.NotNull(model, nameof(model));
 
-            var item = repository.GetById(model.ItemId);
+            var result = await repository.GetByIdAsync(model.ItemId);
 
-            if (item == null)
+            if (result.Result == RepoResult.NotFound)
             {
                 return CommandResultWrapper.NotFound;
             }
 
-            repository.Complete(item);
-            repository.SaveChanges();
+            result.Payload.Complete();
+
+            repository.Update(result.Payload);
+            await repository.SaveChangesAsync();
 
             return CommandResultWrapper.Success;
         }

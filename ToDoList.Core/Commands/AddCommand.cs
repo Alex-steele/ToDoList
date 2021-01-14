@@ -1,4 +1,5 @@
-﻿using ToDoList.Core.Commands.Interfaces;
+﻿using System.Threading.Tasks;
+using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Core.Wrappers;
@@ -18,7 +19,7 @@ namespace ToDoList.Core.Commands
             this.validator = validator;
         }
 
-        public CommandResultWrapper Execute(AddCommandModel model)
+        public async Task<CommandResultWrapper> ExecuteAsync(AddCommandModel model)
         {
             Check.NotNull(model, nameof(model));
 
@@ -30,7 +31,7 @@ namespace ToDoList.Core.Commands
             }
 
             repository.Add(new ListItem(model.ItemValue));
-            repository.SaveChanges();
+            await repository.SaveChangesAsync();
 
             return CommandResultWrapper.Success;
         }

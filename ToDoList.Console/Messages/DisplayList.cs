@@ -5,7 +5,7 @@ using ToDoList.Core.Models;
 
 namespace ToDoList.Console.Messages
 {
-    public class DisplayList
+    public static class DisplayList
     {
         public static void Display(IEnumerable<ListItemModel> listItems)
         {

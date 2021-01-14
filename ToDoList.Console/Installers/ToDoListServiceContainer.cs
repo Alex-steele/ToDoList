@@ -36,7 +36,7 @@ namespace ToDoList.Console.Installers
 
             var services = new ServiceCollection();
 
-            services.AddLogging(config => config.AddConsole()).AddTransient<ToDoListRunner>();
+            services.AddLogging(configuration => configuration.AddConsole()).AddTransient<ToDoListRunner>();
             services.AddTransient<IToDoListRunner, ToDoListRunner>();
             services.AddTransient<IAddCommandRunner, AddCommandRunner>();
             services.AddTransient<ICompleteCommandRunner, CompleteCommandRunner>();
