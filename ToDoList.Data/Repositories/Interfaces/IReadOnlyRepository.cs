@@ -9,6 +9,8 @@ namespace ToDoList.Data.Repositories.Interfaces
     {
         Task<RepoResultWrapper<ListItem>> GetByIdAsync(int id);
 
+        Task<RepoResultWrapper<ListItem>> GetByIdForEditAsync(int id);
+
         Task<RepoResultWrapper<List<ListItem>>> GetAllAsync();
     }
 }

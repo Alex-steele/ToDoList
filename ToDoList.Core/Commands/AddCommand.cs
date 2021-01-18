@@ -11,12 +11,12 @@ namespace ToDoList.Core.Commands
 {
     public class AddCommand : IAddCommand
     {
-        private readonly IWriteRepository repository;
+        private readonly IWriteRepository writeRepository;
         private readonly IAddCommandValidator validator;
 
-        public AddCommand(IWriteRepository repository, IAddCommandValidator validator)
+        public AddCommand(IWriteRepository writeRepository, IAddCommandValidator validator)
         {
-            this.repository = repository;
+            this.writeRepository = writeRepository;
             this.validator = validator;
         }
 
@@ -31,8 +31,8 @@ namespace ToDoList.Core.Commands
                 return CommandResultWrapper.ValidationError(validationResult);
             }
 
-            repository.Add(new ListItem(model.ItemValue));
-            await repository.SaveChangesAsync();
+            writeRepository.Add(new ListItem(model.ItemValue));
+            await writeRepository.SaveChangesAsync();
 
             return CommandResultWrapper.Success;
         }

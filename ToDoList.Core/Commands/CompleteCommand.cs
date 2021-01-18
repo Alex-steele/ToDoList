@@ -10,18 +10,20 @@ namespace ToDoList.Core.Commands
 {
     public class CompleteCommand : ICompleteCommand
     {
-        private readonly IWriteRepository repository;
+        private readonly IWriteRepository writeRepository;
+        private readonly IReadOnlyRepository readRepository;
 
-        public CompleteCommand(IWriteRepository repository)
+        public CompleteCommand(IWriteRepository writeRepository, IReadOnlyRepository readRepository)
         {
-            this.repository = repository;
+            this.writeRepository = writeRepository;
+            this.readRepository = readRepository;
         }
 
         public async Task<CommandResultWrapper> ExecuteAsync(CompleteCommandModel model)
         {
             Check.NotNull(model, nameof(model));
 
-            var result = await repository.GetByIdForEditAsync(model.ItemId);
+            var result = await readRepository.GetByIdForEditAsync(model.ItemId);
 
             if (result.Result == RepoResult.NotFound)
             {
@@ -30,8 +32,8 @@ namespace ToDoList.Core.Commands
 
             result.Payload.Complete();
 
-            repository.Update(result.Payload);
-            await repository.SaveChangesAsync();
+            writeRepository.Update(result.Payload);
+            await writeRepository.SaveChangesAsync();
 
             return CommandResultWrapper.Success;
         }

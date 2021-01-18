@@ -83,17 +83,16 @@ namespace ToDoList.Console.Integration.Tests
         {
             // Arrange
             var listItems = await context.ListItems.ToListAsync();
+            var completedItems = listItems.Where(x => x.Completed);
 
             // Act
             runner.Run(new[] { "complete", "-d", "9999999999" });
 
             var updatedListItems = await context.ListItems.ToListAsync();
+            var updatedCompletedItems = updatedListItems.Where(x => x.Completed);
 
             // Assert
-            for (var i = 0; i < listItems.Count; i++)
-            {
-                Assert.That(updatedListItems[i].Completed, Is.EqualTo(listItems[i].Completed));
-            }
+            Assert.That(completedItems.Count(), Is.EqualTo(updatedCompletedItems.Count()));
         }
     }
 }

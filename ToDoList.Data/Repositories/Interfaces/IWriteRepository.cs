@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using ToDoList.Data.Entities;
-using ToDoList.Data.Wrappers;
 
 namespace ToDoList.Data.Repositories.Interfaces
 {
@@ -9,8 +8,6 @@ namespace ToDoList.Data.Repositories.Interfaces
         void Add(ListItem item);
 
         void Update(ListItem item);
-
-        Task<RepoResultWrapper<ListItem>> GetByIdForEditAsync(int id);
 
         Task SaveChangesAsync();
     }

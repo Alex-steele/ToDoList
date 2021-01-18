@@ -16,17 +16,17 @@ namespace ToDoList.Core.Tests.Commands
     [TestFixture]
     public class AddCommandTests
     {
-        private IWriteRepository repository;
+        private IWriteRepository writeRepository;
         private IAddCommandValidator validator;
         private AddCommand sut;
 
         [SetUp]
         public void SetUp()
         {
-            repository = A.Fake<IWriteRepository>();
+            writeRepository = A.Fake<IWriteRepository>();
             validator = A.Fake<IAddCommandValidator>();
 
-            sut = new AddCommand(repository, validator);
+            sut = new AddCommand(writeRepository, validator);
         }
 
         [Test]
@@ -54,10 +54,10 @@ namespace ToDoList.Core.Tests.Commands
             var result = await sut.ExecuteAsync(testModel);
 
             // Assert
-            A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Value == testModel.ItemValue)))
+            A.CallTo(() => writeRepository.Add(A<ListItem>.That.Matches(x => x.Value == testModel.ItemValue)))
                 .MustNotHaveHappened();
 
-            A.CallTo(() => repository.SaveChangesAsync()).MustNotHaveHappened();
+            A.CallTo(() => writeRepository.SaveChangesAsync()).MustNotHaveHappened();
 
             Assert.That(result.Result, Is.EqualTo(CommandResult.ValidationError));
 
@@ -82,10 +82,10 @@ namespace ToDoList.Core.Tests.Commands
             var result = await sut.ExecuteAsync(testModel);
 
             // Assert
-            A.CallTo(() => repository.Add(A<ListItem>.That.Matches(x => x.Value == testModel.ItemValue)))
+            A.CallTo(() => writeRepository.Add(A<ListItem>.That.Matches(x => x.Value == testModel.ItemValue)))
                 .MustHaveHappenedOnceExactly();
 
-            A.CallTo(() => repository.SaveChangesAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => writeRepository.SaveChangesAsync()).MustHaveHappenedOnceExactly();
 
             Assert.That(result.Result, Is.EqualTo(CommandResult.Success));
         }

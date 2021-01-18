@@ -13,14 +13,16 @@ namespace ToDoList.Core.Tests.Commands
     [TestFixture]
     public class CompleteCommandTests
     {
-        private IWriteRepository repository;
+        private IWriteRepository writeRepository;
+        private IReadOnlyRepository readRepository;
         private CompleteCommand sut;
 
         [SetUp]
         public void SetUp()
         {
-            repository = A.Fake<IWriteRepository>();
-            sut = new CompleteCommand(repository);
+            writeRepository = A.Fake<IWriteRepository>();
+            readRepository = A.Fake<IReadOnlyRepository>();
+            sut = new CompleteCommand(writeRepository, readRepository);
         }
 
         [Test]
@@ -38,16 +40,17 @@ namespace ToDoList.Core.Tests.Commands
                 ItemId = 1
             };
 
-            A.CallTo(() => repository.GetByIdForEditAsync(testModel.ItemId)).Returns(RepoResultWrapper<ListItem>.NotFound());
+            A.CallTo(() => readRepository.GetByIdForEditAsync(testModel.ItemId))
+                .Returns(RepoResultWrapper<ListItem>.NotFound());
 
             // Act
             var result = await sut.ExecuteAsync(testModel);
 
             // Assert
-            A.CallTo(() => repository.Update(A<ListItem>.That.Matches(x => x.Id == 1)))
+            A.CallTo(() => writeRepository.Update(A<ListItem>.That.Matches(x => x.Id == 1)))
                 .MustNotHaveHappened();
 
-            A.CallTo(() => repository.SaveChangesAsync()).MustNotHaveHappened();
+            A.CallTo(() => writeRepository.SaveChangesAsync()).MustNotHaveHappened();
 
             Assert.That(result.Result, Is.EqualTo(CommandResult.NotFound));
         }
@@ -63,17 +66,17 @@ namespace ToDoList.Core.Tests.Commands
 
             var testListItem = new ListItem("Test");
 
-            A.CallTo(() => repository.GetByIdForEditAsync(testModel.ItemId))
+            A.CallTo(() => readRepository.GetByIdForEditAsync(testModel.ItemId))
                 .Returns(RepoResultWrapper<ListItem>.Success(testListItem));
 
             // Act
             var result = await sut.ExecuteAsync(testModel);
 
             // Assert
-            A.CallTo(() => repository.Update(A<ListItem>.That.Matches(x => x.Value == "Test" && x.Completed)))
+            A.CallTo(() => writeRepository.Update(A<ListItem>.That.Matches(x => x.Value == "Test" && x.Completed)))
                 .MustHaveHappenedOnceExactly();
 
-            A.CallTo(() => repository.SaveChangesAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => writeRepository.SaveChangesAsync()).MustHaveHappenedOnceExactly();
 
             Assert.That(result.Result, Is.EqualTo(CommandResult.Success));
         }
