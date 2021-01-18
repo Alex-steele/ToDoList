@@ -7,28 +7,18 @@ using ToDoList.Data.Wrappers;
 
 namespace ToDoList.Data.Repositories
 {
-    public class ToDoListRepository : IToDoListRepository
+    public class EFReadOnlyRepository : IReadOnlyRepository
     {
         private readonly ToDoListContext context;
 
-        public ToDoListRepository(ToDoListContext context)
+        public EFReadOnlyRepository(ToDoListContext context)
         {
             this.context = context;
         }
 
-        public void Add(ListItem item)
-        {
-            context.ListItems.Add(item);
-        }
-
-        public void Update(ListItem item)
-        {
-            context.ListItems.Update(item);
-        }
-
         public async Task<RepoResultWrapper<ListItem>> GetByIdAsync(int id)
         {
-            var result = await context.ListItems.SingleOrDefaultAsync(x => x.Id == id);
+            var result = await context.ListItems.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
 
             return result == null
                 ? RepoResultWrapper<ListItem>.NotFound()
@@ -37,16 +27,11 @@ namespace ToDoList.Data.Repositories
 
         public async Task<RepoResultWrapper<List<ListItem>>> GetAllAsync()
         {
-            var result = await context.ListItems.ToListAsync();
+            var result = await context.ListItems.AsNoTracking().ToListAsync();
 
             return result == null
                 ? RepoResultWrapper<List<ListItem>>.Error()
                 : RepoResultWrapper<List<ListItem>>.Success(result);
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await context.SaveChangesAsync();
         }
     }
 }

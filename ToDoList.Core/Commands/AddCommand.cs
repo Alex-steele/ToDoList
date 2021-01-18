@@ -5,15 +5,16 @@ using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Core.Wrappers;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.Utilities;
 
 namespace ToDoList.Core.Commands
 {
     public class AddCommand : IAddCommand
     {
-        private readonly IToDoListRepository repository;
+        private readonly IWriteRepository repository;
         private readonly IAddCommandValidator validator;
 
-        public AddCommand(IToDoListRepository repository, IAddCommandValidator validator)
+        public AddCommand(IWriteRepository repository, IAddCommandValidator validator)
         {
             this.repository = repository;
             this.validator = validator;

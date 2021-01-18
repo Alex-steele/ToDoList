@@ -16,14 +16,14 @@ namespace ToDoList.Core.Tests.Commands
     [TestFixture]
     public class AddCommandTests
     {
-        private IToDoListRepository repository;
+        private IWriteRepository repository;
         private IAddCommandValidator validator;
         private AddCommand sut;
 
         [SetUp]
         public void SetUp()
         {
-            repository = A.Fake<IToDoListRepository>();
+            repository = A.Fake<IWriteRepository>();
             validator = A.Fake<IAddCommandValidator>();
 
             sut = new AddCommand(repository, validator);

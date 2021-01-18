@@ -1,4 +1,6 @@
-﻿namespace ToDoList.Console.Runners.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace ToDoList.Console.Runners.Interfaces
 {
     public interface IToDoListRunner
     {

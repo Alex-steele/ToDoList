@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace ToDoList.Core.Tests
+namespace ToDoList.Utilities.Tests
 {
     public class CheckTests
     {

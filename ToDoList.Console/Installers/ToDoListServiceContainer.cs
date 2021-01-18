@@ -52,7 +52,8 @@ namespace ToDoList.Console.Installers
             services.AddTransient<ICompleteCommandArgumentMapper, CompleteCommandArgumentMapper>();
             services.AddTransient<IGetListQuery, GetListQuery>();
             services.AddTransient<IListItemMapper, ListItemMapper>();
-            services.AddTransient<IToDoListRepository, ToDoListRepository>();
+            services.AddTransient<IReadOnlyRepository, EFReadOnlyRepository>();
+            services.AddTransient<IWriteRepository, EFWriteRepository>();
             services.ConfigureDataServices(config.GetConnectionString("ToDoListDB"));
 
             serviceProvider = services.BuildServiceProvider();

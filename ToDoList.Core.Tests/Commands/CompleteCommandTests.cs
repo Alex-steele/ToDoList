@@ -13,13 +13,13 @@ namespace ToDoList.Core.Tests.Commands
     [TestFixture]
     public class CompleteCommandTests
     {
-        private IToDoListRepository repository;
+        private IWriteRepository repository;
         private CompleteCommand sut;
 
         [SetUp]
         public void SetUp()
         {
-            repository = A.Fake<IToDoListRepository>();
+            repository = A.Fake<IWriteRepository>();
             sut = new CompleteCommand(repository);
         }
 
@@ -38,7 +38,7 @@ namespace ToDoList.Core.Tests.Commands
                 ItemId = 1
             };
 
-            A.CallTo(() => repository.GetByIdAsync(testModel.ItemId)).Returns(RepoResultWrapper<ListItem>.NotFound());
+            A.CallTo(() => repository.GetByIdForEditAsync(testModel.ItemId)).Returns(RepoResultWrapper<ListItem>.NotFound());
 
             // Act
             var result = await sut.ExecuteAsync(testModel);
@@ -63,7 +63,7 @@ namespace ToDoList.Core.Tests.Commands
 
             var testListItem = new ListItem("Test");
 
-            A.CallTo(() => repository.GetByIdAsync(testModel.ItemId))
+            A.CallTo(() => repository.GetByIdForEditAsync(testModel.ItemId))
                 .Returns(RepoResultWrapper<ListItem>.Success(testListItem));
 
             // Act

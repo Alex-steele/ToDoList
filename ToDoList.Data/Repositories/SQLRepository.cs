@@ -1,14 +1,13 @@
-﻿using System;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ToDoList.Data.Entities;
-using ToDoList.Data.Repositories.Interfaces;
 using ToDoList.Data.Wrappers;
 
 namespace ToDoList.Data.Repositories
 {
-    public class SqlRepository : IToDoListRepository
+    public class SqlRepository
     {
         public void Add(ListItem item)
         {
@@ -47,12 +46,12 @@ namespace ToDoList.Data.Repositories
 
                 var command = new SqlCommand(sql, connection);
 
-                connection.Open();
+                await connection.OpenAsync();
 
                 try
                 {
                     var reader = await command.ExecuteReaderAsync();
-                    reader.Read();
+                    await reader.ReadAsync();
 
                     var listItem = new ListItem
                     {
@@ -81,11 +80,11 @@ namespace ToDoList.Data.Repositories
 
                 var command = new SqlCommand(sql, connection);
 
-                connection.Open();
+                await connection.OpenAsync();
 
                 await using (var reader = await command.ExecuteReaderAsync())
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         listItems.Add(new ListItem
                         {

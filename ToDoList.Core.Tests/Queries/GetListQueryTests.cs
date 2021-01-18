@@ -15,14 +15,14 @@ namespace ToDoList.Core.Tests.Queries
 {
     public class GetListQueryTests
     {
-        private IToDoListRepository repository;
+        private IReadOnlyRepository repository;
         private IListItemMapper mapper;
         private GetListQuery sut;
 
         [SetUp]
         public void SetUp()
         {
-            repository = A.Fake<IToDoListRepository>();
+            repository = A.Fake<IReadOnlyRepository>();
             mapper = A.Fake<IListItemMapper>();
 
             sut = new GetListQuery(repository, mapper);

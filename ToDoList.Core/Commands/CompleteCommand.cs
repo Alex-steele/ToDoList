@@ -4,14 +4,15 @@ using ToDoList.Core.Models;
 using ToDoList.Core.Wrappers;
 using ToDoList.Data.Repositories.Interfaces;
 using ToDoList.Data.Wrappers.Enums;
+using ToDoList.Utilities;
 
 namespace ToDoList.Core.Commands
 {
     public class CompleteCommand : ICompleteCommand
     {
-        private readonly IToDoListRepository repository;
+        private readonly IWriteRepository repository;
 
-        public CompleteCommand(IToDoListRepository repository)
+        public CompleteCommand(IWriteRepository repository)
         {
             this.repository = repository;
         }
@@ -20,7 +21,7 @@ namespace ToDoList.Core.Commands
         {
             Check.NotNull(model, nameof(model));
 
-            var result = await repository.GetByIdAsync(model.ItemId);
+            var result = await repository.GetByIdForEditAsync(model.ItemId);
 
             if (result.Result == RepoResult.NotFound)
             {

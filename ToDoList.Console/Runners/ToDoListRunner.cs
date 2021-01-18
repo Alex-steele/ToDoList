@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.Threading.Tasks;
+using CommandLine;
 using Microsoft.Extensions.Logging;
 using ToDoList.Console.Arguments;
 using ToDoList.Console.Runners.Interfaces;
@@ -26,25 +27,40 @@ namespace ToDoList.Console.Runners
         public void Run(string[] args)
         {
             Parser.Default.ParseArguments<AddCommandArguments, CompleteCommandArguments, GetListQueryArguments>(args)
-                .WithParsed<AddCommandArguments>(async arguments =>
+                .WithParsed<AddCommandArguments>(arguments =>
                 {
                     logger.LogInformation(
                         $"Running add command with arguments: {nameof(arguments.ItemValue)} = {arguments.ItemValue}");
 
-                    await addCommandRunner.RunAsync(arguments);
+                    var task = Task.Run(async () =>
+                    {
+                        await addCommandRunner.RunAsync(arguments);
+                    });
+
+                    task.Wait();
                 })
-                .WithParsed<CompleteCommandArguments>(async arguments =>
+                .WithParsed<CompleteCommandArguments>(arguments =>
                 {
                     logger.LogInformation(
                         $"Running complete command with arguments: {nameof(arguments.ItemId)} = {arguments.ItemId}");
 
-                    await completeCommandRunner.RunAsync(arguments);
+                    var task = Task.Run(async () =>
+                    {
+                        await completeCommandRunner.RunAsync(arguments);
+                    });
+
+                    task.Wait();
                 })
-                .WithParsed<GetListQueryArguments>(async arguments =>
+                .WithParsed<GetListQueryArguments>(arguments =>
                 {
                     logger.LogInformation("Running display list query");
 
-                    await getListQueryRunner.RunAsync();
+                    var task = Task.Run(async () =>
+                    {
+                        await getListQueryRunner.RunAsync();
+                    });
+
+                    task.Wait();
                 })
                 .WithNotParsed(error => logger.LogError("An error occurred while mapping to a command", error));
         }

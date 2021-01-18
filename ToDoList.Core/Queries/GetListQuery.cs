@@ -10,10 +10,10 @@ namespace ToDoList.Core.Queries
 {
     public class GetListQuery : IGetListQuery
     {
-        private readonly IToDoListRepository repository;
+        private readonly IReadOnlyRepository repository;
         private readonly IListItemMapper mapper;
 
-        public GetListQuery(IToDoListRepository repository, IListItemMapper mapper)
+        public GetListQuery(IReadOnlyRepository repository, IListItemMapper mapper)
         {
             this.repository = repository;
             this.mapper = mapper;

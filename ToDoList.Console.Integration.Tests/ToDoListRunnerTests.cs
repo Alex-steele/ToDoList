@@ -1,13 +1,15 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using FakeItEasy;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using System.Linq;
 using ToDoList.Console.Installers;
 using ToDoList.Console.Installers.Interfaces;
 using ToDoList.Console.ResultHandlers.Interfaces;
 using ToDoList.Console.Runners.Interfaces;
 using ToDoList.Data;
 
-namespace ToDoList.Integration.Tests
+namespace ToDoList.Console.Integration.Tests
 {
     public class ToDoListRunnerTests
     {
@@ -23,23 +25,16 @@ namespace ToDoList.Integration.Tests
             context = serviceProvider.GetService<ToDoListContext>();
         }
 
-        // Temporary test
         [Test]
-        public void Test()
-        {
-            runner.Run(new[] { "add", "-i", "Test" });
-        }
-
-        [Test]
-        public void AddValidItem_AddsItem()
+        public async Task AddValidItem_AddsItem()
         {
             // Arrange
-            var listItems = context.ListItems.ToList();
+            var listItems = await context.ListItems.ToListAsync();
 
             // Act
             runner.Run(new[] { "add", "-i", "Test" });
 
-            var updatedListItems = context.ListItems.ToList();
+            var updatedListItems = await context.ListItems.ToListAsync();
 
             // Assert
             Assert.That(updatedListItems.Count, Is.EqualTo(listItems.Count + 1));
@@ -48,26 +43,26 @@ namespace ToDoList.Integration.Tests
         }
 
         [Test]
-        public void AddInvalidItem_DoesNotAddItem()
+        public async Task AddInvalidItem_DoesNotAddItem()
         {
             // Arrange
-            var listItems = context.ListItems.ToList();
+            var listItems = await context.ListItems.ToListAsync();
             var resultHandler = A.Fake<IAddResultHandler>();
 
             // Act
             runner.Run(new[] { "add", "-i", "" });
 
-            var updatedListItems = context.ListItems.ToList();
+            var updatedListItems = await context.ListItems.ToListAsync();
 
             // Assert
             Assert.That(updatedListItems.Count, Is.EqualTo(listItems.Count));
         }
 
         [Test]
-        public void CompleteItemValidId_CompletesCorrectItem()
+        public async Task CompleteItemValidId_CompletesCorrectItem()
         {
             // Arrange
-            var listItems = context.ListItems.ToList();
+            var listItems = await context.ListItems.ToListAsync();
 
             // Act
             runner.Run(new[] { "add", "-i", "Test2" });
@@ -76,7 +71,7 @@ namespace ToDoList.Integration.Tests
 
             runner.Run(new[] { "complete", "-d", $"{testItemId}" });
 
-            var updatedListItems = context.ListItems.ToList();
+            var updatedListItems = await context.ListItems.ToListAsync();
 
             // Assert
             Assert.That(updatedListItems.Last().Value, Is.EqualTo("Test2"));
@@ -84,15 +79,15 @@ namespace ToDoList.Integration.Tests
         }
 
         [Test]
-        public void CompleteItemInvalidId_DoesNotCompleteAnyItem()
+        public async Task CompleteItemInvalidId_DoesNotCompleteAnyItem()
         {
             // Arrange
-            var listItems = context.ListItems.ToList();
+            var listItems = await context.ListItems.ToListAsync();
 
             // Act
             runner.Run(new[] { "complete", "-d", "9999999999" });
 
-            var updatedListItems = context.ListItems.ToList();
+            var updatedListItems = await context.ListItems.ToListAsync();
 
             // Assert
             for (var i = 0; i < listItems.Count; i++)
