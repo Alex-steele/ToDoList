@@ -19,6 +19,7 @@ using ToDoList.Core.Queries.Interfaces;
 using ToDoList.Core.Validators;
 using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Data;
+using ToDoList.Data.Configuration;
 using ToDoList.Data.Repositories;
 using ToDoList.Data.Repositories.Interfaces;
 
@@ -52,7 +53,7 @@ namespace ToDoList.Console.Installers
             services.AddTransient<IGetListQuery, GetListQuery>();
             services.AddTransient<IListItemMapper, ListItemMapper>();
             services.AddTransient<IToDoListRepository, ToDoListRepository>();
-            services.AddDbContextPool<ToDoListContext>(options => options.UseSqlServer(config.GetConnectionString("ToDoListDB")));
+            services.ConfigureDataServices(config.GetConnectionString("ToDoListDB"));
 
             serviceProvider = services.BuildServiceProvider();
         }
