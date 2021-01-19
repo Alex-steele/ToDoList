@@ -1,33 +1,43 @@
-﻿using ToDoList.Core.Commands.Interfaces;
+﻿using System.Threading.Tasks;
+using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Wrappers;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.Data.Wrappers.Enums;
+using ToDoList.Utilities;
 
 namespace ToDoList.Core.Commands
 {
     public class CompleteCommand : ICompleteCommand
     {
-        private readonly IToDoListRepository repository;
+        private readonly IWriteRepository writeRepository;
+        private readonly IReadOnlyRepository readRepository;
 
-        public CompleteCommand(IToDoListRepository repository)
+        public CompleteCommand(IWriteRepository writeRepository, IReadOnlyRepository readRepository)
         {
-            this.repository = repository;
+            this.writeRepository = writeRepository;
+            this.readRepository = readRepository;
         }
 
-        public CommandResultWrapper Execute(CompleteCommandModel model)
+        public async Task<CommandResultWrapper> ExecuteAsync(CompleteCommandModel model)
         {
             Check.NotNull(model, nameof(model));
 
-            var item = repository.GetById(model.ItemId);
+            var result = await readRepository.GetByIdForEditAsync(model.ItemId);
 
-            if (item == null)
+            if (result.Result == RepoResult.NotFound)
             {
                 return CommandResultWrapper.NotFound;
             }
 
-            repository.Complete(item);
+            result.Payload.Complete();
 
-            return CommandResultWrapper.Success;
+            writeRepository.Update(result.Payload);
+            var saveResult = await writeRepository.SaveChangesAsync();
+
+            return saveResult.Result == RepoResult.Error
+                ? CommandResultWrapper.Error
+                : CommandResultWrapper.Success;
         }
     }
 }

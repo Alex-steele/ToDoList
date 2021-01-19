@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ToDoList.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "add -i \"Test5\" "
+    }
+  }
+}

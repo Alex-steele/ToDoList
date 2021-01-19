@@ -1,4 +1,6 @@
-﻿namespace ToDoList.Core.Validators
+﻿using ToDoList.Utilities;
+
+namespace ToDoList.Core.Validators
 {
     public class ValidationError
     {
