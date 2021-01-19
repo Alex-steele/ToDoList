@@ -20,7 +20,11 @@ namespace ToDoList.Console.ResultHandlers
                 case CommandResult.NotFound:
                     ErrorMessage.Write($"Could not find item with specified Id: {arguments.ItemId}");
                     break;
-               
+
+                case CommandResult.Error:
+                    ErrorMessage.Write("An error occurred while executing the complete command");
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

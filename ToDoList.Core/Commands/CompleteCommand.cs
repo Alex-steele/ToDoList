@@ -33,9 +33,11 @@ namespace ToDoList.Core.Commands
             result.Payload.Complete();
 
             writeRepository.Update(result.Payload);
-            await writeRepository.SaveChangesAsync();
+            var saveResult = await writeRepository.SaveChangesAsync();
 
-            return CommandResultWrapper.Success;
+            return saveResult.Result == RepoResult.Error
+                ? CommandResultWrapper.Error
+                : CommandResultWrapper.Success;
         }
     }
 }

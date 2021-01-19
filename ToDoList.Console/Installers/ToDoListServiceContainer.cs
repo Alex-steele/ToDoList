@@ -18,7 +18,6 @@ using ToDoList.Core.Queries;
 using ToDoList.Core.Queries.Interfaces;
 using ToDoList.Core.Validators;
 using ToDoList.Core.Validators.Interfaces;
-using ToDoList.Data;
 using ToDoList.Data.Configuration;
 using ToDoList.Data.Repositories;
 using ToDoList.Data.Repositories.Interfaces;
@@ -37,24 +36,26 @@ namespace ToDoList.Console.Installers
 
             var services = new ServiceCollection();
 
-            services.AddLogging(configuration => configuration.AddConsole()).AddSingleton<ToDoListRunner>();
-            services.AddLogging(configuration => configuration.AddConsole()).AddSingleton<EFReadOnlyRepository>();
-            services.AddSingleton<IToDoListRunner, ToDoListRunner>();
-            services.AddSingleton<IAddCommandRunner, AddCommandRunner>();
-            services.AddSingleton<ICompleteCommandRunner, CompleteCommandRunner>();
-            services.AddSingleton<IGetListQueryRunner, GetListQueryRunner>();
+            services.AddLogging(configuration => configuration.AddConsole());
+
             services.AddSingleton<IAddResultHandler, AddResultHandler>();
             services.AddSingleton<ICompleteResultHandler, CompleteResultHandler>();
             services.AddSingleton<IGetListResultHandler, GetListResultHandler>();
-            services.AddSingleton<IAddCommand, AddCommand>();
-            services.AddSingleton<IAddCommandValidator, AddCommandValidator>();
             services.AddSingleton<IAddCommandArgumentMapper, AddCommandArgumentMapper>();
-            services.AddSingleton<ICompleteCommand, CompleteCommand>();
             services.AddSingleton<ICompleteCommandArgumentMapper, CompleteCommandArgumentMapper>();
-            services.AddSingleton<IGetListQuery, GetListQuery>();
             services.AddSingleton<IListItemMapper, ListItemMapper>();
-            services.AddSingleton<IReadOnlyRepository, EFReadOnlyRepository>();
-            services.AddSingleton<IWriteRepository, EFWriteRepository>();
+            services.AddSingleton<IAddCommandValidator, AddCommandValidator>();
+
+            services.AddTransient<IToDoListRunner, ToDoListRunner>();
+            services.AddTransient<IAddCommandRunner, AddCommandRunner>();
+            services.AddTransient<ICompleteCommandRunner, CompleteCommandRunner>();
+            services.AddTransient<IGetListQueryRunner, GetListQueryRunner>();
+            services.AddTransient<IAddCommand, AddCommand>();
+            services.AddTransient<ICompleteCommand, CompleteCommand>();
+            services.AddTransient<IGetListQuery, GetListQuery>();
+            services.AddTransient<IReadOnlyRepository, EFReadOnlyRepository>();
+            services.AddTransient<IWriteRepository, EFWriteRepository>();
+
             services.ConfigureDataServices(config.GetConnectionString("ToDoListDB"));
 
             serviceProvider = services.BuildServiceProvider();

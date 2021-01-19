@@ -5,6 +5,7 @@ using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Core.Wrappers;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.Data.Wrappers.Enums;
 using ToDoList.Utilities;
 
 namespace ToDoList.Core.Commands
@@ -32,9 +33,11 @@ namespace ToDoList.Core.Commands
             }
 
             writeRepository.Add(new ListItem(model.ItemValue));
-            await writeRepository.SaveChangesAsync();
+            var saveResult = await writeRepository.SaveChangesAsync();
 
-            return CommandResultWrapper.Success;
+            return saveResult.Result == RepoResult.Error
+                ? CommandResultWrapper.Error
+                : CommandResultWrapper.Success;
         }
     }
 }

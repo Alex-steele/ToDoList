@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Threading.Tasks;
 using FakeItEasy;
 using NUnit.Framework;
@@ -7,9 +8,11 @@ using ToDoList.Core.Commands;
 using ToDoList.Core.Models;
 using ToDoList.Core.Validators;
 using ToDoList.Core.Validators.Interfaces;
+using ToDoList.Core.Wrappers;
 using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.Data.Wrappers;
 
 namespace ToDoList.Core.Tests.Commands
 {
@@ -30,13 +33,13 @@ namespace ToDoList.Core.Tests.Commands
         }
 
         [Test]
-        public void Execute_ModelIsNull_ThrowsException()
+        public void ExecuteAsync_ModelIsNull_ThrowsException()
         {
             Assert.That(() => sut.ExecuteAsync(null), Throws.ArgumentNullException);
         }
 
         [Test]
-        public async Task Execute_ModelIsInvalid_ReturnsCorrectValidationError()
+        public async Task ExecuteAsync_ModelIsInvalid_ReturnsCorrectValidationError()
         {
             // Arrange
             var testModel = new AddCommandModel
@@ -67,7 +70,7 @@ namespace ToDoList.Core.Tests.Commands
         }
 
         [Test]
-        public async Task Execute_ModelIsValid_CorrectItemIsAddedAndReturnsSuccess()
+        public async Task ExecuteAsync_ModelIsValid_CorrectItemIsAddedAndCallsSaveChanges()
         {
             // Arrange
             var testModel = new AddCommandModel
@@ -78,6 +81,8 @@ namespace ToDoList.Core.Tests.Commands
             A.CallTo(() => validator.Validate(testModel))
                 .Returns(ValidationResult.Success);
 
+            A.CallTo(() => writeRepository.SaveChangesAsync()).Returns(RepoResultWrapper<Unit>.Success(Unit.Default));
+
             // Act
             var result = await sut.ExecuteAsync(testModel);
 
@@ -86,7 +91,47 @@ namespace ToDoList.Core.Tests.Commands
                 .MustHaveHappenedOnceExactly();
 
             A.CallTo(() => writeRepository.SaveChangesAsync()).MustHaveHappenedOnceExactly();
+        }
 
+        [Test]
+        public async Task ExecuteAsync_SaveChangesReturnsError_ReturnsError()
+        {
+            // Arrange
+            var testModel = new AddCommandModel
+            {
+                ItemValue = "Valid Value"
+            };
+
+            A.CallTo(() => validator.Validate(testModel))
+                .Returns(ValidationResult.Success);
+
+            A.CallTo(() => writeRepository.SaveChangesAsync()).Returns(RepoResultWrapper<Unit>.Error());
+
+            // Act
+            var result = await sut.ExecuteAsync(testModel);
+
+            // Assert
+            Assert.That(result.Result, Is.EqualTo(CommandResult.Error));
+        }
+
+        [Test]
+        public async Task ExecuteAsync_SaveChangesReturnsSuccess_ReturnsSuccess()
+        {
+            // Arrange
+            var testModel = new AddCommandModel
+            {
+                ItemValue = "Valid Value"
+            };
+
+            A.CallTo(() => validator.Validate(testModel))
+                .Returns(ValidationResult.Success);
+
+            A.CallTo(() => writeRepository.SaveChangesAsync()).Returns(RepoResultWrapper<Unit>.Success(Unit.Default));
+
+            // Act
+            var result = await sut.ExecuteAsync(testModel);
+
+            // Assert
             Assert.That(result.Result, Is.EqualTo(CommandResult.Success));
         }
     }

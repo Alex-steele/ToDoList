@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reactive;
+using System.Threading.Tasks;
 using ToDoList.Data.Entities;
+using ToDoList.Data.Wrappers;
 
 namespace ToDoList.Data.Repositories.Interfaces
 {
@@ -9,6 +11,6 @@ namespace ToDoList.Data.Repositories.Interfaces
 
         void Update(ListItem item);
 
-        Task SaveChangesAsync();
+        Task<RepoResultWrapper<Unit>> SaveChangesAsync();
     }
 }
