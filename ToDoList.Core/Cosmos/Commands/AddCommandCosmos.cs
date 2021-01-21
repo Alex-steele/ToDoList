@@ -1,0 +1,49 @@
+﻿using System;
+using System.Threading.Tasks;
+using ToDoList.Core.Commands.Interfaces;
+using ToDoList.Core.Models;
+using ToDoList.Core.Validators.Interfaces;
+using ToDoList.Core.Wrappers;
+using ToDoList.Data.Cosmos.Entities;
+using ToDoList.Data.Cosmos.Repositories.Interfaces;
+using ToDoList.Data.Wrappers.Enums;
+using ToDoList.Utilities;
+
+namespace ToDoList.Core.Cosmos.Commands
+{
+    public class AddCommandCosmos : IAddCommand
+    {
+        private readonly ICosmosRepository repository;
+        private readonly IAddCommandValidator validator;
+
+        public AddCommandCosmos(ICosmosRepository repository, IAddCommandValidator validator)
+        {
+            this.repository = repository;
+            this.validator = validator;
+        }
+
+        public async Task<CommandResultWrapper> ExecuteAsync(AddCommandModel model)
+        {
+            Check.NotNull(model, nameof(model));
+
+            var validationResult = validator.Validate(model);
+
+            if (!validationResult.IsValid)
+            {
+                return CommandResultWrapper.ValidationError(validationResult);
+            }
+
+            var result = await repository.AddAsync(new CosmosListItem
+            {
+                Value = model.ItemValue,
+                Completed = false,
+                IntId = new Random().Next(0, 1000000),
+                id = Guid.NewGuid().ToString()
+            });
+
+            return result.Result == RepoResult.Error
+                ? CommandResultWrapper.Error
+                : CommandResultWrapper.Success;
+        }
+    }
+}

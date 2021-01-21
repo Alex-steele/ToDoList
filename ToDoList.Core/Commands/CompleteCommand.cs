@@ -25,9 +25,13 @@ namespace ToDoList.Core.Commands
 
             var result = await readRepository.GetByIdForEditAsync(model.ItemId);
 
-            if (result.Result == RepoResult.NotFound)
+            switch (result.Result)
             {
-                return CommandResultWrapper.NotFound;
+                case RepoResult.NotFound:
+                    return CommandResultWrapper.NotFound;
+
+                case RepoResult.Error:
+                    return CommandResultWrapper.Error;
             }
 
             result.Payload.Complete();
