@@ -14,10 +14,10 @@ namespace ToDoList.Data.Cosmos.Repositories
 {
     public class CosmosLinqRepository : ICosmosRepository
     {
-        private readonly ILogger<CosmosSqlRepository> logger;
+        private readonly ILogger<CosmosLinqRepository> logger;
         private readonly CosmosClient client;
 
-        public CosmosLinqRepository(ILogger<CosmosSqlRepository> logger)
+        public CosmosLinqRepository(ILogger<CosmosLinqRepository> logger)
         {
             this.logger = logger;
 
@@ -39,7 +39,7 @@ namespace ToDoList.Data.Cosmos.Repositories
             {
                 var container = client.GetContainer("ToDoListCosmosDB", "ListItems");
 
-                await container.CreateItemAsync(item, new PartitionKey(item.Value));
+                await container.CreateItemAsync(item, new PartitionKey(item.UserId));
 
                 return RepoResultWrapper<Unit>.Success(Unit.Default);
             }
@@ -56,7 +56,7 @@ namespace ToDoList.Data.Cosmos.Repositories
             {
                 var container = client.GetContainer("ToDoListCosmosDB", "ListItems");
 
-                await container.ReplaceItemAsync(item, item.id, new PartitionKey(item.Value));
+                await container.ReplaceItemAsync(item, item.id, new PartitionKey(item.UserId));
 
                 return RepoResultWrapper<Unit>.Success(Unit.Default);
             }

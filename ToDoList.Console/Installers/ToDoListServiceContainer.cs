@@ -13,9 +13,11 @@ using ToDoList.Console.Runners.Interfaces;
 using ToDoList.Core.Commands;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Cosmos.Commands;
+using ToDoList.Core.Cosmos.Commands.EF;
 using ToDoList.Core.Cosmos.Mappers;
 using ToDoList.Core.Cosmos.Mappers.Interfaces;
 using ToDoList.Core.Cosmos.Queries;
+using ToDoList.Core.Cosmos.Queries.EF;
 using ToDoList.Core.Mappers;
 using ToDoList.Core.Mappers.Interfaces;
 using ToDoList.Core.Queries;
@@ -57,21 +59,30 @@ namespace ToDoList.Console.Installers
             services.AddTransient<ICompleteCommandRunner, CompleteCommandRunner>();
             services.AddTransient<IGetListQueryRunner, GetListQueryRunner>();
 
+            // Sql Server dependencies
             //services.AddTransient<IAddCommand, AddCommand>();
             //services.AddTransient<ICompleteCommand, CompleteCommand>();
             //services.AddTransient<IGetListQuery, GetListQuery>();
+            //services.ConfigureDataServices(config.GetConnectionString("ToDoListDB"));
+            //services.AddTransient<IReadOnlyRepository, EFReadOnlyRepository>();
+            //services.AddTransient<IWriteRepository, EFWriteRepository>();
 
-            services.AddTransient<IReadOnlyRepository, EFReadOnlyRepository>();
-            services.AddTransient<IWriteRepository, EFWriteRepository>();
 
             //Cosmos dependencies:
             services.AddTransient<IAddCommand, AddCommandCosmos>();
             services.AddTransient<ICompleteCommand, CompleteCommandCosmos>();
             services.AddTransient<IGetListQuery, GetListQueryCosmos>();
-            services.AddTransient<ICosmosRepository, CosmosLinqRepository>();
             services.AddTransient<ICosmosListItemMapper, CosmosListItemMapper>();
+            services.AddTransient<ICosmosRepository, CosmosLinqRepository>();
+            //services.AddTransient<ICosmosRepository, CosmosSqlRepository>();
 
-            services.ConfigureDataServices(config.GetConnectionString("ToDoListDB"));
+            ////Cosmos EF dependencies:
+            //services.AddTransient<IAddCommand, AddCommandCosmosEF>();
+            //services.AddTransient<ICompleteCommand, CompleteCommandCosmosEF>();
+            //services.AddTransient<IGetListQuery, GetListQueryCosmosEF>();
+            //services.AddTransient<ICosmosEFRepository, CosmosEFRepository>();
+            //services.AddTransient<ICosmosListItemMapper, CosmosListItemMapper>();
+            //services.ConfigureDataServices(config.GetConnectionString("CosmosDB"));
 
             serviceProvider = services.BuildServiceProvider();
         }

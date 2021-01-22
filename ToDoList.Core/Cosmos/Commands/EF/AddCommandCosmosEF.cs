@@ -9,14 +9,14 @@ using ToDoList.Data.Cosmos.Repositories.Interfaces;
 using ToDoList.Data.Wrappers.Enums;
 using ToDoList.Utilities;
 
-namespace ToDoList.Core.Cosmos.Commands
+namespace ToDoList.Core.Cosmos.Commands.EF
 {
-    public class AddCommandCosmos : IAddCommand
+    public class AddCommandCosmosEF : IAddCommand
     {
-        private readonly ICosmosRepository repository;
+        private readonly ICosmosEFRepository repository;
         private readonly IAddCommandValidator validator;
 
-        public AddCommandCosmos(ICosmosRepository repository, IAddCommandValidator validator)
+        public AddCommandCosmosEF(ICosmosEFRepository repository, IAddCommandValidator validator)
         {
             this.repository = repository;
             this.validator = validator;
@@ -33,7 +33,7 @@ namespace ToDoList.Core.Cosmos.Commands
                 return CommandResultWrapper.ValidationError(validationResult);
             }
 
-            var result = await repository.AddAsync(new CosmosListItem
+            repository.Add(new CosmosListItem
             {
                 UserId = "1",
                 Value = model.ItemValue,
@@ -42,7 +42,9 @@ namespace ToDoList.Core.Cosmos.Commands
                 id = Guid.NewGuid().ToString()
             });
 
-            return result.Result == RepoResult.Error
+            var saveResult = await repository.SaveChangesAsync();
+
+            return saveResult.Result == RepoResult.Error
                 ? CommandResultWrapper.Error
                 : CommandResultWrapper.Success;
         }

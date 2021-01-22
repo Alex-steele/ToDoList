@@ -2,7 +2,7 @@
   "profiles": {
     "ToDoList.Console": {
       "commandName": "Project",
-      "commandLineArgs": "complete -d 3880319"
+      "commandLineArgs": "complete -d 751201"
     }
   }
 }

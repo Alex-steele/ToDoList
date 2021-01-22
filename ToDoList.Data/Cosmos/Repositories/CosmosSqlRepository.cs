@@ -38,7 +38,7 @@ namespace ToDoList.Data.Cosmos.Repositories
             {
                 var container = client.GetContainer("ToDoListCosmosDB", "ListItems");
 
-                await container.CreateItemAsync(item, new PartitionKey(item.Value));
+                await container.CreateItemAsync(item, new PartitionKey(item.UserId));
 
                 return RepoResultWrapper<Unit>.Success(Unit.Default);
             }
@@ -55,7 +55,7 @@ namespace ToDoList.Data.Cosmos.Repositories
             {
                 var container = client.GetContainer("ToDoListCosmosDB", "ListItems");
 
-                await container.ReplaceItemAsync(item, item.id, new PartitionKey(item.Value));
+                await container.ReplaceItemAsync(item, item.id, new PartitionKey(item.UserId));
 
                 return RepoResultWrapper<Unit>.Success(Unit.Default);
             }
@@ -72,7 +72,7 @@ namespace ToDoList.Data.Cosmos.Repositories
             {
                 var container = client.GetContainer("ToDoListCosmosDB", "ListItems");
 
-                var sql = $"SELECT l['IntId'], l['id'], l['Value'], l['Completed'] FROM ListItems l WHERE l['IntId'] = {id}";
+                var sql = $"SELECT l['UserId'], l['IntId'], l['id'], l['Value'], l['Completed'] FROM ListItems l WHERE l['IntId'] = {id}";
 
                 var iterator = container.GetItemQueryIterator<CosmosListItem>(sql);
                 var result = await iterator.ReadNextAsync();

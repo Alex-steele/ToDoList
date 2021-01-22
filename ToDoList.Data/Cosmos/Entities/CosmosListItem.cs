@@ -2,6 +2,8 @@
 {
     public class CosmosListItem
     {
+        public string UserId { get; set; }
+
         public string Value { get; set; }
 
         public bool Completed { get; set; }
