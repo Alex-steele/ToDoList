@@ -45,7 +45,7 @@ namespace ToDoList.Core.Wrappers
         /// </summary>
         /// <param name="repoResult">Result from repository</param>
         /// <returns></returns>
-        public static CommandResultWrapper AsResult(RepoResult repoResult)
+        public static CommandResultWrapper FromRepoResult(RepoResult repoResult)
         {
             return repoResult switch
             {

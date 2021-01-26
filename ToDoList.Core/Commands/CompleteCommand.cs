@@ -27,7 +27,7 @@ namespace ToDoList.Core.Commands
 
             if (result.Result != RepoResult.Success)
             {
-                return CommandResultWrapper.AsResult(result.Result);
+                return CommandResultWrapper.FromRepoResult(result.Result);
             }
 
             result.Payload.Complete();
@@ -35,7 +35,7 @@ namespace ToDoList.Core.Commands
             writeRepository.Update(result.Payload);
             var saveResult = await writeRepository.SaveChangesAsync();
 
-            return CommandResultWrapper.AsResult(saveResult.Result);
+            return CommandResultWrapper.FromRepoResult(saveResult.Result);
         }
     }
 }

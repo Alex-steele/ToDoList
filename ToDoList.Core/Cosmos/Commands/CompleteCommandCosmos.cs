@@ -25,14 +25,14 @@ namespace ToDoList.Core.Cosmos.Commands
 
             if (result.Result != RepoResult.Success)
             {
-                return CommandResultWrapper.AsResult(result.Result);
+                return CommandResultWrapper.FromRepoResult(result.Result);
             }
 
             result.Payload.Completed = true;
 
             var updateResult = await repository.UpdateAsync(result.Payload);
 
-            return CommandResultWrapper.AsResult(updateResult.Result);
+            return CommandResultWrapper.FromRepoResult(updateResult.Result);
         }
     }
 }

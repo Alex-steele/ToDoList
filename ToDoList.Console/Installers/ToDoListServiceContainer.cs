@@ -27,6 +27,7 @@ using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Data.Configuration;
 using ToDoList.Data.Cosmos.Repositories;
 using ToDoList.Data.Cosmos.Repositories.Interfaces;
+using ToDoList.Data.Entities;
 using ToDoList.Data.QueryableProviders;
 using ToDoList.Data.Repositories;
 using ToDoList.Data.Repositories.Interfaces;
@@ -59,7 +60,7 @@ namespace ToDoList.Console.Installers
             services.AddTransient<IAddCommandRunner, AddCommandRunner>();
             services.AddTransient<ICompleteCommandRunner, CompleteCommandRunner>();
             services.AddTransient<IGetListQueryRunner, GetListQueryRunner>();
-            services.AddTransient<IListItemQueryableProvider, ListItemQueryableProvider>();
+            services.AddTransient<IQueryableProvider<ListItem>, QueryableProvider<ListItem>>();
 
             //Sql Server dependencies
             services.AddTransient<IAddCommand, AddCommand>();
