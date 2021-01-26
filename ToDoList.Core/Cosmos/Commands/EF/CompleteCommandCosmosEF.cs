@@ -23,13 +23,9 @@ namespace ToDoList.Core.Cosmos.Commands.EF
 
             var result = await repository.GetByIntIdAsync(model.ItemId);
 
-            switch (result.Result)
+            if (result.Result != RepoResult.Success)
             {
-                case RepoResult.NotFound:
-                    return CommandResultWrapper.NotFound;
-
-                case RepoResult.Error:
-                    return CommandResultWrapper.Error;
+                return CommandResultWrapper.AsResult(result.Result);
             }
 
             result.Payload.Completed = true;
@@ -37,9 +33,7 @@ namespace ToDoList.Core.Cosmos.Commands.EF
             repository.Update(result.Payload);
             var saveResult = await repository.SaveChangesAsync();
 
-            return saveResult.Result == RepoResult.Error
-                ? CommandResultWrapper.Error
-                : CommandResultWrapper.Success;
+            return CommandResultWrapper.AsResult(saveResult.Result);
         }
     }
 }

@@ -35,9 +35,7 @@ namespace ToDoList.Core.Commands
             writeRepository.Add(new ListItem(model.ItemValue));
             var saveResult = await writeRepository.SaveChangesAsync();
 
-            return saveResult.Result == RepoResult.Error
-                ? CommandResultWrapper.Error
-                : CommandResultWrapper.Success;
+            return CommandResultWrapper.AsResult(saveResult.Result);
         }
     }
 }

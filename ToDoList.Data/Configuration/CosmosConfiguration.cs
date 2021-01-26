@@ -1,11 +1,10 @@
 ﻿using ToDoList.Utilities;
 
-namespace ToDoList.Data
+namespace ToDoList.Data.Configuration
 {
-    internal class DataConfiguration : IDataConfiguration
+    internal class CosmosConfiguration : ICosmosConfiguration
     {
-        // Not used anymore
-        public DataConfiguration(string connectionString)
+        public CosmosConfiguration(string connectionString)
         {
             Check.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
             ConnectionString = connectionString;

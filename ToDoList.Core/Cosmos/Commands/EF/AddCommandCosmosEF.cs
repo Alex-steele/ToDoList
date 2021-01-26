@@ -44,9 +44,7 @@ namespace ToDoList.Core.Cosmos.Commands.EF
 
             var saveResult = await repository.SaveChangesAsync();
 
-            return saveResult.Result == RepoResult.Error
-                ? CommandResultWrapper.Error
-                : CommandResultWrapper.Success;
+            return CommandResultWrapper.AsResult(saveResult.Result);
         }
     }
 }

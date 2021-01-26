@@ -23,22 +23,16 @@ namespace ToDoList.Core.Cosmos.Commands
 
             var result = await repository.GetByIntIdAsync(model.ItemId);
 
-            switch (result.Result)
+            if (result.Result != RepoResult.Success)
             {
-                case RepoResult.NotFound:
-                    return CommandResultWrapper.NotFound;
-
-                case RepoResult.Error:
-                    return CommandResultWrapper.Error;
+                return CommandResultWrapper.AsResult(result.Result);
             }
 
             result.Payload.Completed = true;
 
             var updateResult = await repository.UpdateAsync(result.Payload);
 
-            return updateResult.Result == RepoResult.Error
-                ? CommandResultWrapper.Error
-                : CommandResultWrapper.Success;
+            return CommandResultWrapper.AsResult(updateResult.Result);
         }
     }
 }

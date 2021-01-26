@@ -19,6 +19,8 @@ namespace ToDoList.Data.Cosmos.Repositories
         {
             this.context = context;
             this.logger = logger;
+
+            //await context.Database.EnsureCreatedAsync();
         }
 
         public void Add(CosmosListItem item)
@@ -35,8 +37,6 @@ namespace ToDoList.Data.Cosmos.Repositories
         {
             try
             {
-                //await context.Database.EnsureCreatedAsync();
-
                 var result = await context.ListItems.SingleOrDefaultAsync(x => x.IntId == id);
 
                 return result == null
@@ -54,8 +54,6 @@ namespace ToDoList.Data.Cosmos.Repositories
         {
             try
             {
-                //await context.Database.EnsureCreatedAsync();
-
                 var result = await context.ListItems.ToListAsync();
 
                 return result == null
@@ -64,7 +62,7 @@ namespace ToDoList.Data.Cosmos.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError($"An error occurred while trying to connect to the database {ex}", ex);
+                logger.LogError("An error occurred while trying to connect to the database", ex);
                 return RepoResultWrapper<List<CosmosListItem>>.Error();
             }
         }
@@ -73,8 +71,6 @@ namespace ToDoList.Data.Cosmos.Repositories
         {
             try
             {
-                //await context.Database.EnsureCreatedAsync();
-
                 await context.SaveChangesAsync();
                 return RepoResultWrapper<Unit>.Success(Unit.Default);
             }

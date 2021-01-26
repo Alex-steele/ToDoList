@@ -12,10 +12,13 @@ namespace ToDoList.Data.Configuration
             // Config for Sql Server
             services.AddDbContext<ToDoListContext>(options => options.UseSqlServer(connectionString));
 
-            // Config for Cosmos
+            // Config for Cosmos EF
             services.AddDbContext<ToDoListCosmosContext>(options => options.UseCosmos(
                 connectionString,
                 databaseName: "ToDoListCosmosDB"));
+
+            // Config for Cosmos
+            services.AddSingleton<ICosmosConfiguration>(_ => new CosmosConfiguration(connectionString));
 
             return services;
         }

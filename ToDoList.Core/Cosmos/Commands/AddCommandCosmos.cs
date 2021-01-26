@@ -42,9 +42,7 @@ namespace ToDoList.Core.Cosmos.Commands
                 id = Guid.NewGuid().ToString()
             });
 
-            return result.Result == RepoResult.Error
-                ? CommandResultWrapper.Error
-                : CommandResultWrapper.Success;
+            return CommandResultWrapper.AsResult(result.Result);
         }
     }
 }

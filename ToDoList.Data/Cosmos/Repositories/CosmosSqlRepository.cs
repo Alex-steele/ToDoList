@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using ToDoList.Data.Configuration;
 using ToDoList.Data.Cosmos.Entities;
 using ToDoList.Data.Cosmos.Repositories.Interfaces;
 using ToDoList.Data.Wrappers;
@@ -16,15 +17,13 @@ namespace ToDoList.Data.Cosmos.Repositories
         private readonly ILogger<CosmosSqlRepository> logger;
         private readonly CosmosClient client;
 
-        public CosmosSqlRepository(ILogger<CosmosSqlRepository> logger)
+        public CosmosSqlRepository(ILogger<CosmosSqlRepository> logger, ICosmosConfiguration config)
         {
             this.logger = logger;
 
             try
             {
-                client = new CosmosClient(
-                    "https://localhost:8081",
-                    "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==");
+                client = new CosmosClient(config.ConnectionString);
             }
             catch (Exception ex)
             {
