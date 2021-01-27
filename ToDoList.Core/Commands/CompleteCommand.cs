@@ -25,9 +25,9 @@ namespace ToDoList.Core.Commands
 
             var result = await readRepository.GetByIdForEditAsync(model.ItemId);
 
-            if (result.Result == RepoResult.NotFound)
+            if (result.Result != RepoResult.Success)
             {
-                return CommandResultWrapper.NotFound;
+                return CommandResultWrapper.FromRepoResult(result.Result);
             }
 
             result.Payload.Complete();
@@ -35,9 +35,7 @@ namespace ToDoList.Core.Commands
             writeRepository.Update(result.Payload);
             var saveResult = await writeRepository.SaveChangesAsync();
 
-            return saveResult.Result == RepoResult.Error
-                ? CommandResultWrapper.Error
-                : CommandResultWrapper.Success;
+            return CommandResultWrapper.FromRepoResult(saveResult.Result);
         }
     }
 }

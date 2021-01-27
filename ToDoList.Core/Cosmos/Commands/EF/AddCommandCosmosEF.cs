@@ -1,23 +1,24 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Core.Wrappers;
-using ToDoList.Data.Entities;
-using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.Data.Cosmos.Entities;
+using ToDoList.Data.Cosmos.Repositories.Interfaces;
 using ToDoList.Data.Wrappers.Enums;
 using ToDoList.Utilities;
 
-namespace ToDoList.Core.Commands
+namespace ToDoList.Core.Cosmos.Commands.EF
 {
-    public class AddCommand : IAddCommand
+    public class AddCommandCosmosEF : IAddCommand
     {
-        private readonly IWriteRepository writeRepository;
+        private readonly ICosmosEFRepository repository;
         private readonly IAddCommandValidator validator;
 
-        public AddCommand(IWriteRepository writeRepository, IAddCommandValidator validator)
+        public AddCommandCosmosEF(ICosmosEFRepository repository, IAddCommandValidator validator)
         {
-            this.writeRepository = writeRepository;
+            this.repository = repository;
             this.validator = validator;
         }
 
@@ -32,8 +33,16 @@ namespace ToDoList.Core.Commands
                 return CommandResultWrapper.ValidationError(validationResult);
             }
 
-            writeRepository.Add(new ListItem(model.ItemValue));
-            var saveResult = await writeRepository.SaveChangesAsync();
+            repository.Add(new CosmosListItem
+            {
+                UserId = "1",
+                Value = model.ItemValue,
+                Completed = false,
+                IntId = new Random().Next(0, 1000000),
+                id = Guid.NewGuid().ToString()
+            });
+
+            var saveResult = await repository.SaveChangesAsync();
 
             return CommandResultWrapper.FromRepoResult(saveResult.Result);
         }

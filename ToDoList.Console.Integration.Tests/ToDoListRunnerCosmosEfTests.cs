@@ -7,35 +7,34 @@ using ToDoList.Console.Installers;
 using ToDoList.Console.Installers.Interfaces;
 using ToDoList.Console.ResultHandlers.Interfaces;
 using ToDoList.Console.Runners.Interfaces;
-using ToDoList.Data.Entities;
-using ToDoList.Data.QueryableProviders;
+using ToDoList.Data.Cosmos;
 
 namespace ToDoList.Console.Integration.Tests
 {
-    public class ToDoListRunnerTests
+    public class ToDoListRunnerCosmosEfTests
     {
         private IToDoListServiceContainer serviceProvider;
         private IToDoListRunner runner;
-        private IQueryableProvider<ListItem> provider;
+        private ToDoListCosmosContext context;
 
         [SetUp]
         public void SetUp()
         {
             serviceProvider = new ToDoListServiceContainer();
             runner = serviceProvider.GetService<IToDoListRunner>();
-            provider = serviceProvider.GetService<IQueryableProvider<ListItem>>();
+            context = serviceProvider.GetService<ToDoListCosmosContext>();
         }
 
         [Test]
         public async Task AddValidItem_AddsItem()
         {
             // Arrange
-            var listItems = await provider.Set.ToListAsync();
+            var listItems = await context.ListItems.ToListAsync();
 
             // Act
             runner.Run(new[] { "add", "-i", "Test" });
 
-            var updatedListItems = await provider.Set.ToListAsync();
+            var updatedListItems = await context.ListItems.ToListAsync();
 
             // Assert
             Assert.That(updatedListItems.Count, Is.EqualTo(listItems.Count + 1));
@@ -47,13 +46,13 @@ namespace ToDoList.Console.Integration.Tests
         public async Task AddInvalidItem_DoesNotAddItem()
         {
             // Arrange
-            var listItems = await provider.Set.ToListAsync();
+            var listItems = await context.ListItems.ToListAsync();
             var resultHandler = A.Fake<IAddResultHandler>();
 
             // Act
             runner.Run(new[] { "add", "-i", "" });
 
-            var updatedListItems = await provider.Set.ToListAsync();
+            var updatedListItems = await context.ListItems.ToListAsync();
 
             // Assert
             Assert.That(updatedListItems.Count, Is.EqualTo(listItems.Count));
@@ -63,18 +62,16 @@ namespace ToDoList.Console.Integration.Tests
         public async Task CompleteItemValidId_CompletesCorrectItem()
         {
             // Arrange
-            var listItems = await provider.Set.ToListAsync();
+            var listItems = await context.ListItems.ToListAsync();
 
             // Act
             runner.Run(new[] { "add", "-i", "Test2" });
 
-            var itemRepoResult = await provider.Set.OrderBy(x => x.Id).LastAsync();
-            var testItemId = itemRepoResult.Id;
-
+            var testItemId = context.ListItems.ToList().Last().IntId;
 
             runner.Run(new[] { "complete", "-d", $"{testItemId}" });
 
-            var updatedListItems = await provider.Set.ToListAsync();
+            var updatedListItems = await context.ListItems.ToListAsync();
 
             // Assert
             Assert.That(updatedListItems.Last().Value, Is.EqualTo("Test2"));
@@ -85,13 +82,13 @@ namespace ToDoList.Console.Integration.Tests
         public async Task CompleteItemInvalidId_DoesNotCompleteAnyItem()
         {
             // Arrange
-            var listItems = await provider.Set.ToListAsync();
+            var listItems = await context.ListItems.ToListAsync();
             var completedItems = listItems.Where(x => x.Completed);
 
             // Act
             runner.Run(new[] { "complete", "-d", "9999999999" });
 
-            var updatedListItems = await provider.Set.ToListAsync();
+            var updatedListItems = await context.ListItems.ToListAsync();
             var updatedCompletedItems = updatedListItems.Where(x => x.Completed);
 
             // Assert

@@ -1,5 +1,7 @@
-﻿using ToDoList.Core.Validators;
+﻿using System;
+using ToDoList.Core.Validators;
 using ToDoList.Core.Wrappers.Enums;
+using ToDoList.Data.Wrappers.Enums;
 
 namespace ToDoList.Core.Wrappers
 {
@@ -37,6 +39,22 @@ namespace ToDoList.Core.Wrappers
         /// <param name="validation">Validation errors to include</param>
         /// <returns></returns>
         public static CommandResultWrapper ValidationError(ValidationResult validation) => new CommandResultWrapper(validation);
+
+        /// <summary>
+        /// Create a new CommandResultWrapper depending on the RepoResult
+        /// </summary>
+        /// <param name="repoResult">Result from repository</param>
+        /// <returns></returns>
+        public static CommandResultWrapper FromRepoResult(RepoResult repoResult)
+        {
+            return repoResult switch
+            {
+                RepoResult.Success => Success,
+                RepoResult.NotFound => NotFound,
+                RepoResult.Error => Error,
+                _ => throw new ArgumentOutOfRangeException(nameof(repoResult))
+            };
+        }
 
         public CommandResult Result { get; }
         public ValidationResult Validation { get; }
