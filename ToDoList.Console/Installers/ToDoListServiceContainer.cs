@@ -60,7 +60,7 @@ namespace ToDoList.Console.Installers
             services.AddTransient<IAddCommandRunner, AddCommandRunner>();
             services.AddTransient<ICompleteCommandRunner, CompleteCommandRunner>();
             services.AddTransient<IGetListQueryRunner, GetListQueryRunner>();
-            services.AddTransient<IQueryableProvider<ListItem>, QueryableProvider<ListItem>>();
+            services.AddTransient(typeof(IQueryableProvider<>), typeof(QueryableProvider<>));
 
             //Sql Server dependencies
             services.AddTransient<IAddCommand, AddCommand>();
