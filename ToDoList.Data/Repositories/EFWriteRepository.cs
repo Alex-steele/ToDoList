@@ -29,6 +29,11 @@ namespace ToDoList.Data.Repositories
             context.ListItems.Update(item);
         }
 
+        public void Delete(ListItem item)
+        {
+            context.ListItems.Remove(item);
+        }
+
         public async Task<RepoResultWrapper<Unit>> SaveChangesAsync()
         {
             try
