@@ -17,6 +17,7 @@ using ToDoList.Data.Configuration;
 using ToDoList.Data.QueryableProviders;
 using ToDoList.Data.Repositories;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.WebAPI.Extensions;
 using ToDoList.WebAPI.Resolvers;
 using ToDoList.WebAPI.Resolvers.Interfaces;
 
@@ -63,6 +64,8 @@ namespace ToDoList.WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
 

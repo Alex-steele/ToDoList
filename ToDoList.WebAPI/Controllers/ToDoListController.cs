@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
@@ -40,61 +38,33 @@ namespace ToDoList.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetList()
         {
-            try
-            {
-                var result = await getListQuery.ExecuteAsync();
+            var result = await getListQuery.ExecuteAsync();
 
-                return queryResolver.Resolve(result);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-            }
+            return queryResolver.Resolve(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddItem(AddCommandModel model)
         {
-            try
-            {
-                var result = await addCommand.ExecuteAsync(model);
+            var result = await addCommand.ExecuteAsync(model);
 
-                return commandResolver.Resolve(result);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-            }
+            return commandResolver.Resolve(result);
         }
 
         [HttpPatch]
         public async Task<IActionResult> CompleteItem(CompleteCommandModel model)
         {
-            try
-            {
-                var result = await completeCommand.ExecuteAsync(model);
+            var result = await completeCommand.ExecuteAsync(model);
 
-                return commandResolver.Resolve(result);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-            }
+            return commandResolver.Resolve(result);
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteItem(DeleteCommandModel model)
         {
-            try
-            {
-                var result = await deleteCommand.ExecuteAsync(model);
+            var result = await deleteCommand.ExecuteAsync(model);
 
-                return commandResolver.Resolve(result);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-            }
+            return commandResolver.Resolve(result);
         }
     }
 }
