@@ -12,10 +12,13 @@ using ToDoList.Core.Queries;
 using ToDoList.Core.Queries.Interfaces;
 using ToDoList.Core.Validators;
 using ToDoList.Core.Validators.Interfaces;
+using ToDoList.Core.Wrappers;
 using ToDoList.Data.Configuration;
 using ToDoList.Data.QueryableProviders;
 using ToDoList.Data.Repositories;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.WebAPI.Resolvers;
+using ToDoList.WebAPI.Resolvers.Interfaces;
 
 namespace ToDoList.WebAPI
 {
@@ -35,6 +38,10 @@ namespace ToDoList.WebAPI
 
             services.AddSingleton<IListItemMapper, ListItemMapper>();
             services.AddSingleton<IAddCommandValidator, AddCommandValidator>();
+            services.AddSingleton<IResultResolver<CommandResultWrapper>, CommandResultResolver>();
+            services.AddSingleton<IResultResolver<QueryResultWrapper>, QueryResultResolver>();
+            //services.AddSingleton(typeof(IResultResolver<>), typeof(CommandResultResolver));
+            //services.AddSingleton(typeof(IResultResolver<>), typeof(QueryResultResolver));
 
             services.AddTransient(typeof(IQueryableProvider<>), typeof(QueryableProvider<>));
 

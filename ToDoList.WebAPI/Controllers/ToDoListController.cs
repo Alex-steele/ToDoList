@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Queries.Interfaces;
-using ToDoList.Core.Wrappers.Enums;
+using ToDoList.Core.Wrappers;
+using ToDoList.WebAPI.Resolvers.Interfaces;
 
 namespace ToDoList.WebAPI.Controllers
 {
@@ -13,16 +14,23 @@ namespace ToDoList.WebAPI.Controllers
     [ApiController]
     public class ToDoListController : ControllerBase
     {
+        private readonly IResultResolver<CommandResultWrapper> commandResolver;
+        private readonly IResultResolver<QueryResultWrapper> queryResolver;
         private readonly IGetListQuery getListQuery;
         private readonly IAddCommand addCommand;
         private readonly ICompleteCommand completeCommand;
         private readonly IDeleteCommand deleteCommand;
 
-        public ToDoListController(IGetListQuery getListQuery,
+        public ToDoListController(
+            IResultResolver<CommandResultWrapper> commandResolver,
+            IResultResolver<QueryResultWrapper> queryResolver,
+            IGetListQuery getListQuery,
             IAddCommand addCommand,
             ICompleteCommand completeCommand,
             IDeleteCommand deleteCommand)
         {
+            this.commandResolver = commandResolver;
+            this.queryResolver = queryResolver;
             this.getListQuery = getListQuery;
             this.addCommand = addCommand;
             this.completeCommand = completeCommand;
@@ -36,9 +44,7 @@ namespace ToDoList.WebAPI.Controllers
             {
                 var result = await getListQuery.ExecuteAsync();
 
-                return result.Result == QueryResult.Success
-                    ? Ok(result.Payload)
-                    : StatusCode(StatusCodes.Status500InternalServerError, "Database failure");
+                return queryResolver.Resolve(result);
             }
             catch (Exception)
             {
@@ -53,14 +59,7 @@ namespace ToDoList.WebAPI.Controllers
             {
                 var result = await addCommand.ExecuteAsync(model);
 
-                return result.Result switch
-                {
-                    CommandResult.Success => Ok(),
-                    CommandResult.ValidationError => BadRequest(),
-                    CommandResult.NotFound => NotFound(),
-                    CommandResult.Error => StatusCode(StatusCodes.Status500InternalServerError, "Database failure"),
-                    _ => throw new ArgumentOutOfRangeException()
-                };
+                return commandResolver.Resolve(result);
             }
             catch (Exception)
             {
@@ -68,21 +67,14 @@ namespace ToDoList.WebAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> CompleteItem(CompleteCommandModel model)
         {
             try
             {
                 var result = await completeCommand.ExecuteAsync(model);
 
-                return result.Result switch
-                {
-                    CommandResult.Success => Ok(),
-                    CommandResult.ValidationError => BadRequest(),
-                    CommandResult.NotFound => NotFound(),
-                    CommandResult.Error => StatusCode(StatusCodes.Status500InternalServerError, "Database failure"),
-                    _ => throw new ArgumentOutOfRangeException()
-                };
+                return commandResolver.Resolve(result);
             }
             catch (Exception)
             {
@@ -97,14 +89,7 @@ namespace ToDoList.WebAPI.Controllers
             {
                 var result = await deleteCommand.ExecuteAsync(model);
 
-                return result.Result switch
-                {
-                    CommandResult.Success => Ok(),
-                    CommandResult.ValidationError => BadRequest(),
-                    CommandResult.NotFound => NotFound(),
-                    CommandResult.Error => StatusCode(StatusCodes.Status500InternalServerError, "Database failure"),
-                    _ => throw new ArgumentOutOfRangeException()
-                };
+                return commandResolver.Resolve(result);
             }
             catch (Exception)
             {

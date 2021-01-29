@@ -24,6 +24,11 @@ namespace ToDoList.Core.Wrappers
         public static CommandResultWrapper Success => new CommandResultWrapper(CommandResult.Success);
 
         /// <summary>
+        /// Create a new CommandResultWrapper as created
+        /// </summary>
+        public static CommandResultWrapper Created => new CommandResultWrapper(CommandResult.Created);
+
+        /// <summary>
         /// Create a new CommandResultWrapper as not found
         /// </summary>
         public static CommandResultWrapper NotFound => new CommandResultWrapper(CommandResult.NotFound);
@@ -49,6 +54,7 @@ namespace ToDoList.Core.Wrappers
         {
             return repoResult switch
             {
+                RepoResult.Created => Created,
                 RepoResult.Success => Success,
                 RepoResult.NotFound => NotFound,
                 RepoResult.Error => Error,

@@ -3,6 +3,7 @@
     public enum CommandResult
     {
         Success,
+        Created,
         NotFound,
         ValidationError,
         Error

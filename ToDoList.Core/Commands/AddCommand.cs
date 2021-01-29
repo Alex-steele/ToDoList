@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reactive;
+using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Core.Wrappers;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.Data.Wrappers;
 using ToDoList.Data.Wrappers.Enums;
 using ToDoList.Utilities;
 
@@ -35,7 +38,9 @@ namespace ToDoList.Core.Commands
             writeRepository.Add(new ListItem(model.ItemValue));
             var saveResult = await writeRepository.SaveChangesAsync();
 
-            return CommandResultWrapper.FromRepoResult(saveResult.Result);
+            return saveResult.Result == RepoResult.Success
+                ? CommandResultWrapper.Created
+                : CommandResultWrapper.Error;
         }
     }
 }
