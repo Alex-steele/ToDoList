@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
@@ -51,20 +52,23 @@ namespace ToDoList.WebAPI.Controllers
             return commandResolver.Resolve(result);
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> CompleteItem(CompleteCommandModel model)
+        [HttpPatch("{ItemId:int}")]
+        public async Task<IActionResult> CompleteItem([FromRoute] CompleteCommandModel model)
         {
             var result = await completeCommand.ExecuteAsync(model);
 
             return commandResolver.Resolve(result);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteItem(DeleteCommandModel model)
+        [HttpDelete("{ItemId:int}")]
+        public async Task<IActionResult> DeleteItem([FromRoute] DeleteCommandModel model)
         {
             var result = await deleteCommand.ExecuteAsync(model);
 
             return commandResolver.Resolve(result);
         }
+
+        [Route("/error")]
+        public IActionResult Error() => Problem();
     }
 }

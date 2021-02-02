@@ -7,17 +7,17 @@ using ToDoList.WebAPI.Resolvers.Interfaces;
 
 namespace ToDoList.WebAPI.Resolvers
 {
-    public class CommandResultResolver : ControllerBase, IResultResolver<CommandResultWrapper>
+    public class CommandResultResolver : IResultResolver<CommandResultWrapper>
     {
         public IActionResult Resolve(CommandResultWrapper resultWrapper)
         {
             return resultWrapper.Result switch
             {
-                CommandResult.Success => Ok(),
-                CommandResult.Created => StatusCode(StatusCodes.Status201Created),
-                CommandResult.ValidationError => BadRequest(resultWrapper.Validation),
-                CommandResult.NotFound => NotFound(),
-                CommandResult.Error => StatusCode(StatusCodes.Status500InternalServerError, "Database failure"),
+                CommandResult.Success => new OkResult(),
+                CommandResult.Created => new StatusCodeResult(StatusCodes.Status201Created),
+                CommandResult.ValidationError => new BadRequestObjectResult(resultWrapper.Validation),
+                CommandResult.NotFound => new NotFoundResult(),
+                CommandResult.Error => new StatusCodeResult(StatusCodes.Status500InternalServerError),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }

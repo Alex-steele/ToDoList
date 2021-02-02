@@ -7,14 +7,14 @@ using ToDoList.WebAPI.Resolvers.Interfaces;
 
 namespace ToDoList.WebAPI.Resolvers
 {
-    public class QueryResultResolver : ControllerBase, IResultResolver<QueryResultWrapper>
+    public class QueryResultResolver : IResultResolver<QueryResultWrapper>
     {
         public IActionResult Resolve(QueryResultWrapper resultWrapper)
         {
             return resultWrapper.Result switch
             {
-                QueryResult.Success => Ok(resultWrapper.Payload),
-                QueryResult.Error => StatusCode(StatusCodes.Status500InternalServerError, "Database failure"),
+                QueryResult.Success => new OkObjectResult(resultWrapper.Payload),
+                QueryResult.Error => new StatusCodeResult(StatusCodes.Status500InternalServerError),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }

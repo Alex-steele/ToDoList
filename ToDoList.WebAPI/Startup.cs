@@ -17,7 +17,6 @@ using ToDoList.Data.Configuration;
 using ToDoList.Data.QueryableProviders;
 using ToDoList.Data.Repositories;
 using ToDoList.Data.Repositories.Interfaces;
-using ToDoList.WebAPI.Extensions;
 using ToDoList.WebAPI.Resolvers;
 using ToDoList.WebAPI.Resolvers.Interfaces;
 
@@ -41,11 +40,8 @@ namespace ToDoList.WebAPI
             services.AddSingleton<IAddCommandValidator, AddCommandValidator>();
             services.AddSingleton<IResultResolver<CommandResultWrapper>, CommandResultResolver>();
             services.AddSingleton<IResultResolver<QueryResultWrapper>, QueryResultResolver>();
-            //services.AddSingleton(typeof(IResultResolver<>), typeof(CommandResultResolver));
-            //services.AddSingleton(typeof(IResultResolver<>), typeof(QueryResultResolver));
 
             services.AddTransient(typeof(IQueryableProvider<>), typeof(QueryableProvider<>));
-
             services.AddTransient<IAddCommand, AddCommand>();
             services.AddTransient<ICompleteCommand, CompleteCommand>();
             services.AddTransient<IGetListQuery, GetListQuery>();
@@ -65,7 +61,8 @@ namespace ToDoList.WebAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.ConfigureExceptionHandler();
+            app.UseExceptionHandler("/error");
+            //app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
 
