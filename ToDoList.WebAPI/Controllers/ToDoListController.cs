@@ -67,8 +67,5 @@ namespace ToDoList.WebAPI.Controllers
 
             return commandResolver.Resolve(result);
         }
-
-        [Route("/error")]
-        public IActionResult Error() => Problem();
     }
 }

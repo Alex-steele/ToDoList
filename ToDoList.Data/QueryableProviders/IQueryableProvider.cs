@@ -4,6 +4,6 @@ namespace ToDoList.Data.QueryableProviders
 {
     public interface IQueryableProvider<T> where T : class
     {
-        IQueryable<T> Set { get; set; }
+        IQueryable<T> Set { get;}
     }
 }

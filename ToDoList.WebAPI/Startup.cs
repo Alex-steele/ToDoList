@@ -17,6 +17,7 @@ using ToDoList.Data.Configuration;
 using ToDoList.Data.QueryableProviders;
 using ToDoList.Data.Repositories;
 using ToDoList.Data.Repositories.Interfaces;
+using ToDoList.WebAPI.Extensions;
 using ToDoList.WebAPI.Resolvers;
 using ToDoList.WebAPI.Resolvers.Interfaces;
 
@@ -41,14 +42,14 @@ namespace ToDoList.WebAPI
             services.AddSingleton<IResultResolver<CommandResultWrapper>, CommandResultResolver>();
             services.AddSingleton<IResultResolver<QueryResultWrapper>, QueryResultResolver>();
 
-            services.AddTransient(typeof(IQueryableProvider<>), typeof(QueryableProvider<>));
-            services.AddTransient<IAddCommand, AddCommand>();
-            services.AddTransient<ICompleteCommand, CompleteCommand>();
-            services.AddTransient<IGetListQuery, GetListQuery>();
-            services.AddTransient<IDeleteCommand, DeleteCommand>();
+            services.AddScoped(typeof(IQueryableProvider<>), typeof(QueryableProvider<>));
+            services.AddScoped<IAddCommand, AddCommand>();
+            services.AddScoped<ICompleteCommand, CompleteCommand>();
+            services.AddScoped<IGetListQuery, GetListQuery>();
+            services.AddScoped<IDeleteCommand, DeleteCommand>();
             services.ConfigureDataServices(Configuration.GetConnectionString("ToDoListDB"));
-            services.AddTransient<IReadOnlyRepository, EFReadOnlyRepository>();
-            services.AddTransient<IWriteRepository, EFWriteRepository>();
+            services.AddScoped<IReadOnlyRepository, EFReadOnlyRepository>();
+            services.AddScoped<IWriteRepository, EFWriteRepository>();
 
             services.AddControllers();
         }
