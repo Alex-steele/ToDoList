@@ -38,12 +38,14 @@ namespace ToDoList.Data.Repositories
         {
             try
             {
+                logger.LogInformation("Connecting to the database");
+
                 await context.SaveChangesAsync();
                 return RepoResultWrapper<Unit>.Success(Unit.Default);
             }
             catch (Exception ex)
             {
-                logger.LogError("An error occurred while trying to connect to the database", ex);
+                logger.LogError(ex, "An error occurred while trying to connect to the database");
                 return RepoResultWrapper<Unit>.Error();
             }
         }

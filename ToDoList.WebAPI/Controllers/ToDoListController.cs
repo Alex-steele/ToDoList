@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Queries.Interfaces;
@@ -13,6 +14,7 @@ namespace ToDoList.WebAPI.Controllers
     [ApiController]
     public class ToDoListController : ControllerBase
     {
+        private readonly ILogger<ToDoListController> logger;
         private readonly IResultResolver<CommandResultWrapper> commandResolver;
         private readonly IResultResolver<QueryResultWrapper> queryResolver;
         private readonly IGetListQuery getListQuery;
@@ -21,6 +23,7 @@ namespace ToDoList.WebAPI.Controllers
         private readonly IDeleteCommand deleteCommand;
 
         public ToDoListController(
+            ILogger<ToDoListController> logger,
             IResultResolver<CommandResultWrapper> commandResolver,
             IResultResolver<QueryResultWrapper> queryResolver,
             IGetListQuery getListQuery,
@@ -28,6 +31,7 @@ namespace ToDoList.WebAPI.Controllers
             ICompleteCommand completeCommand,
             IDeleteCommand deleteCommand)
         {
+            this.logger = logger;
             this.commandResolver = commandResolver;
             this.queryResolver = queryResolver;
             this.getListQuery = getListQuery;
@@ -39,6 +43,8 @@ namespace ToDoList.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetList()
         {
+            logger.LogInformation("Calling the GetListQuery");
+
             var result = await getListQuery.ExecuteAsync();
 
             return queryResolver.Resolve(result);
@@ -47,6 +53,8 @@ namespace ToDoList.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddItem(AddCommandModel model)
         {
+            logger.LogInformation("Calling the AddCommand");
+
             var result = await addCommand.ExecuteAsync(model);
 
             return commandResolver.Resolve(result);
@@ -55,6 +63,8 @@ namespace ToDoList.WebAPI.Controllers
         [HttpPatch("{ItemId:int}")]
         public async Task<IActionResult> CompleteItem([FromRoute] CompleteCommandModel model)
         {
+            logger.LogInformation("Calling the CompleteCommand");
+
             var result = await completeCommand.ExecuteAsync(model);
 
             return commandResolver.Resolve(result);
@@ -63,6 +73,8 @@ namespace ToDoList.WebAPI.Controllers
         [HttpDelete("{ItemId:int}")]
         public async Task<IActionResult> DeleteItem([FromRoute] DeleteCommandModel model)
         {
+            logger.LogInformation("Calling the DeleteCommand");
+
             var result = await deleteCommand.ExecuteAsync(model);
 
             return commandResolver.Resolve(result);

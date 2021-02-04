@@ -24,6 +24,8 @@ namespace ToDoList.Data.Repositories
         {
             try
             {
+                logger.LogInformation("Connecting to the database");
+
                 var result = await context.ListItems.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
 
                 return result == null
@@ -32,7 +34,7 @@ namespace ToDoList.Data.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError("An error occurred while trying to connect to the database", ex);
+                logger.LogError(ex, "An error occurred while trying to connect to the database");
                 return RepoResultWrapper<ListItem>.Error();
             }
         }
@@ -41,6 +43,8 @@ namespace ToDoList.Data.Repositories
         {
             try
             {
+                logger.LogInformation("Connecting to the database");
+
                 var result = await context.ListItems.SingleOrDefaultAsync(x => x.Id == id);
 
                 return result == null
@@ -49,7 +53,7 @@ namespace ToDoList.Data.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError("An error occurred while trying to connect to the database", ex);
+                logger.LogError(ex, "An error occurred while trying to connect to the database");
                 return RepoResultWrapper<ListItem>.Error();
             }
         }
@@ -58,6 +62,8 @@ namespace ToDoList.Data.Repositories
         {
             try
             {
+                logger.LogInformation("Connecting to the database");
+
                 var result = await context.ListItems.AsNoTracking().ToListAsync();
 
                 return result == null
@@ -66,7 +72,7 @@ namespace ToDoList.Data.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError("An error occurred while trying to connect to the database", ex);
+                logger.LogError(ex, "An error occurred while trying to connect to the database");
                 return RepoResultWrapper<List<ListItem>>.Error();
             }
         }

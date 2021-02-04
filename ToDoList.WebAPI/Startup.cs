@@ -32,7 +32,6 @@ namespace ToDoList.WebAPI
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging(configuration => configuration.AddConsole());
@@ -54,7 +53,6 @@ namespace ToDoList.WebAPI
             services.AddControllers();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -63,6 +61,7 @@ namespace ToDoList.WebAPI
             }
 
             app.UseExceptionHandler("/error");
+            ////Custom error handling:
             //app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
