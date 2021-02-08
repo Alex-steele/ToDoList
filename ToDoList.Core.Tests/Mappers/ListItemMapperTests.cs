@@ -19,6 +19,7 @@ namespace ToDoList.Core.Tests.Mappers
             // Assert
             Assert.That(result.Value, Is.EqualTo(testListItem.Value));
             Assert.That(result.Completed, Is.EqualTo(testListItem.Completed));
+            Assert.That(result.Date, Is.EqualTo(testListItem.Date));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace ToDoList.Core.Models
+﻿using System;
+
+namespace ToDoList.Core.Models
 {
     public class ListItemModel
     {
@@ -7,5 +9,7 @@
         public string Value { get; set; }
 
         public bool Completed { get; set; }
+
+        public DateTime Date { get; set; }
     }
 }

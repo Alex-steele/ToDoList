@@ -12,7 +12,8 @@ namespace ToDoList.Core.Mappers
             {
                 Id = listItem.Id,
                 Value = listItem.Value,
-                Completed = listItem.Completed
+                Completed = listItem.Completed,
+                Date = listItem.Date
             };
         }
     }

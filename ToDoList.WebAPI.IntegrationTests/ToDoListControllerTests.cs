@@ -31,7 +31,6 @@ namespace ToDoList.WebAPI.IntegrationTests
         {
             // Act
             var response = await httpClient.GetAsync("");
-            var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>("");
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -53,6 +52,126 @@ namespace ToDoList.WebAPI.IntegrationTests
 
             // Assert
             Assert.Equal("GetListTest", listItems?.Last().Value);
+        }
+
+        [Fact]
+        public async Task GetItemByValueNotFuzzy_ItemValueDoesNotMatchExistingItem_ReturnsEmptyList()
+        {
+            // Arrange
+            var nonExistingItemValue = Guid.NewGuid().ToString();
+
+            // Act
+            var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>($"searchByValue?ItemValue={nonExistingItemValue}");
+
+            // Assert
+            Assert.Empty(listItems);
+        }
+
+        [Fact]
+        public async Task GetItemByValueNotFuzzy_ItemValueMatchesExistingItemExactly_ReturnsCorrectListOfItems()
+        {
+            // Arrange
+            using (var scope = factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<ToDoListContext>();
+                context.ListItems.Add(new ListItem("GetItemByValueTest"));
+                context.ListItems.Add(new ListItem("GetItemByValueTestNotFuzzy"));
+                await context.SaveChangesAsync();
+            }
+
+            // Act
+            var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>("searchByValue?ItemValue=GetItemByValueTest");
+
+            // Assert
+            foreach (var item in listItems)
+            {
+                Assert.Equal("GetItemByValueTest", item.Value);
+            }
+        }
+
+        [Fact]
+        public async Task GetItemByValueFuzzy_ItemValueNotIncludedInExistingItem_ReturnsEmptyList()
+        {
+            // Arrange
+            var nonExistingItemValue = Guid.NewGuid().ToString();
+
+            // Act
+            var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>($"searchByValue?ItemValue={nonExistingItemValue}&fuzzy=true");
+
+            // Assert
+            Assert.Empty(listItems);
+        }
+
+        [Fact]
+        public async Task GetItemByValueFuzzy_ItemValueIncludedInExistingItem_ReturnsCorrectListOfItems()
+        {
+            // Arrange
+            using (var scope = factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<ToDoListContext>();
+                context.ListItems.Add(new ListItem("GetItemByValueFuzzyTest1"));
+                await context.SaveChangesAsync();
+            }
+
+            // Act
+            var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>("searchByValue?ItemValue=GetItemByValueFuzzyTest&fuzzy=true");
+
+            var fuzzyItems = listItems.Select(x => x.Value.Contains("GetItemByValueFuzzyTest") && x.Value != "GetItemByValueFuzzyTest");
+            
+            // Assert
+            Assert.NotEmpty(fuzzyItems);
+
+            foreach (var item in listItems)
+            {
+                Assert.Contains("GetItemByValueFuzzyTest", item.Value);
+            }
+        }
+
+        [Fact]
+        public async Task GetItemByDate_InvalidDate_Returns400BadRequest()
+        {
+            // Act
+            var response = await httpClient.GetAsync("searchByDate?Date=2020-13-1");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetItemByDate_DateDoesNotMatchItems_ReturnsEmptyList()
+        {
+            // Act
+            var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>("searchByDate?Date=9999-1-1");
+
+            // Assert
+            Assert.Empty(listItems);
+        }
+
+        [Fact]
+        public async Task GetItemByDate_DateMatchesItemsToNearestDay_ReturnsCorrectItems()
+        {
+            using (var scope = factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<ToDoListContext>();
+                context.ListItems.Add(new ListItem
+                {
+                    Value = "GetItemByDateTest",
+                    Date = DateTime.MaxValue,
+                    Completed = false
+                });
+                await context.SaveChangesAsync();
+            }
+
+            var expectedDate = DateTime.MaxValue.Date;
+
+            // Act
+            var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>("searchByDate?Date=9999-12-31");
+
+            // Assert
+            foreach (var item in listItems)
+            {
+                Assert.Equal(item.Date, expectedDate, TimeSpan.FromDays(1));
+            }
         }
 
         [Fact]

@@ -45,6 +45,9 @@ namespace ToDoList.WebAPI
             services.AddScoped<IAddCommand, AddCommand>();
             services.AddScoped<ICompleteCommand, CompleteCommand>();
             services.AddScoped<IGetListQuery, GetListQuery>();
+            services.AddScoped<IGetItemByValueQuery, GetItemByValueQuery>();
+            services.AddScoped<IGetItemByValueFuzzyQuery, GetItemByValueFuzzyQuery>();
+            services.AddScoped<IGetItemByDateQuery, GetItemByDateQuery>();
             services.AddScoped<IDeleteCommand, DeleteCommand>();
             services.ConfigureDataServices(Configuration.GetConnectionString("ToDoListDB"));
             services.AddScoped<IReadOnlyRepository, EFReadOnlyRepository>();

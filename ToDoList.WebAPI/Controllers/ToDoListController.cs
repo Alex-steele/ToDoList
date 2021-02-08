@@ -18,6 +18,9 @@ namespace ToDoList.WebAPI.Controllers
         private readonly IResultResolver<CommandResultWrapper> commandResolver;
         private readonly IResultResolver<QueryResultWrapper> queryResolver;
         private readonly IGetListQuery getListQuery;
+        private readonly IGetItemByValueQuery getItemByValueQuery;
+        private readonly IGetItemByValueFuzzyQuery getItemByValueFuzzyQuery;
+        private readonly IGetItemByDateQuery getItemByDateQuery;
         private readonly IAddCommand addCommand;
         private readonly ICompleteCommand completeCommand;
         private readonly IDeleteCommand deleteCommand;
@@ -27,6 +30,9 @@ namespace ToDoList.WebAPI.Controllers
             IResultResolver<CommandResultWrapper> commandResolver,
             IResultResolver<QueryResultWrapper> queryResolver,
             IGetListQuery getListQuery,
+            IGetItemByValueQuery getItemByValueQuery,
+            IGetItemByValueFuzzyQuery getItemByValueFuzzyQuery,
+            IGetItemByDateQuery getItemByDateQuery,
             IAddCommand addCommand,
             ICompleteCommand completeCommand,
             IDeleteCommand deleteCommand)
@@ -35,6 +41,9 @@ namespace ToDoList.WebAPI.Controllers
             this.commandResolver = commandResolver;
             this.queryResolver = queryResolver;
             this.getListQuery = getListQuery;
+            this.getItemByValueQuery = getItemByValueQuery;
+            this.getItemByValueFuzzyQuery = getItemByValueFuzzyQuery;
+            this.getItemByDateQuery = getItemByDateQuery;
             this.addCommand = addCommand;
             this.completeCommand = completeCommand;
             this.deleteCommand = deleteCommand;
@@ -46,6 +55,28 @@ namespace ToDoList.WebAPI.Controllers
             logger.LogInformation("Calling the GetListQuery");
 
             var result = await getListQuery.ExecuteAsync();
+
+            return queryResolver.Resolve(result);
+        }
+
+        [HttpGet("searchByValue")]
+        public async Task<IActionResult> GetItemByValue([FromQuery] GetItemByValueQueryModel model, bool fuzzy = false)
+        {
+            logger.LogInformation("Calling the GetItemByValueQuery");
+
+            var result = fuzzy
+                ? await getItemByValueFuzzyQuery.ExecuteAsync(model)
+                : await getItemByValueQuery.ExecuteAsync(model);
+
+            return queryResolver.Resolve(result);
+        }
+
+        [HttpGet("searchByDate")]
+        public async Task<IActionResult> GetItemByDate([FromQuery] GetItemByDateQueryModel model)
+        {
+            logger.LogInformation("Calling the GetItemByDateQuery");
+
+            var result = await getItemByDateQuery.ExecuteAsync(model);
 
             return queryResolver.Resolve(result);
         }
