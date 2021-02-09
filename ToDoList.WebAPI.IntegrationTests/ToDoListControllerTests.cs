@@ -55,16 +55,16 @@ namespace ToDoList.WebAPI.IntegrationTests
         }
 
         [Fact]
-        public async Task GetItemByValueNotFuzzy_ItemValueDoesNotMatchExistingItem_ReturnsEmptyList()
+        public async Task GetItemByValueNotFuzzy_ItemValueDoesNotMatchExistingItem_Returns404NotFound()
         {
             // Arrange
             var nonExistingItemValue = Guid.NewGuid().ToString();
 
             // Act
-            var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>($"searchByValue?ItemValue={nonExistingItemValue}");
+            var response = await httpClient.GetAsync($"searchByValue?ItemValue={nonExistingItemValue}");
 
             // Assert
-            Assert.Empty(listItems);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]
@@ -90,16 +90,16 @@ namespace ToDoList.WebAPI.IntegrationTests
         }
 
         [Fact]
-        public async Task GetItemByValueFuzzy_ItemValueNotIncludedInExistingItem_ReturnsEmptyList()
+        public async Task GetItemByValueFuzzy_ItemValueNotIncludedInExistingItem_Returns404NotFound()
         {
             // Arrange
             var nonExistingItemValue = Guid.NewGuid().ToString();
 
             // Act
-            var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>($"searchByValue?ItemValue={nonExistingItemValue}&fuzzy=true");
+            var response = await httpClient.GetAsync($"searchByValue?ItemValue={nonExistingItemValue}&fuzzy=true");
 
             // Assert
-            Assert.Empty(listItems);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]
@@ -141,10 +141,10 @@ namespace ToDoList.WebAPI.IntegrationTests
         public async Task GetItemByDate_DateDoesNotMatchItems_ReturnsEmptyList()
         {
             // Act
-            var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>("searchByDate?Date=9999-1-1");
+            var response = await httpClient.GetAsync("searchByDate/Date=9999-1-1");
 
             // Assert
-            Assert.Empty(listItems);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]

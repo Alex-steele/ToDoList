@@ -27,9 +27,13 @@ namespace ToDoList.Core.Queries
 
             var result = await repository.GetByDateAsync(model.Date);
 
-            if (result.Result == RepoResult.Error)
+            switch (result.Result)
             {
-                return QueryResultWrapper.Error;
+                case RepoResult.Error:
+                    return QueryResultWrapper.Error;
+
+                case RepoResult.NotFound:
+                    return QueryResultWrapper.NotFound;
             }
 
             var listItemModels = result.Payload.Select(x => mapper.Map(x)).ToList();

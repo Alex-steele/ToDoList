@@ -14,6 +14,7 @@ namespace ToDoList.WebAPI.Resolvers
             return resultWrapper.Result switch
             {
                 QueryResult.Success => new OkObjectResult(resultWrapper.Payload),
+                QueryResult.NotFound => new NotFoundResult(),
                 QueryResult.Error => new StatusCodeResult(StatusCodes.Status500InternalServerError),
                 _ => throw new ArgumentOutOfRangeException()
             };

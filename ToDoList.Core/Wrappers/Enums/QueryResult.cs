@@ -3,6 +3,7 @@
     public enum QueryResult
     {
         Success,
+        NotFound,
         Error
     }
 }

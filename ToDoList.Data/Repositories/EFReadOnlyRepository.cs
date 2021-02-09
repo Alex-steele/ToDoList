@@ -71,7 +71,9 @@ namespace ToDoList.Data.Repositories
 
                 return result == null
                     ? RepoResultWrapper<IEnumerable<ListItem>>.Error()
-                    : RepoResultWrapper<IEnumerable<ListItem>>.Success(result);
+                    : !result.Any()
+                        ? RepoResultWrapper<IEnumerable<ListItem>>.NotFound()
+                        : RepoResultWrapper<IEnumerable<ListItem>>.Success(result);
             }
             catch (Exception ex)
             {
@@ -92,7 +94,9 @@ namespace ToDoList.Data.Repositories
 
                 return result == null
                     ? RepoResultWrapper<IEnumerable<ListItem>>.Error()
-                    : RepoResultWrapper<IEnumerable<ListItem>>.Success(result);
+                    : !result.Any()
+                        ? RepoResultWrapper<IEnumerable<ListItem>>.NotFound()
+                        : RepoResultWrapper<IEnumerable<ListItem>>.Success(result);
             }
             catch (Exception ex)
             {
@@ -113,7 +117,9 @@ namespace ToDoList.Data.Repositories
 
                 return result == null
                     ? RepoResultWrapper<IEnumerable<ListItem>>.Error()
-                    : RepoResultWrapper<IEnumerable<ListItem>>.Success(result);
+                    : !result.Any()
+                        ? RepoResultWrapper<IEnumerable<ListItem>>.NotFound()
+                        : RepoResultWrapper<IEnumerable<ListItem>>.Success(result);
             }
             catch (Exception ex)
             {

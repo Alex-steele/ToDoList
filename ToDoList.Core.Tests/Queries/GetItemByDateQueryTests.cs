@@ -54,6 +54,24 @@ namespace ToDoList.Core.Tests.Queries
         }
 
         [Test]
+        public async Task Execute_GetByValueReturnsNotFound_ReturnsNotFound()
+        {
+            // Arrange
+            var model = new GetItemByDateQueryModel
+            {
+                Date = DateTime.MinValue
+            };
+
+            A.CallTo(() => repository.GetByDateAsync(model.Date)).Returns(RepoResultWrapper<IEnumerable<ListItem>>.NotFound());
+
+            // Act
+            var result = await sut.ExecuteAsync(model);
+
+            // Assert
+            Assert.That(result.Result, Is.EqualTo(QueryResult.NotFound));
+        }
+
+        [Test]
         public async Task Execute_GetByValueReturnsList_ReturnsSuccessAndPayload()
         {
             // Arrange
