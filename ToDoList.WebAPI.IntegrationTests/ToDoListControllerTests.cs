@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using ToDoList.Core.Models;
@@ -29,6 +30,9 @@ namespace ToDoList.WebAPI.IntegrationTests
         [Fact]
         public async Task GetList_ReturnsSuccess()
         {
+            // Arrange
+            httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse("Basic dGVzdHVzZXJAdGVzdC5jb206dGVzdA==");
+
             // Act
             var response = await httpClient.GetAsync("");
 
@@ -117,7 +121,7 @@ namespace ToDoList.WebAPI.IntegrationTests
             var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>("searchByValue?ItemValue=GetItemByValueFuzzyTest&fuzzy=true");
 
             var fuzzyItems = listItems.Select(x => x.Value.Contains("GetItemByValueFuzzyTest") && x.Value != "GetItemByValueFuzzyTest");
-            
+
             // Assert
             Assert.NotEmpty(fuzzyItems);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;

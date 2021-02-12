@@ -18,6 +18,7 @@ using ToDoList.Data.QueryableProviders;
 using ToDoList.Data.Repositories;
 using ToDoList.Data.Repositories.Interfaces;
 using ToDoList.WebAPI.Extensions;
+using ToDoList.WebAPI.Middleware;
 using ToDoList.WebAPI.Resolvers;
 using ToDoList.WebAPI.Resolvers.Interfaces;
 
@@ -70,6 +71,8 @@ namespace ToDoList.WebAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseMiddleware<AuthenticationMiddleware>();
 
             app.UseAuthorization();
 
