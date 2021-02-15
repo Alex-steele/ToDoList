@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net;
-using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using ToDoList.Core.Queries.Interfaces;
 using Xunit;
@@ -13,13 +13,12 @@ namespace ToDoList.WebAPI.IntegrationTests
     public class ErrorControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly CustomWebApplicationFactory<Startup> factory;
-        private readonly HttpClient httpClient;
 
         public ErrorControllerTests(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
             factory.ClientOptions.BaseAddress = new Uri("http://localhost/api/ToDoList/");
-            httpClient = factory.CreateClient();
+            var httpClient = factory.CreateClient();
         }
 
         [Fact]
@@ -38,6 +37,9 @@ namespace ToDoList.WebAPI.IntegrationTests
                     services.AddTransient(s => fakeGetListQuery);
                 });
             }).CreateClient();
+
+            client.DefaultRequestHeaders.Authorization =
+                AuthenticationHeaderValue.Parse("Basic dGVzdHVzZXJAdGVzdC5jb206dGVzdA==");
 
             // Act
             var response = await client.GetAsync("");

@@ -18,6 +18,6 @@ namespace ToDoList.Data.Repositories.Interfaces
 
         Task<RepoResultWrapper<IEnumerable<ListItem>>> GetByDateAsync(DateTime date);
 
-        Task<RepoResultWrapper<List<ListItem>>> GetAllAsync();
+        Task<RepoResultWrapper<IEnumerable<ListItem>>> GetAllAsync();
     }
 }

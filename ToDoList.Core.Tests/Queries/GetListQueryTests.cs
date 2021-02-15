@@ -32,7 +32,7 @@ namespace ToDoList.Core.Tests.Queries
         public async Task Execute_GetAllReturnsError_ReturnsError()
         {
             // Arrange
-            A.CallTo(() => repository.GetAllAsync()).Returns(RepoResultWrapper<List<ListItem>>.Error());
+            A.CallTo(() => repository.GetAllAsync()).Returns(RepoResultWrapper<IEnumerable<ListItem>>.Error());
 
             // Act
             var result = await sut.ExecuteAsync();
@@ -55,7 +55,7 @@ namespace ToDoList.Core.Tests.Queries
                 Value = "TestListItem"
             };
 
-            A.CallTo(() => repository.GetAllAsync()).Returns(RepoResultWrapper<List<ListItem>>.Success(testList));
+            A.CallTo(() => repository.GetAllAsync()).Returns(RepoResultWrapper<IEnumerable<ListItem>>.Success(testList));
 
             A.CallTo(() => mapper.Map(testList.Single())).Returns(mappedItem);
 

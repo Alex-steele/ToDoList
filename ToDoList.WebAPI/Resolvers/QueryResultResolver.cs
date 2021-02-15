@@ -15,6 +15,7 @@ namespace ToDoList.WebAPI.Resolvers
             {
                 QueryResult.Success => new OkObjectResult(resultWrapper.Payload),
                 QueryResult.NotFound => new NotFoundResult(),
+                QueryResult.ValidationError => new BadRequestObjectResult(resultWrapper.Validation),
                 QueryResult.Error => new StatusCodeResult(StatusCodes.Status500InternalServerError),
                 _ => throw new ArgumentOutOfRangeException()
             };

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using ToDoList.Core.Mappers.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Queries;
+using ToDoList.Core.Validators;
+using ToDoList.Core.Validators.Interfaces;
 using ToDoList.Core.Wrappers.Enums;
 using ToDoList.Data.Entities;
 using ToDoList.Data.Repositories.Interfaces;
@@ -15,6 +17,7 @@ namespace ToDoList.Core.Tests.Queries
 {
     public class GetItemByValueFuzzyQueryTests
     {
+        private IGetItemByValueQueryValidator validator;
         private IReadOnlyRepository repository;
         private IListItemMapper mapper;
         private GetItemByValueFuzzyQuery sut;
@@ -22,10 +25,11 @@ namespace ToDoList.Core.Tests.Queries
         [SetUp]
         public void SetUp()
         {
+            validator = A.Fake<IGetItemByValueQueryValidator>();
             repository = A.Fake<IReadOnlyRepository>();
             mapper = A.Fake<IListItemMapper>();
 
-            sut = new GetItemByValueFuzzyQuery(repository, mapper);
+            sut = new GetItemByValueFuzzyQuery(validator, repository, mapper);
         }
 
         [Test]
@@ -35,7 +39,7 @@ namespace ToDoList.Core.Tests.Queries
         }
 
         [Test]
-        public async Task ExecuteAsync_ItemValueIsNull_ReturnsSuccess()
+        public async Task ExecuteAsync_ItemValueIsInvalid_ReturnsInvalid()
         {
             // Arrange
             var model = new GetItemByValueQueryModel
@@ -43,15 +47,18 @@ namespace ToDoList.Core.Tests.Queries
                 ItemValue = null
             };
 
-            A.CallTo(() => repository.GetByValueFuzzyAsync(string.Empty))
-                .Returns(RepoResultWrapper<IEnumerable<ListItem>>.Success(new List<ListItem>()));
+            A.CallTo(() => validator.Validate(model))
+                .Returns(ValidationResult.Error(new List<ValidationError>
+                {
+                    new ValidationError(nameof(model.ItemValue), "Test error")
+                }));
 
             // Act
             var result = await sut.ExecuteAsync(model);
 
             // Assert
 
-            Assert.That(result.Result, Is.EqualTo(QueryResult.Success));
+            Assert.That(result.Result, Is.EqualTo(QueryResult.ValidationError));
         }
 
         [Test]
@@ -62,6 +69,8 @@ namespace ToDoList.Core.Tests.Queries
             {
                 ItemValue = "Test"
             };
+
+            A.CallTo(() => validator.Validate(model)).Returns(ValidationResult.Success);
 
             A.CallTo(() => repository.GetByValueFuzzyAsync(model.ItemValue))
                 .Returns(RepoResultWrapper<IEnumerable<ListItem>>.Error());
@@ -81,6 +90,8 @@ namespace ToDoList.Core.Tests.Queries
             {
                 ItemValue = "Test"
             };
+
+            A.CallTo(() => validator.Validate(model)).Returns(ValidationResult.Success);
 
             A.CallTo(() => repository.GetByValueFuzzyAsync(model.ItemValue))
                 .Returns(RepoResultWrapper<IEnumerable<ListItem>>.NotFound());
@@ -110,6 +121,8 @@ namespace ToDoList.Core.Tests.Queries
             {
                 Value = "TestListItem"
             };
+
+            A.CallTo(() => validator.Validate(model)).Returns(ValidationResult.Success);
 
             A.CallTo(() => repository.GetByValueFuzzyAsync(model.ItemValue))
                 .Returns(RepoResultWrapper<IEnumerable<ListItem>>.Success(testList));

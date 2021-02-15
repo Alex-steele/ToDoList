@@ -61,6 +61,19 @@ namespace ToDoList.WebAPI.IntegrationTests
         }
 
         [Fact]
+        public async Task GetItemByValueNotFuzzy_ItemValueInvalid_Returns400BadRequest()
+        {
+            // Arrange
+            var invalidValue = string.Empty;
+
+            // Act
+            var response = await httpClient.GetAsync($"searchByValue?ItemValue={invalidValue}");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
         public async Task GetItemByValueNotFuzzy_ItemValueDoesNotMatchExistingItem_Returns404NotFound()
         {
             // Arrange
@@ -92,6 +105,19 @@ namespace ToDoList.WebAPI.IntegrationTests
             }
 
             scope.Dispose();
+        }
+
+        [Fact]
+        public async Task GetItemByValueFuzzy_ItemValueInvalid_Returns400BadRequest()
+        {
+            // Arrange
+            var invalidValue = string.Empty;
+
+            // Act
+            var response = await httpClient.GetAsync($"searchByValue?ItemValue={invalidValue}&fuzzy=true");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [Fact]

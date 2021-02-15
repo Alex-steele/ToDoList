@@ -128,7 +128,7 @@ namespace ToDoList.Data.Repositories
             }
         }
 
-        public async Task<RepoResultWrapper<List<ListItem>>> GetAllAsync()
+        public async Task<RepoResultWrapper<IEnumerable<ListItem>>> GetAllAsync()
         {
             try
             {
@@ -138,13 +138,13 @@ namespace ToDoList.Data.Repositories
                     .ToListAsync();
 
                 return result == null
-                    ? RepoResultWrapper<List<ListItem>>.Error()
-                    : RepoResultWrapper<List<ListItem>>.Success(result);
+                    ? RepoResultWrapper<IEnumerable<ListItem>>.Error()
+                    : RepoResultWrapper<IEnumerable<ListItem>>.Success(result);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "An error occurred while trying to connect to the database");
-                return RepoResultWrapper<List<ListItem>>.Error();
+                return RepoResultWrapper<IEnumerable<ListItem>>.Error();
             }
         }
     }

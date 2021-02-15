@@ -41,6 +41,7 @@ namespace ToDoList.WebAPI
 
             services.AddSingleton<IListItemMapper, ListItemMapper>();
             services.AddSingleton<IAddCommandValidator, AddCommandValidator>();
+            services.AddSingleton<IGetItemByValueQueryValidator, GetItemByValueQueryValidator>();
             services.AddSingleton<IResultResolver<CommandResultWrapper>, CommandResultResolver>();
             services.AddSingleton<IResultResolver<QueryResultWrapper>, QueryResultResolver>();
 
