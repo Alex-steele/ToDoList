@@ -10,12 +10,12 @@ using ToDoList.Utilities;
 
 namespace ToDoList.Core.Queries
 {
-    public class GetItemByDateQuery : IGetItemByDateQuery
+    public class GetItemsByDateQuery : IGetItemsByDateQuery
     {
         private readonly IReadOnlyRepository repository;
         private readonly IListItemMapper mapper;
 
-        public GetItemByDateQuery(IReadOnlyRepository repository, IListItemMapper mapper)
+        public GetItemsByDateQuery(IReadOnlyRepository repository, IListItemMapper mapper)
         {
             this.repository = repository;
             this.mapper = mapper;

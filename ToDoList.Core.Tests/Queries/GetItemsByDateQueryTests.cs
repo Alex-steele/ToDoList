@@ -18,7 +18,7 @@ namespace ToDoList.Core.Tests.Queries
     {
         private IReadOnlyRepository repository;
         private IListItemMapper mapper;
-        private GetItemByDateQuery sut;
+        private GetItemsByDateQuery sut;
 
         [SetUp]
         public void SetUp()
@@ -26,7 +26,7 @@ namespace ToDoList.Core.Tests.Queries
             repository = A.Fake<IReadOnlyRepository>();
             mapper = A.Fake<IListItemMapper>();
 
-            sut = new GetItemByDateQuery(repository, mapper);
+            sut = new GetItemsByDateQuery(repository, mapper);
         }
 
         [Test]

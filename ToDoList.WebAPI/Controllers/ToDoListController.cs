@@ -19,7 +19,7 @@ namespace ToDoList.WebAPI.Controllers
         private readonly IGetListQuery getListQuery;
         private readonly IGetItemByValueQuery getItemByValueQuery;
         private readonly IGetItemByValueFuzzyQuery getItemByValueFuzzyQuery;
-        private readonly IGetItemByDateQuery getItemByDateQuery;
+        private readonly IGetItemsByDateQuery getItemsByDateQuery;
         private readonly IAddCommand addCommand;
         private readonly ICompleteCommand completeCommand;
         private readonly IDeleteCommand deleteCommand;
@@ -31,7 +31,7 @@ namespace ToDoList.WebAPI.Controllers
             IGetListQuery getListQuery,
             IGetItemByValueQuery getItemByValueQuery,
             IGetItemByValueFuzzyQuery getItemByValueFuzzyQuery,
-            IGetItemByDateQuery getItemByDateQuery,
+            IGetItemsByDateQuery getItemsByDateQuery,
             IAddCommand addCommand,
             ICompleteCommand completeCommand,
             IDeleteCommand deleteCommand)
@@ -42,7 +42,7 @@ namespace ToDoList.WebAPI.Controllers
             this.getListQuery = getListQuery;
             this.getItemByValueQuery = getItemByValueQuery;
             this.getItemByValueFuzzyQuery = getItemByValueFuzzyQuery;
-            this.getItemByDateQuery = getItemByDateQuery;
+            this.getItemsByDateQuery = getItemsByDateQuery;
             this.addCommand = addCommand;
             this.completeCommand = completeCommand;
             this.deleteCommand = deleteCommand;
@@ -69,7 +69,7 @@ namespace ToDoList.WebAPI.Controllers
         [HttpGet("searchByDate")]
         public async Task<IActionResult> GetItemByDate([FromQuery] GetItemByDateQueryModel model)
         {
-            var result = await getItemByDateQuery.ExecuteAsync(model);
+            var result = await getItemsByDateQuery.ExecuteAsync(model);
 
             return queryResolver.Resolve(result);
         }
