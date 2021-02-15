@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using ToDoList.Core.Commands;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Mappers;
@@ -18,6 +19,7 @@ using ToDoList.Data.QueryableProviders;
 using ToDoList.Data.Repositories;
 using ToDoList.Data.Repositories.Interfaces;
 using ToDoList.WebAPI.Extensions;
+using ToDoList.WebAPI.Logging;
 using ToDoList.WebAPI.Middleware;
 using ToDoList.WebAPI.Resolvers;
 using ToDoList.WebAPI.Resolvers.Interfaces;
@@ -69,6 +71,8 @@ namespace ToDoList.WebAPI
             //app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
+
+            app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogHelper.EnrichFromRequest);
 
             app.UseRouting();
 
