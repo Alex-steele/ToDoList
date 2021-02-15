@@ -11,14 +11,13 @@
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchUrl": "weatherforecast",
+      "launchUrl": "api/ToDoList",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "ToDoList.WebAPI": {
       "commandName": "Project",
-      "launchBrowser": true,
       "launchUrl": "api/ToDoList",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

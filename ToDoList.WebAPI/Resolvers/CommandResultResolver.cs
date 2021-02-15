@@ -14,7 +14,7 @@ namespace ToDoList.WebAPI.Resolvers
             return resultWrapper.Result switch
             {
                 CommandResult.Success => new OkResult(),
-                CommandResult.Created => new StatusCodeResult(StatusCodes.Status201Created),
+                CommandResult.Created => new CreatedResult(string.Empty, resultWrapper.Payload),
                 CommandResult.ValidationError => new BadRequestObjectResult(resultWrapper.Validation),
                 CommandResult.NotFound => new NotFoundResult(),
                 CommandResult.Error => new StatusCodeResult(StatusCodes.Status500InternalServerError),

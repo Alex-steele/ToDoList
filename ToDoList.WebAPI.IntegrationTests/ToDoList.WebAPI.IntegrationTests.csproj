@@ -5,6 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.integrationtests.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.integrationtests.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="6.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.11" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.11" />
