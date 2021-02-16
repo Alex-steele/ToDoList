@@ -115,7 +115,7 @@ namespace ToDoList.Core.Tests.Commands
         }
 
         [Test]
-        public async Task ExecuteAsync_SaveChangesReturnsSuccess_ReturnsSuccess()
+        public async Task ExecuteAsync_SaveChangesReturnsSuccess_ReturnsCreated()
         {
             // Arrange
             var testModel = new AddCommandModel
@@ -132,7 +132,7 @@ namespace ToDoList.Core.Tests.Commands
             var result = await sut.ExecuteAsync(testModel);
 
             // Assert
-            Assert.That(result.Result, Is.EqualTo(CommandResult.Success));
+            Assert.That(result.Result, Is.EqualTo(CommandResult.Created));
         }
     }
 }

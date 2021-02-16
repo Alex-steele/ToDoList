@@ -29,16 +29,23 @@ namespace ToDoList.Data.Repositories
             context.ListItems.Update(item);
         }
 
+        public void Delete(ListItem item)
+        {
+            context.ListItems.Remove(item);
+        }
+
         public async Task<RepoResultWrapper<Unit>> SaveChangesAsync()
         {
             try
             {
+                logger.LogInformation("Connecting to the database");
+
                 await context.SaveChangesAsync();
                 return RepoResultWrapper<Unit>.Success(Unit.Default);
             }
             catch (Exception ex)
             {
-                logger.LogError("An error occurred while trying to connect to the database", ex);
+                logger.LogError(ex, "An error occurred while trying to connect to the database");
                 return RepoResultWrapper<Unit>.Error();
             }
         }

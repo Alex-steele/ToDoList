@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ToDoList.Data.Entities;
@@ -24,6 +25,8 @@ namespace ToDoList.Data.Repositories
         {
             try
             {
+                logger.LogInformation("Connecting to the database");
+
                 var result = await context.ListItems.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
 
                 return result == null
@@ -32,7 +35,7 @@ namespace ToDoList.Data.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError("An error occurred while trying to connect to the database", ex);
+                logger.LogError(ex, "An error occurred while trying to connect to the database");
                 return RepoResultWrapper<ListItem>.Error();
             }
         }
@@ -41,6 +44,8 @@ namespace ToDoList.Data.Repositories
         {
             try
             {
+                logger.LogInformation("Connecting to the database");
+
                 var result = await context.ListItems.SingleOrDefaultAsync(x => x.Id == id);
 
                 return result == null
@@ -49,8 +54,77 @@ namespace ToDoList.Data.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError("An error occurred while trying to connect to the database", ex);
+                logger.LogError(ex, "An error occurred while trying to connect to the database");
                 return RepoResultWrapper<ListItem>.Error();
+            }
+        }
+
+        public async Task<RepoResultWrapper<IEnumerable<ListItem>>> GetByValueAsync(string itemValue)
+        {
+            try
+            {
+                logger.LogInformation("Connecting to the database");
+
+                var result = await context.ListItems.AsNoTracking()
+                    .Where(x => x.Value == itemValue)
+                    .ToListAsync();
+
+                return result == null
+                    ? RepoResultWrapper<IEnumerable<ListItem>>.Error()
+                    : !result.Any()
+                        ? RepoResultWrapper<IEnumerable<ListItem>>.NotFound()
+                        : RepoResultWrapper<IEnumerable<ListItem>>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while trying to connect to the database");
+                return RepoResultWrapper<IEnumerable<ListItem>>.Error();
+            }
+        }
+
+        public async Task<RepoResultWrapper<IEnumerable<ListItem>>> GetByValueFuzzyAsync(string itemValue)
+        {
+            try
+            {
+                logger.LogInformation("Connecting to the database");
+
+                var result = await context.ListItems.AsNoTracking()
+                    .Where(x => x.Value.Contains(itemValue))
+                    .ToListAsync();
+
+                return result == null
+                    ? RepoResultWrapper<IEnumerable<ListItem>>.Error()
+                    : !result.Any()
+                        ? RepoResultWrapper<IEnumerable<ListItem>>.NotFound()
+                        : RepoResultWrapper<IEnumerable<ListItem>>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while trying to connect to the database");
+                return RepoResultWrapper<IEnumerable<ListItem>>.Error();
+            }
+        }
+
+        public async Task<RepoResultWrapper<IEnumerable<ListItem>>> GetByDateAsync(DateTime date)
+        {
+            try
+            {
+                logger.LogInformation("Connecting to the database");
+
+                var result = await context.ListItems.AsNoTracking()
+                    .Where(x => x.Date.Year == date.Year && x.Date.DayOfYear == date.DayOfYear)
+                    .ToListAsync();
+
+                return result == null
+                    ? RepoResultWrapper<IEnumerable<ListItem>>.Error()
+                    : !result.Any()
+                        ? RepoResultWrapper<IEnumerable<ListItem>>.NotFound()
+                        : RepoResultWrapper<IEnumerable<ListItem>>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while trying to connect to the database");
+                return RepoResultWrapper<IEnumerable<ListItem>>.Error();
             }
         }
 
@@ -58,7 +132,10 @@ namespace ToDoList.Data.Repositories
         {
             try
             {
-                var result = await context.ListItems.AsNoTracking().ToListAsync();
+                logger.LogInformation("Connecting to the database");
+
+                var result = await context.ListItems.AsNoTracking()
+                    .ToListAsync();
 
                 return result == null
                     ? RepoResultWrapper<List<ListItem>>.Error()
@@ -66,7 +143,7 @@ namespace ToDoList.Data.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError("An error occurred while trying to connect to the database", ex);
+                logger.LogError(ex, "An error occurred while trying to connect to the database");
                 return RepoResultWrapper<List<ListItem>>.Error();
             }
         }

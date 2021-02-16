@@ -9,6 +9,6 @@ namespace ToDoList.Data.QueryableProviders
             Set = context.Set<T>();
         }
 
-        public IQueryable<T> Set { get; set; }
+        public IQueryable<T> Set { get;}
     }
 }

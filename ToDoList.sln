@@ -17,7 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoList.Utilities", "ToDoL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoList.Console.Integration.Tests", "ToDoList.Console.Integration.Tests\ToDoList.Console.Integration.Tests.csproj", "{D2C96895-9E9F-4F60-8F01-95F1A5248B49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.Utilities.Tests", "ToDoList.Utilities.Tests\ToDoList.Utilities.Tests.csproj", "{373892CB-EF5D-4E70-B6C3-09A53D438C18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoList.Utilities.Tests", "ToDoList.Utilities.Tests\ToDoList.Utilities.Tests.csproj", "{373892CB-EF5D-4E70-B6C3-09A53D438C18}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoList.WebAPI", "ToDoList.WebAPI\ToDoList.WebAPI.csproj", "{7989541B-123E-4B08-9409-F123E6522F9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.WebAPI.IntegrationTests", "ToDoList.WebAPI.IntegrationTests\ToDoList.WebAPI.IntegrationTests.csproj", "{4BB22F4A-5302-4EE6-B32D-322CE695C908}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,14 @@ Global
 		{373892CB-EF5D-4E70-B6C3-09A53D438C18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{373892CB-EF5D-4E70-B6C3-09A53D438C18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{373892CB-EF5D-4E70-B6C3-09A53D438C18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7989541B-123E-4B08-9409-F123E6522F9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7989541B-123E-4B08-9409-F123E6522F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7989541B-123E-4B08-9409-F123E6522F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7989541B-123E-4B08-9409-F123E6522F9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BB22F4A-5302-4EE6-B32D-322CE695C908}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BB22F4A-5302-4EE6-B32D-322CE695C908}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BB22F4A-5302-4EE6-B32D-322CE695C908}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BB22F4A-5302-4EE6-B32D-322CE695C908}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

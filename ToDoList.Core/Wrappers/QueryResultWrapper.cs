@@ -6,9 +6,9 @@ namespace ToDoList.Core.Wrappers
 {
     public class QueryResultWrapper
     {
-        private QueryResultWrapper()
+        private QueryResultWrapper(QueryResult result)
         {
-            Result = QueryResult.Error;
+            Result = result;
         }
 
         private QueryResultWrapper(IEnumerable<ListItemModel> payload)
@@ -16,6 +16,7 @@ namespace ToDoList.Core.Wrappers
             Payload = payload;
             Result = QueryResult.Success;
         }
+
         /// <summary>
         /// Create a new QueryResultWrapper as success
         /// </summary>
@@ -24,9 +25,14 @@ namespace ToDoList.Core.Wrappers
         public static QueryResultWrapper Success(IEnumerable<ListItemModel> payload) => new QueryResultWrapper(payload);
 
         /// <summary>
-        /// Create a new QueryResultWrapper as error
+        /// Create a new QueryResultWrapper as NotFound
         /// </summary>
-        public static QueryResultWrapper Error => new QueryResultWrapper();
+        public static QueryResultWrapper NotFound => new QueryResultWrapper(QueryResult.NotFound);
+
+        /// <summary>
+        /// Create a new QueryResultWrapper as Error
+        /// </summary>
+        public static QueryResultWrapper Error => new QueryResultWrapper(QueryResult.Error);
 
         public QueryResult Result { get; }
 

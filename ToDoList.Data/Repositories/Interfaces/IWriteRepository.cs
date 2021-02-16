@@ -11,6 +11,8 @@ namespace ToDoList.Data.Repositories.Interfaces
 
         void Update(ListItem item);
 
+        void Delete(ListItem item);
+
         Task<RepoResultWrapper<Unit>> SaveChangesAsync();
     }
 }

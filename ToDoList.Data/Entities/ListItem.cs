@@ -4,7 +4,6 @@ namespace ToDoList.Data.Entities
 {
     public class ListItem
     {
-        // Can be protected if using EF
         public ListItem()
         {
         }
@@ -18,14 +17,16 @@ namespace ToDoList.Data.Entities
 
             Value = value;
             Completed = false;
+            Date = DateTime.UtcNow;
         }
 
-        // Setters can be protected if using EF
         public int Id { get; set; }
 
         public string Value { get; set; }
 
         public bool Completed { get; set; }
+
+        public DateTime Date { get; set; }
 
         public void Complete()
         {
