@@ -14,7 +14,7 @@ using ToDoList.Data.Wrappers;
 
 namespace ToDoList.Core.Tests.Queries
 {
-    public class GetItemByDateQueryTests
+    public class GetItemsByDateQueryTests
     {
         private IReadOnlyRepository repository;
         private IListItemMapper mapper;

@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using ToDoList.Core.Commands;
 using ToDoList.Core.Commands.Interfaces;
@@ -39,6 +41,37 @@ namespace ToDoList.WebAPI
         {
             services.AddLogging(configuration => configuration.AddConsole());
 
+            services.AddSwaggerGen(setupAction =>
+            {
+                setupAction.SwaggerDoc("ToDoListOpenAPISpecification", new OpenApiInfo
+                {
+                    Title = "ToDoListAPI",
+                    Version = "1"
+                });
+
+                setupAction.AddSecurityDefinition("basicAuth", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    Description = "Input your username and password to access this API"
+                });
+
+                setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "basicAuth"
+                            }
+                        },
+                        new List<string>()
+                    }
+                });
+            });
+
             services.AddSingleton<IListItemMapper, ListItemMapper>();
             services.AddSingleton<IAddCommandValidator, AddCommandValidator>();
             services.AddSingleton<IGetItemByValueQueryValidator, GetItemByValueQueryValidator>();
@@ -72,6 +105,13 @@ namespace ToDoList.WebAPI
             //app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(setupAction =>
+            {
+                setupAction.SwaggerEndpoint("/swagger/ToDoListOpenAPISpecification/swagger.json", "ToDoListAPI");
+            });
 
             app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogHelper.EnrichFromRequest);
 
