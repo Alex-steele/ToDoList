@@ -27,7 +27,7 @@ namespace ToDoList.WebAPI.IntegrationTests
             httpClient = factory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse("Basic dGVzdHVzZXJAdGVzdC5jb206dGVzdA==");
 
-            using (var context = factory.Services.CreateScope().ServiceProvider.GetService<ToDoListContext>())
+            using (var context = GetContext())
             {
                 context.ListItems.RemoveRange(context.ListItems);
                 context.SaveChanges();
