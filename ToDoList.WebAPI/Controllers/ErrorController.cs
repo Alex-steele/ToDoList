@@ -7,6 +7,6 @@ namespace ToDoList.WebAPI.Controllers
     public class ErrorController : ControllerBase
     {
         [Route("/error")]
-        protected IActionResult Error() => Problem();
+        public IActionResult Error() => Problem();
     }
 }

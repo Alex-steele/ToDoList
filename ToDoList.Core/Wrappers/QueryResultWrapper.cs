@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using ToDoList.Core.Models;
 using ToDoList.Core.Validators;
 using ToDoList.Core.Wrappers.Enums;
+using ToDoList.Data.Entities;
+using ToDoList.Data.Wrappers;
+using ToDoList.Data.Wrappers.Enums;
 
 namespace ToDoList.Core.Wrappers
 {
@@ -50,6 +54,24 @@ namespace ToDoList.Core.Wrappers
         /// </summary>
         public static QueryResultWrapper ValidationError(ValidationResult validation) => new QueryResultWrapper(validation);
 
+
+        /// <summary>
+        /// Create a new QueryResultWrapper from the repo result
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="wrapper"></param>
+        /// <param name="mapper"></param>
+        /// <returns></returns>
+        public static QueryResultWrapper FromRepoResult<T>(RepoResultWrapper<T> wrapper, Func<T, IEnumerable<ListItemModel>> mapper)
+        {
+            return wrapper.Result switch
+            {
+                RepoResult.Success => Success(mapper(wrapper.Payload)),
+                RepoResult.NotFound => NotFound,
+                RepoResult.Error => Error,
+                _ => throw new ArgumentOutOfRangeException(nameof(wrapper.Result))
+            };
+        }
 
         public QueryResult Result { get; }
 

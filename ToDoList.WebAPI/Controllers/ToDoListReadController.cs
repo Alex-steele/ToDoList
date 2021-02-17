@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Queries.Interfaces;
 using ToDoList.Core.Wrappers;
@@ -9,43 +7,28 @@ using ToDoList.WebAPI.Resolvers.Interfaces;
 
 namespace ToDoList.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/ToDoList")]
     [ApiController]
-    public class ToDoListController : ControllerBase
+    public class ToDoListReadController : ControllerBase
     {
-        private readonly ILogger<ToDoListController> logger;
-        private readonly IResultResolver<CommandResultWrapper> commandResolver;
         private readonly IResultResolver<QueryResultWrapper> queryResolver;
         private readonly IGetListQuery getListQuery;
         private readonly IGetItemByValueQuery getItemByValueQuery;
         private readonly IGetItemByValueFuzzyQuery getItemByValueFuzzyQuery;
         private readonly IGetItemsByDateQuery getItemsByDateQuery;
-        private readonly IAddCommand addCommand;
-        private readonly ICompleteCommand completeCommand;
-        private readonly IDeleteCommand deleteCommand;
 
-        public ToDoListController(
-            ILogger<ToDoListController> logger,
-            IResultResolver<CommandResultWrapper> commandResolver,
+        public ToDoListReadController(
             IResultResolver<QueryResultWrapper> queryResolver,
             IGetListQuery getListQuery,
             IGetItemByValueQuery getItemByValueQuery,
             IGetItemByValueFuzzyQuery getItemByValueFuzzyQuery,
-            IGetItemsByDateQuery getItemsByDateQuery,
-            IAddCommand addCommand,
-            ICompleteCommand completeCommand,
-            IDeleteCommand deleteCommand)
+            IGetItemsByDateQuery getItemsByDateQuery)
         {
-            this.logger = logger;
-            this.commandResolver = commandResolver;
             this.queryResolver = queryResolver;
             this.getListQuery = getListQuery;
             this.getItemByValueQuery = getItemByValueQuery;
             this.getItemByValueFuzzyQuery = getItemByValueFuzzyQuery;
             this.getItemsByDateQuery = getItemsByDateQuery;
-            this.addCommand = addCommand;
-            this.completeCommand = completeCommand;
-            this.deleteCommand = deleteCommand;
         }
 
         [HttpGet]
@@ -72,30 +55,6 @@ namespace ToDoList.WebAPI.Controllers
             var result = await getItemsByDateQuery.ExecuteAsync(model);
 
             return queryResolver.Resolve(result);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddItem(AddCommandModel model)
-        {
-            var result = await addCommand.ExecuteAsync(model);
-
-            return commandResolver.Resolve(result);
-        }
-
-        [HttpPatch("{ItemId:int}")]
-        public async Task<IActionResult> CompleteItem([FromRoute] CompleteCommandModel model)
-        {
-            var result = await completeCommand.ExecuteAsync(model);
-
-            return commandResolver.Resolve(result);
-        }
-
-        [HttpDelete("{ItemId:int}")]
-        public async Task<IActionResult> DeleteItem([FromRoute] DeleteCommandModel model)
-        {
-            var result = await deleteCommand.ExecuteAsync(model);
-
-            return commandResolver.Resolve(result);
         }
     }
 }

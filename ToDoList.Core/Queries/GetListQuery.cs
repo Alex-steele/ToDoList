@@ -23,14 +23,8 @@ namespace ToDoList.Core.Queries
         {
             var result = await repository.GetAllAsync();
 
-            if (result.Result == RepoResult.Error)
-            {
-                return QueryResultWrapper.Error;
-            }
-
-            var listItemModels = result.Payload.Select(x => mapper.Map(x)).ToList();
-
-            return QueryResultWrapper.Success(listItemModels);
+            return QueryResultWrapper.FromRepoResult(result,
+                listItems => listItems.Select(x => mapper.Map(x)).ToList());
         }
     }
 }

@@ -58,7 +58,7 @@ namespace ToDoList.Core.Wrappers
 
 
         /// <summary>
-        /// Create a new CommandResultWrapper depending on the RepoResult
+        /// Create a new CommandResultWrapper from the repo result
         /// </summary>
         /// <param name="repoResult">Result from repository</param>
         /// <returns></returns>

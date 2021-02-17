@@ -5,7 +5,6 @@ using ToDoList.Core.Models;
 using ToDoList.Core.Queries.Interfaces;
 using ToDoList.Core.Wrappers;
 using ToDoList.Data.Repositories.Interfaces;
-using ToDoList.Data.Wrappers.Enums;
 using ToDoList.Utilities;
 
 namespace ToDoList.Core.Queries
@@ -27,18 +26,8 @@ namespace ToDoList.Core.Queries
 
             var result = await repository.GetByDateAsync(model.Date);
 
-            switch (result.Result)
-            {
-                case RepoResult.Error:
-                    return QueryResultWrapper.Error;
-
-                case RepoResult.NotFound:
-                    return QueryResultWrapper.NotFound;
-            }
-
-            var listItemModels = result.Payload.Select(x => mapper.Map(x)).ToList();
-
-            return QueryResultWrapper.Success(listItemModels);
+            return QueryResultWrapper.FromRepoResult(result,
+                listItems => listItems.Select(x => mapper.Map(x)).ToList());
         }
     }
 }

@@ -20,9 +20,6 @@ namespace ToDoList.WebAPI.IntegrationTests
         private readonly CustomWebApplicationFactory<Startup> factory;
         private readonly HttpClient httpClient;
 
-        private readonly ToDoListContext context;
-        private readonly IServiceScope scope;
-
         public ToDoListControllerTests(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
@@ -30,11 +27,24 @@ namespace ToDoList.WebAPI.IntegrationTests
             httpClient = factory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse("Basic dGVzdHVzZXJAdGVzdC5jb206dGVzdA==");
 
-            scope = factory.Services.CreateScope();
-            context = scope.ServiceProvider.GetService<ToDoListContext>();
+            using (var context = factory.Services.CreateScope().ServiceProvider.GetService<ToDoListContext>())
+            {
+                context.ListItems.RemoveRange(context.ListItems);
+                context.SaveChanges();
+            }
+        }
 
-            context.ListItems.RemoveRange(context.ListItems);
-            context.SaveChanges();
+        [Fact]
+        public async Task UnauthorizedAccess_Returns401Unauthorized()
+        {
+            // Arrange
+            httpClient.DefaultRequestHeaders.Authorization = null;
+
+            // Act
+            var response = await httpClient.GetAsync("");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [Fact]
@@ -51,9 +61,11 @@ namespace ToDoList.WebAPI.IntegrationTests
         public async Task GetList_ReturnsExpectedResponse()
         {
             // Arrange
-            context.ListItems.Add(new ListItem("GetListTest"));
-            await context.SaveChangesAsync();
-            scope.Dispose();
+            using (var context = GetContext())
+            {
+                context.ListItems.Add(new ListItem("GetListTest"));
+                await context.SaveChangesAsync();
+            }
 
             // Act
             var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>("");
@@ -92,11 +104,13 @@ namespace ToDoList.WebAPI.IntegrationTests
         public async Task GetItemByValue_ItemValueMatchesExistingItemExactly_ReturnsCorrectListOfItems()
         {
             // Arrange
-            context.ListItems.Add(new ListItem("GetItemByValueTest"));
-            context.ListItems.Add(new ListItem("GetItemByValueTest"));
-            context.ListItems.Add(new ListItem("GetItemByValueTestNotFuzzy"));
-            await context.SaveChangesAsync();
-            scope.Dispose();
+            using (var context = GetContext())
+            {
+                context.ListItems.Add(new ListItem("GetItemByValueTest"));
+                context.ListItems.Add(new ListItem("GetItemByValueTest"));
+                context.ListItems.Add(new ListItem("GetItemByValueTestNotFuzzy"));
+                await context.SaveChangesAsync();
+            }
 
             // Act
             var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>("searchByValue?ItemValue=GetItemByValueTest");
@@ -137,10 +151,12 @@ namespace ToDoList.WebAPI.IntegrationTests
         public async Task GetItemByValueFuzzy_ItemValueIncludedInExistingItem_ReturnsCorrectListOfItems()
         {
             // Arrange
-            context.ListItems.Add(new ListItem("GetItemByValueFuzzyTest"));
-            context.ListItems.Add(new ListItem("GetItemByValueFuzzyTest1"));
-            await context.SaveChangesAsync();
-            scope.Dispose();
+            using (var context = GetContext())
+            {
+                context.ListItems.Add(new ListItem("GetItemByValueFuzzyTest"));
+                context.ListItems.Add(new ListItem("GetItemByValueFuzzyTest1"));
+                await context.SaveChangesAsync();
+            }
 
             // Act
             var listItems = await httpClient.GetFromJsonAsync<List<ListItem>>("searchByValue?ItemValue=GetItemByValueFuzzyTest&fuzzy=true");
@@ -179,22 +195,24 @@ namespace ToDoList.WebAPI.IntegrationTests
         public async Task GetItemByDate_DateMatchesItemsToNearestDay_ReturnsCorrectItems()
         {
             // Arrange
-            context.ListItems.Add(new ListItem
+            using (var context = GetContext())
             {
-                Value = "GetItemByDateTest",
-                Date = DateTime.MaxValue,
-                Completed = false
-            });
+                context.ListItems.Add(new ListItem
+                {
+                    Value = "GetItemByDateTest",
+                    Date = DateTime.MaxValue,
+                    Completed = false
+                });
 
-            context.ListItems.Add(new ListItem
-            {
-                Value = "GetItemByDateTest2",
-                Date = DateTime.MaxValue,
-                Completed = false
-            });
+                context.ListItems.Add(new ListItem
+                {
+                    Value = "GetItemByDateTest2",
+                    Date = DateTime.MaxValue,
+                    Completed = false
+                });
 
-            await context.SaveChangesAsync();
-            scope.Dispose();
+                await context.SaveChangesAsync();
+            }
 
             var expectedDate = DateTime.MaxValue.Date;
 
@@ -228,8 +246,11 @@ namespace ToDoList.WebAPI.IntegrationTests
             var response = await httpClient.PostAsJsonAsync("", new AddCommandModel { ItemValue = "AddItemTest" });
             var payload = await response.Content.ReadFromJsonAsync<ListItem>();
 
-            var addedItem = context.ListItems.Single();
-            scope.Dispose();
+            ListItem addedItem;
+            using (var context = GetContext())
+            {
+                addedItem = context.ListItems.Single();
+            }
 
             // Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -252,20 +273,21 @@ namespace ToDoList.WebAPI.IntegrationTests
         public async Task CompleteItem_ExistingID_ReturnsSuccess()
         {
             // Arrange
-            context.ListItems.Add(new ListItem("CompleteItemTest"));
-            await context.SaveChangesAsync();
-
-            var itemId = context.ListItems.Single().Id;
-            scope.Dispose();
+            ListItem item;
+            using (var context = GetContext())
+            {
+                item = new ListItem("CompleteItemTest");
+                context.ListItems.Add(item);
+                await context.SaveChangesAsync();
+            }
 
             // Act
-            var response = await httpClient.PatchAsync(itemId.ToString(), null);
+            var response = await httpClient.PatchAsync(item.Id.ToString(), null);
 
             ListItem completedItem;
-            using (var scope = factory.Services.CreateScope())
+            using (var context = GetContext())
             {
-                var context = scope.ServiceProvider.GetService<ToDoListContext>();
-                completedItem = context.ListItems.Single(x => x.Id == itemId);
+                completedItem = context.ListItems.Single(x => x.Id == item.Id);
             }
 
             // Assert
@@ -288,19 +310,29 @@ namespace ToDoList.WebAPI.IntegrationTests
         public async Task DeleteItem_ExistingID_ReturnsSuccess()
         {
             // Arrange
-            context.ListItems.Add(new ListItem("DeleteItemTest"));
-            await context.SaveChangesAsync();
-
-            var itemId = context.ListItems.Single().Id;
+            ListItem item;
+            using (var context = GetContext())
+            {
+                item = new ListItem("DeleteItemTest");
+                context.ListItems.Add(item);
+                await context.SaveChangesAsync();
+            }
 
             // Act
-            var response = await httpClient.DeleteAsync(itemId.ToString());
-            var deletedItem = context.ListItems.SingleOrDefault(x => x.Id == itemId);
-            scope.Dispose();
+            var response = await httpClient.DeleteAsync(item.Id.ToString());
+
+            ListItem deletedItem;
+            using (var context = GetContext())
+            {
+                deletedItem = context.ListItems.SingleOrDefault(x => x.Id == item.Id);
+            }
 
             // Assert
             Assert.Null(deletedItem);
             response.EnsureSuccessStatusCode();
         }
+
+        private ToDoListContext GetContext() =>
+            factory.Services.CreateScope().ServiceProvider.GetService<ToDoListContext>();
     }
 }

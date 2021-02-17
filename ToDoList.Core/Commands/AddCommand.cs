@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Models;
 using ToDoList.Core.Validators.Interfaces;
@@ -19,7 +18,7 @@ namespace ToDoList.Core.Commands
         private readonly IQueryableProvider<ListItem> queryableProvider;
 
         public AddCommand(IWriteRepository writeRepository,
-            IAddCommandValidator validator, 
+            IAddCommandValidator validator,
             IQueryableProvider<ListItem> queryableProvider)
         {
             this.writeRepository = writeRepository;
@@ -38,20 +37,14 @@ namespace ToDoList.Core.Commands
                 return CommandResultWrapper.ValidationError(validationResult);
             }
 
-            writeRepository.Add(new ListItem(model.ItemValue));
+            var item = new ListItem(model.ItemValue);
+
+            writeRepository.Add(item);
             var saveResult = await writeRepository.SaveChangesAsync();
 
-            if (saveResult.Result != RepoResult.Success)
-            {
-                return CommandResultWrapper.Error;
-            }
-
-            var addedItem = queryableProvider.Set
-                .Where(x => x.Value == model.ItemValue && x.Completed == false)
-                .OrderBy(x => x.Date)
-                .Last();
-
-            return CommandResultWrapper.Created(addedItem);
+            return saveResult.Result != RepoResult.Success
+                ? CommandResultWrapper.Error
+                : CommandResultWrapper.Created(item);
         }
     }
 }

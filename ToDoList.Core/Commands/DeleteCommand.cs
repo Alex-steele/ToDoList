@@ -31,7 +31,6 @@ namespace ToDoList.Core.Commands
             }
 
             writeRepository.Delete(result.Payload);
-
             var saveResult = await writeRepository.SaveChangesAsync();
 
             return CommandResultWrapper.FromRepoResult(saveResult.Result);

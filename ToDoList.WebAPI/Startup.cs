@@ -39,8 +39,6 @@ namespace ToDoList.WebAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging(configuration => configuration.AddConsole());
-
             services.AddSwaggerGen(setupAction =>
             {
                 setupAction.SwaggerDoc("ToDoListOpenAPISpecification", new OpenApiInfo
@@ -72,6 +70,8 @@ namespace ToDoList.WebAPI
                 });
             });
 
+            services.AddLogging(configuration => configuration.AddConsole());
+
             services.AddSingleton<IListItemMapper, ListItemMapper>();
             services.AddSingleton<IAddCommandValidator, AddCommandValidator>();
             services.AddSingleton<IGetItemByValueQueryValidator, GetItemByValueQueryValidator>();
@@ -87,8 +87,6 @@ namespace ToDoList.WebAPI
             services.AddScoped<IGetItemsByDateQuery, GetItemsByDateQuery>();
             services.AddScoped<IDeleteCommand, DeleteCommand>();
             services.ConfigureDataServices(Configuration.GetConnectionString("ToDoListDB"));
-            services.AddScoped<IReadOnlyRepository, EFReadOnlyRepository>();
-            services.AddScoped<IWriteRepository, EFWriteRepository>();
 
             services.AddControllers();
         }

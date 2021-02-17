@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ToDoList.Data.Cosmos;
+using ToDoList.Data.Repositories;
+using ToDoList.Data.Repositories.Interfaces;
 
 namespace ToDoList.Data.Configuration
 {
@@ -9,6 +11,9 @@ namespace ToDoList.Data.Configuration
         public static IServiceCollection ConfigureDataServices(this IServiceCollection services,
             string connectionString)
         {
+            services.AddScoped<IReadOnlyRepository, EFReadOnlyRepository>();
+            services.AddScoped<IWriteRepository, EFWriteRepository>();
+
             // Config for Sql Server
             services.AddDbContext<ToDoListContext>(options => options.UseSqlServer(connectionString));
 
