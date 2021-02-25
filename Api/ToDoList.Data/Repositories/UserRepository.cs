@@ -18,6 +18,7 @@ namespace ToDoList.Data.Repositories
 
         public async Task<bool> UserExists(string username, string hashedPassword)
         {
+            logger.LogInformation("Connecting to the database");
             return await context.ListUsers.AnyAsync(x => x.Email == username && x.Password == hashedPassword);
         }
     }
