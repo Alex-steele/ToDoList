@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using ToDoList.Data;
+using ToDoList.Data.Repositories.Interfaces;
 
 namespace ToDoList.WebAPI.Middleware
 {
@@ -24,6 +22,9 @@ namespace ToDoList.WebAPI.Middleware
 
             if (authHeader != null && authHeader.StartsWith("Basic"))
             {
+                var userRepo = context.RequestServices.GetService<IUserRepository>();
+                var sha256Generator = context.RequestServices.GetService<ISha256Generator>();
+
                 var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
 
                 var encoding = Encoding.GetEncoding("iso-8859-1");
@@ -32,12 +33,10 @@ namespace ToDoList.WebAPI.Middleware
                 var separatorIndex = usernamePassword.IndexOf(':');
 
                 var username = usernamePassword.Substring(0, separatorIndex);
-                var password = usernamePassword.Substring(separatorIndex + 1);
-                var hashedPassword = ComputeSha256Hash(password);
+                var rawPassword = usernamePassword.Substring(separatorIndex + 1);
+                var hashedPassword = sha256Generator.ComputeSha256Hash(rawPassword);
 
-                var db = context.RequestServices.GetService<ToDoListContext>();
-
-                var userExists = await db.ListUsers.AnyAsync(x => x.Email == username && x.Password == hashedPassword);
+                var userExists = await userRepo.UserExists(username, hashedPassword);
 
                 if (userExists)
                 {
@@ -51,22 +50,6 @@ namespace ToDoList.WebAPI.Middleware
             else
             {
                 context.Response.StatusCode = 401;
-            }
-        }
-
-        private static string ComputeSha256Hash(string rawData)
-        {
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                var bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-
-                var builder = new StringBuilder();
-
-                foreach (var b in bytes)
-                {
-                    builder.Append(b.ToString("x2"));
-                }
-                return builder.ToString();
             }
         }
     }

@@ -13,6 +13,7 @@ namespace ToDoList.Data.Configuration
         {
             services.AddScoped<IReadOnlyRepository, EFReadOnlyRepository>();
             services.AddScoped<IWriteRepository, EFWriteRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             // Config for Sql Server
             services.AddDbContext<ToDoListContext>(options => options.UseSqlServer(connectionString));

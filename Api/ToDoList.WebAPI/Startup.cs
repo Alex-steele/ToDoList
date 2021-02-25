@@ -77,6 +77,7 @@ namespace ToDoList.WebAPI
             services.AddSingleton<IGetItemByValueQueryValidator, GetItemByValueQueryValidator>();
             services.AddSingleton<IResultResolver<CommandResultWrapper>, CommandResultResolver>();
             services.AddSingleton<IResultResolver<QueryResultWrapper>, QueryResultResolver>();
+            services.AddSingleton<ISha256Generator, Sha256Generator>();
 
             services.AddScoped(typeof(IQueryableProvider<>), typeof(QueryableProvider<>));
             services.AddScoped<IAddCommand, AddCommand>();
