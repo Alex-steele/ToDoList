@@ -70,6 +70,16 @@ namespace ToDoList.WebAPI
                 });
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                        .SetIsOriginAllowed((host) => true)
+                        .AllowAnyHeader());
+            });
+
             services.AddLogging(configuration => configuration.AddConsole());
 
             services.AddSingleton<IListItemMapper, ListItemMapper>();
@@ -99,6 +109,8 @@ namespace ToDoList.WebAPI
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("CorsPolicy");
+
             app.UseExceptionHandler("/error");
             ////Custom error handling:
             //app.ConfigureExceptionHandler();
@@ -116,7 +128,7 @@ namespace ToDoList.WebAPI
 
             app.UseRouting();
 
-            app.UseMiddleware<AuthenticationMiddleware>();
+            //app.UseMiddleware<AuthenticationMiddleware>();
 
             app.UseAuthorization();
 
