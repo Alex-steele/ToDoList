@@ -93,6 +93,7 @@ namespace ToDoList.WebAPI
             services.AddScoped<IAddCommand, AddCommand>();
             services.AddScoped<ICompleteCommand, CompleteCommand>();
             services.AddScoped<IGetListQuery, GetListQuery>();
+            services.AddScoped<IGetItemByIdQuery, GetItemByIdQuery>();
             services.AddScoped<IGetItemByValueQuery, GetItemByValueQuery>();
             services.AddScoped<IGetItemByValueFuzzyQuery, GetItemByValueFuzzyQuery>();
             services.AddScoped<IGetItemsByDateQuery, GetItemsByDateQuery>();

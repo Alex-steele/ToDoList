@@ -13,6 +13,7 @@ namespace ToDoList.WebAPI.Controllers
     {
         private readonly IResultResolver<QueryResultWrapper> queryResolver;
         private readonly IGetListQuery getListQuery;
+        private readonly IGetItemByIdQuery getItemByIdQuery;
         private readonly IGetItemByValueQuery getItemByValueQuery;
         private readonly IGetItemByValueFuzzyQuery getItemByValueFuzzyQuery;
         private readonly IGetItemsByDateQuery getItemsByDateQuery;
@@ -20,12 +21,14 @@ namespace ToDoList.WebAPI.Controllers
         public ToDoListReadController(
             IResultResolver<QueryResultWrapper> queryResolver,
             IGetListQuery getListQuery,
+            IGetItemByIdQuery getItemByIdQuery,
             IGetItemByValueQuery getItemByValueQuery,
             IGetItemByValueFuzzyQuery getItemByValueFuzzyQuery,
             IGetItemsByDateQuery getItemsByDateQuery)
         {
             this.queryResolver = queryResolver;
             this.getListQuery = getListQuery;
+            this.getItemByIdQuery = getItemByIdQuery;
             this.getItemByValueQuery = getItemByValueQuery;
             this.getItemByValueFuzzyQuery = getItemByValueFuzzyQuery;
             this.getItemsByDateQuery = getItemsByDateQuery;
@@ -35,6 +38,14 @@ namespace ToDoList.WebAPI.Controllers
         public async Task<IActionResult> GetList()
         {
             var result = await getListQuery.ExecuteAsync();
+
+            return queryResolver.Resolve(result);
+        }
+
+        [HttpGet("{ItemId:int}")]
+        public async Task<IActionResult> GetItemById([FromRoute] GetItemByIdQueryModel model)
+        {
+            var result = await getItemByIdQuery.ExecuteAsync(model);
 
             return queryResolver.Resolve(result);
         }

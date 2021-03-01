@@ -21,6 +21,11 @@ export class ListItemService {
       .pipe(catchError(this.handleError<listItem[]>('getList', [])))
   }
 
+  getListItem(id: number):Observable<listItem> {
+    return this.http.get<listItem>(`${this.listItemUrl}/${id}`)
+      .pipe(catchError(this.handleError<listItem>('getListItem')))
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error:any): Observable<T> => {
       console.error(error);

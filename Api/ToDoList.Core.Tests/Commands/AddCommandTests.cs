@@ -21,7 +21,6 @@ namespace ToDoList.Core.Tests.Commands
     {
         private IWriteRepository writeRepository;
         private IAddCommandValidator validator;
-        private IQueryableProvider<ListItem> queryableProvider;
         private AddCommand sut;
 
         [SetUp]
@@ -29,9 +28,8 @@ namespace ToDoList.Core.Tests.Commands
         {
             writeRepository = A.Fake<IWriteRepository>();
             validator = A.Fake<IAddCommandValidator>();
-            queryableProvider = A.Fake<IQueryableProvider<ListItem>>();
 
-            sut = new AddCommand(writeRepository, validator, queryableProvider);
+            sut = new AddCommand(writeRepository, validator);
         }
 
         [Test]
@@ -85,9 +83,6 @@ namespace ToDoList.Core.Tests.Commands
 
             A.CallTo(() => writeRepository.SaveChangesAsync()).Returns(RepoResultWrapper<Unit>.Success(Unit.Default));
 
-            A.CallTo(() => queryableProvider.Set)
-                .Returns(new EnumerableQuery<ListItem>(new List<ListItem> {new ListItem("Valid Value")}));
-
             // Act
             var result = await sut.ExecuteAsync(testModel);
 
@@ -132,9 +127,6 @@ namespace ToDoList.Core.Tests.Commands
                 .Returns(ValidationResult.Success);
 
             A.CallTo(() => writeRepository.SaveChangesAsync()).Returns(RepoResultWrapper<Unit>.Success(Unit.Default));
-
-            A.CallTo(() => queryableProvider.Set)
-                .Returns(new EnumerableQuery<ListItem>(new List<ListItem> { new ListItem("Valid Value") }));
 
             // Act
             var result = await sut.ExecuteAsync(testModel);

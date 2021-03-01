@@ -48,6 +48,21 @@ namespace ToDoList.WebAPI.IntegrationTests
         }
 
         [Fact]
+        public async Task PathDoesNotMatchAnyController_Returns404NotFound()
+        {
+            // Act
+            var getResponse = await httpClient.GetAsync("a");
+            var patchResponse = await httpClient.PatchAsync("a", null);
+            var deleteResponse = await httpClient.DeleteAsync("a");
+
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, patchResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+        }
+
+        [Fact]
         public async Task GetList_ReturnsSuccess()
         {
             // Act
@@ -61,7 +76,7 @@ namespace ToDoList.WebAPI.IntegrationTests
         public async Task GetList_ReturnsExpectedResponse()
         {
             // Arrange
-            using (var context = GetContext())
+            await using (var context = GetContext())
             {
                 context.ListItems.Add(new ListItem("GetListTest"));
                 await context.SaveChangesAsync();
@@ -72,6 +87,35 @@ namespace ToDoList.WebAPI.IntegrationTests
 
             // Assert
             Assert.Equal("GetListTest", listItems?.Single().Value);
+        }
+
+        [Fact]
+        public async Task GetById_NonExistingId_Returns404NotFound()
+        {
+            // Act
+            var response = await httpClient.GetAsync($"{int.MaxValue}");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetById_ExistingId_ReturnsItem()
+        {
+            // Arrange
+            ListItem item;
+            await using (var context = GetContext())
+            {
+                item = new ListItem("GetByIdTest");
+                context.ListItems.Add(item);
+                await context.SaveChangesAsync();
+            }
+
+            // Act
+            var listItem = await httpClient.GetFromJsonAsync<List<ListItem>>($"{item.Id}");
+
+            // Assert
+            Assert.Equal("GetByIdTest", listItem.Single().Value);
         }
 
         [Fact]
@@ -246,17 +290,17 @@ namespace ToDoList.WebAPI.IntegrationTests
             var response = await httpClient.PostAsJsonAsync("", new AddCommandModel { ItemValue = "AddItemTest" });
             var payload = await response.Content.ReadFromJsonAsync<ListItem>();
 
-            ListItem addedItem;
+            ListItem dbItem;
             using (var context = GetContext())
             {
-                addedItem = context.ListItems.Single();
+                dbItem = context.ListItems.Single();
             }
 
             // Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-            Assert.Equal("AddItemTest", addedItem.Value);
+            Assert.Equal("AddItemTest", dbItem.Value);
             Assert.Equal("AddItemTest", payload.Value);
-            Assert.Equal(payload.Id, addedItem.Id);
+            Assert.Equal(payload.Id, dbItem.Id);
         }
 
         [Fact]

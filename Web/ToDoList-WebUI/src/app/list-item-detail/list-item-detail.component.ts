@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ListItemService } from '../list-item.service';
+
+import { listItem } from '../listItem';
 
 @Component({
   selector: 'app-list-item-detail',
@@ -7,9 +11,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListItemDetailComponent implements OnInit {
 
-  constructor() { }
+  listItem: listItem;
+
+  constructor(
+    private route: ActivatedRoute,
+    private listItemService: ListItemService) { }
 
   ngOnInit(): void {
+  }
+
+  getListItem(): void {
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.listItemService
   }
 
 }
