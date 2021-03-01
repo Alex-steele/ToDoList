@@ -3,13 +3,13 @@ using ToDoList.Core.Wrappers;
 
 namespace ToDoList.Core.Queries.Interfaces
 {
-    public interface IQuery<in T>
+    public interface IQuery<in TIn, TOut>
     {
-        Task<QueryResultWrapper> ExecuteAsync(T model);
+        Task<QueryResultWrapper<TOut>> ExecuteAsync(TIn model);
     }
 
-    public interface IQuery
+    public interface IQuery<TOut>
     {
-        Task<QueryResultWrapper> ExecuteAsync();
+        Task<QueryResultWrapper<TOut>> ExecuteAsync();
     }
 }

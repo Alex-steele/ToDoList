@@ -11,6 +11,7 @@ using ToDoList.Core.Commands;
 using ToDoList.Core.Commands.Interfaces;
 using ToDoList.Core.Mappers;
 using ToDoList.Core.Mappers.Interfaces;
+using ToDoList.Core.Models;
 using ToDoList.Core.Queries;
 using ToDoList.Core.Queries.Interfaces;
 using ToDoList.Core.Validators;
@@ -86,7 +87,8 @@ namespace ToDoList.WebAPI
             services.AddSingleton<IAddCommandValidator, AddCommandValidator>();
             services.AddSingleton<IGetItemByValueQueryValidator, GetItemByValueQueryValidator>();
             services.AddSingleton<IResultResolver<CommandResultWrapper>, CommandResultResolver>();
-            services.AddSingleton<IResultResolver<QueryResultWrapper>, QueryResultResolver>();
+            services.AddSingleton<IResultResolver<QueryResultWrapper<List<ListItemModel>>>, QueryResultResolver<List<ListItemModel>>>();
+            services.AddSingleton<IResultResolver<QueryResultWrapper<ListItemModel>>, QueryResultResolver<ListItemModel>>();
             services.AddSingleton<ISha256Generator, Sha256Generator>();
 
             services.AddScoped(typeof(IQueryableProvider<>), typeof(QueryableProvider<>));

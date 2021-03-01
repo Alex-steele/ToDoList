@@ -2,7 +2,7 @@
 
 namespace ToDoList.Core.Queries.Interfaces
 {
-    public interface IGetItemByIdQuery : IQuery<GetItemByIdQueryModel>
+    public interface IGetItemByIdQuery : IQuery<GetItemByIdQueryModel, ListItemModel>
     {
     }
 }

@@ -1,8 +1,9 @@
-﻿using ToDoList.Core.Models;
+﻿using System.Collections.Generic;
+using ToDoList.Core.Models;
 
 namespace ToDoList.Core.Queries.Interfaces
 {
-    public interface IGetItemByValueFuzzyQuery : IQuery<GetItemByValueQueryModel>
+    public interface IGetItemByValueFuzzyQuery : IQuery<GetItemByValueQueryModel, List<ListItemModel>>
     {
     }
 }

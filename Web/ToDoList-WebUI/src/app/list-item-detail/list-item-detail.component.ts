@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ListItemService } from '../list-item.service';
+import { Location } from '@angular/common';
 
 import { listItem } from '../listItem';
 
@@ -11,18 +12,23 @@ import { listItem } from '../listItem';
 })
 export class ListItemDetailComponent implements OnInit {
 
-  listItem: listItem;
+  @Input() listItem: listItem;
 
   constructor(
     private route: ActivatedRoute,
-    private listItemService: ListItemService) { }
+    private listItemService: ListItemService,
+    private location: Location) {this.getListItem(); }
 
   ngOnInit(): void {
+    this.getListItem();
   }
 
   getListItem(): void {
     const id = +this.route.snapshot.paramMap.get('id');
-    this.listItemService
+    this.listItemService.getListItem(id).subscribe(listItem => this.listItem = listItem)
   }
 
+  goBack(): void {
+    this.location.back();
+  }
 }

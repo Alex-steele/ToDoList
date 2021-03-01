@@ -98,7 +98,7 @@ namespace ToDoList.Core.Tests.Queries
             // Assert
             Assert.That(result.Result, Is.EqualTo(QueryResult.Success));
 
-            Assert.That(result.Payload.Single(), Is.EqualTo(mappedItem));
+            Assert.That(result.Payload, Is.EqualTo(mappedItem));
         }
     }
 }

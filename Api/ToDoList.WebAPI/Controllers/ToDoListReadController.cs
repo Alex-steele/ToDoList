@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ToDoList.Core.Models;
 using ToDoList.Core.Queries.Interfaces;
@@ -11,7 +12,8 @@ namespace ToDoList.WebAPI.Controllers
     [ApiController]
     public class ToDoListReadController : ControllerBase
     {
-        private readonly IResultResolver<QueryResultWrapper> queryResolver;
+        private readonly IResultResolver<QueryResultWrapper<List<ListItemModel>>> queryListResolver;
+        private readonly IResultResolver<QueryResultWrapper<ListItemModel>> queryItemResolver;
         private readonly IGetListQuery getListQuery;
         private readonly IGetItemByIdQuery getItemByIdQuery;
         private readonly IGetItemByValueQuery getItemByValueQuery;
@@ -19,14 +21,16 @@ namespace ToDoList.WebAPI.Controllers
         private readonly IGetItemsByDateQuery getItemsByDateQuery;
 
         public ToDoListReadController(
-            IResultResolver<QueryResultWrapper> queryResolver,
+            IResultResolver<QueryResultWrapper<List<ListItemModel>>> queryListResolver,
+            IResultResolver<QueryResultWrapper<ListItemModel>> queryItemResolver,
             IGetListQuery getListQuery,
             IGetItemByIdQuery getItemByIdQuery,
             IGetItemByValueQuery getItemByValueQuery,
             IGetItemByValueFuzzyQuery getItemByValueFuzzyQuery,
             IGetItemsByDateQuery getItemsByDateQuery)
         {
-            this.queryResolver = queryResolver;
+            this.queryListResolver = queryListResolver;
+            this.queryItemResolver = queryItemResolver;
             this.getListQuery = getListQuery;
             this.getItemByIdQuery = getItemByIdQuery;
             this.getItemByValueQuery = getItemByValueQuery;
@@ -39,7 +43,7 @@ namespace ToDoList.WebAPI.Controllers
         {
             var result = await getListQuery.ExecuteAsync();
 
-            return queryResolver.Resolve(result);
+            return queryListResolver.Resolve(result);
         }
 
         [HttpGet("{ItemId:int}")]
@@ -47,7 +51,7 @@ namespace ToDoList.WebAPI.Controllers
         {
             var result = await getItemByIdQuery.ExecuteAsync(model);
 
-            return queryResolver.Resolve(result);
+            return queryItemResolver.Resolve(result);
         }
 
         [HttpGet("searchByValue")]
@@ -57,7 +61,7 @@ namespace ToDoList.WebAPI.Controllers
                 ? await getItemByValueFuzzyQuery.ExecuteAsync(model)
                 : await getItemByValueQuery.ExecuteAsync(model);
 
-            return queryResolver.Resolve(result);
+            return queryListResolver.Resolve(result);
         }
 
         [HttpGet("searchByDate")]
@@ -65,7 +69,7 @@ namespace ToDoList.WebAPI.Controllers
         {
             var result = await getItemsByDateQuery.ExecuteAsync(model);
 
-            return queryResolver.Resolve(result);
+            return queryListResolver.Resolve(result);
         }
     }
 }

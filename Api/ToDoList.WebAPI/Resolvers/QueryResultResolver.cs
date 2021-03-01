@@ -7,9 +7,9 @@ using ToDoList.WebAPI.Resolvers.Interfaces;
 
 namespace ToDoList.WebAPI.Resolvers
 {
-    public class QueryResultResolver : IResultResolver<QueryResultWrapper>
+    public class QueryResultResolver<T> : IResultResolver<QueryResultWrapper<T>>
     {
-        public IActionResult Resolve(QueryResultWrapper resultWrapper)
+        public IActionResult Resolve(QueryResultWrapper<T> resultWrapper)
         {
             return resultWrapper.Result switch
             {

@@ -112,10 +112,10 @@ namespace ToDoList.WebAPI.IntegrationTests
             }
 
             // Act
-            var listItem = await httpClient.GetFromJsonAsync<List<ListItem>>($"{item.Id}");
+            var listItem = await httpClient.GetFromJsonAsync<ListItem>($"{item.Id}");
 
             // Assert
-            Assert.Equal("GetByIdTest", listItem.Single().Value);
+            Assert.Equal("GetByIdTest", listItem.Value);
         }
 
         [Fact]

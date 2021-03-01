@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ToDoList.Core.Mappers.Interfaces;
 using ToDoList.Core.Models;
@@ -20,13 +21,13 @@ namespace ToDoList.Core.Queries
             this.mapper = mapper;
         }
 
-        public async Task<QueryResultWrapper> ExecuteAsync(GetItemByDateQueryModel model)
+        public async Task<QueryResultWrapper<List<ListItemModel>>> ExecuteAsync(GetItemByDateQueryModel model)
         {
             Check.NotNull(model, nameof(model));
 
             var result = await repository.GetByDateAsync(model.Date);
 
-            return QueryResultWrapper.FromRepoResult(result,
+            return QueryResultWrapper<List<ListItemModel>>.FromRepoResult(result,
                 listItems => listItems.Select(x => mapper.Map(x)).ToList());
         }
     }

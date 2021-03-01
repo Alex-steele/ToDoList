@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using ToDoList.Core.Models;
 using ToDoList.Core.Validators;
 using ToDoList.Core.Wrappers.Enums;
-using ToDoList.Data.Entities;
 using ToDoList.Data.Wrappers;
 using ToDoList.Data.Wrappers.Enums;
 
 namespace ToDoList.Core.Wrappers
 {
-    public class QueryResultWrapper
+    public class QueryResultWrapper<T>
     {
         private QueryResultWrapper(QueryResult result)
         {
             Result = result;
         }
 
-        private QueryResultWrapper(IEnumerable<ListItemModel> payload)
+        private QueryResultWrapper(T payload)
         {
             Payload = payload;
             Result = QueryResult.Success;
@@ -34,35 +30,35 @@ namespace ToDoList.Core.Wrappers
         /// </summary>
         /// <param name="payload">Payload of query</param>
         /// <returns></returns>
-        public static QueryResultWrapper Success(IEnumerable<ListItemModel> payload) => new QueryResultWrapper(payload);
+        public static QueryResultWrapper<T> Success(T payload) => new QueryResultWrapper<T>(payload);
 
 
         /// <summary>
         /// Create a new QueryResultWrapper as NotFound
         /// </summary>
-        public static QueryResultWrapper NotFound => new QueryResultWrapper(QueryResult.NotFound);
+        public static QueryResultWrapper<T> NotFound => new QueryResultWrapper<T>(QueryResult.NotFound);
 
 
         /// <summary>
         /// Create a new QueryResultWrapper as Error
         /// </summary>
-        public static QueryResultWrapper Error => new QueryResultWrapper(QueryResult.Error);
+        public static QueryResultWrapper<T> Error => new QueryResultWrapper<T>(QueryResult.Error);
 
 
         /// <summary>
         /// Create a new QueryResultWrapper as ValidationError
         /// </summary>
-        public static QueryResultWrapper ValidationError(ValidationResult validation) => new QueryResultWrapper(validation);
+        public static QueryResultWrapper<T> ValidationError(ValidationResult validation) => new QueryResultWrapper<T>(validation);
 
 
         /// <summary>
         /// Create a new QueryResultWrapper from the repo result
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="U"></typeparam>
         /// <param name="wrapper"></param>
         /// <param name="mapper"></param>
         /// <returns></returns>
-        public static QueryResultWrapper FromRepoResult<T>(RepoResultWrapper<T> wrapper, Func<T, IEnumerable<ListItemModel>> mapper)
+        public static QueryResultWrapper<T> FromRepoResult<U>(RepoResultWrapper<U> wrapper, Func<U, T> mapper)
         {
             return wrapper.Result switch
             {
@@ -75,7 +71,7 @@ namespace ToDoList.Core.Wrappers
 
         public QueryResult Result { get; }
 
-        public IEnumerable<ListItemModel> Payload { get; }
+        public T Payload { get; }
 
         public ValidationResult Validation { get; }
     }
