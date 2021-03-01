@@ -1,1 +1,11 @@
-<p>{{listItem.value}}</p>
+<div *ngIf="listItem">
+    <h2>{{listItem.value}}</h2>
+    <div><span>Completed: </span>{{listItem.completed}}</div>
+    <div><span>Date added: </span>{{listItem.date | date:'longDate'}}</div>
+    <div>
+        <label>Item name:
+            <input placeholder="{{listItem.value}}"/>
+        </label>
+    </div>
+
+</div>

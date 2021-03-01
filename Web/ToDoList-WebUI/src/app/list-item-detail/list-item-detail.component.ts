@@ -12,7 +12,7 @@ import { listItem } from '../listItem';
 })
 export class ListItemDetailComponent implements OnInit {
 
-  @Input() listItem: listItem;
+  listItem: listItem;
 
   constructor(
     private route: ActivatedRoute,

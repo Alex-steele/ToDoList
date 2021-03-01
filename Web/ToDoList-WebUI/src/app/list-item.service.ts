@@ -8,7 +8,7 @@ import { listItem } from './listItem';
   providedIn: 'root'
 })
 export class ListItemService {
-  private listItemUrl = "https://localhost:44321/api/ToDoList/";
+  private listItemUrl = "https://localhost:44321/api/ToDoList";
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
