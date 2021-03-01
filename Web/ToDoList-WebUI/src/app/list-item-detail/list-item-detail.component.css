@@ -30,3 +30,9 @@ label {
     color: #ccc;
     cursor: auto;
   }
+  .green {
+      color: rgb(0, 218, 0);
+  }
+  .red {
+      color: red;
+  }
