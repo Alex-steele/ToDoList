@@ -1,24 +1,29 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 
 import { AppComponent } from './app.component';
-import { ListItemsComponent } from './list-items/list-items.component';
-import { ListItemDetailComponent } from './list-item-detail/list-item-detail.component';
-import { AppRoutingModule } from './app-routing/app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
+import { FeatureModule } from './feature.module';
+// import { HttpErrorInterceptor } from './http-error.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ListItemsComponent,
-    ListItemDetailComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FeatureModule
   ],
-  providers: [],
+  // providers: [
+  //   {
+  //     provide: HTTP_INTERCEPTORS,
+  //     useClass: HttpErrorInterceptor,
+  //     multi: true
+  //   }
+  // ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,0 +1,15 @@
+<ng-container *ngIf="(listItem$ | async) as listItem; else loadingOrError">
+    <app-list-item-detail-display (goBackClick)="goBack()" [listItem]="listItem"></app-list-item-detail-display>
+</ng-container>
+
+<ng-template #loadingOrError>
+    <ng-container *ngIf="dataError else loading">
+        <app-list-item-detail-error-display (goBackClick)="goBack()" [error]="dataError"></app-list-item-detail-error-display>
+    </ng-container>
+    
+    <ng-template #loading>
+        <p>Loading...</p>
+    </ng-template>
+</ng-template>
+
+<!-- Maybe move Go Back button to here? -->

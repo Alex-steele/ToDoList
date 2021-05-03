@@ -1,0 +1,13 @@
+<ng-container *ngIf="(listItems$ | async) as listItems; else loadingOrError">
+    <app-list-items-display [listItems]="listItems"></app-list-items-display>
+</ng-container>
+
+<ng-template #loadingOrError>
+    <ng-container *ngIf="dataError; else loading">
+        <app-list-items-error-display [error]="dataError"></app-list-items-error-display>
+    </ng-container>
+    
+    <ng-template #loading>
+        <p id='loading'>Loading...</p>
+    </ng-template>
+</ng-template>
